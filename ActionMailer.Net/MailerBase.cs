@@ -37,7 +37,6 @@ namespace ActionMailer.Net {
         public List<string> To { get; set; }
         public List<string> CC { get; set; }
         public List<string> BCC { get; set; }
-        public Dictionary<string, byte[]> Attachments { get; set; }
         public Dictionary<string, string> Headers { get; set; }
 
         public delegate void OnMailSentEvent(object sender, MailSentEventArgs e);
@@ -84,7 +83,6 @@ namespace ActionMailer.Net {
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
-            Attachments = new Dictionary<string, byte[]>();
             Headers = new Dictionary<string, string>();
         }
 
@@ -109,6 +107,13 @@ namespace ActionMailer.Net {
         }
 
         public EmailResult Email(string viewName, string masterName, object model) {
+            var message = GenerateMailMessage();
+            var result = new EmailResult(message, viewName, model);
+            result.ExecuteResult(ControllerContext);
+            return result;
+        }
+
+        private MailMessage GenerateMailMessage() {
             var message = new MailMessage();
             To.ForEach(x => message.To.Add(new MailAddress(x)));
             CC.ForEach(x => message.CC.Add(new MailAddress(x)));
@@ -116,16 +121,11 @@ namespace ActionMailer.Net {
             message.From = new MailAddress(From);
             message.Subject = Subject;
 
-            foreach (var attachment in Attachments) {
-            }
-
             foreach (var header in Headers) {
                 message.Headers.Add(header.Key, header.Value);
             }
 
-            var result = new EmailResult(message, viewName, model);
-            result.ExecuteResult(ControllerContext);
-            return result;
+            return message;
         }
 
         /// <summary>
