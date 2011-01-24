@@ -28,6 +28,10 @@ namespace ActionMailer.Net {
     public class MailSentEventArgs : EventArgs {
         public MailMessage MailMessage { get; set; }
 
+        /// <summary>
+        /// The event arguments for the OnMailSent event.
+        /// </summary>
+        /// <param name="message">The mail message that was sent.</param>
         public MailSentEventArgs(MailMessage message) : base() {
             MailMessage = message;
         }

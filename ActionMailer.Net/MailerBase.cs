@@ -39,9 +39,32 @@ namespace ActionMailer.Net {
         public List<string> BCC { get; set; }
         public Dictionary<string, string> Headers { get; set; }
 
+        /// <summary>
+        /// Event details for the OnMailSent event
+        /// </summary>
+        /// <param name="sender">The event sender.  Usually &quot;this&quot;</param>
+        /// <param name="e">Event arguments including the MailMessage that was sent.</param>
         public delegate void OnMailSentEvent(object sender, MailSentEventArgs e);
+
+        /// <summary>
+        /// Event details for the OnMailSending event.  You can prevent messages from
+        /// being sent by setting the e.Cancel boolean to &quot;true&quot;
+        /// </summary>
+        /// <param name="sender">The event sender.  Usually &quot;this&quot;</param>
+        /// <param name="e">Event arguments including the MailMessage that is being sent.</param>
         public delegate void OnMailSendingEvent(object sender, MailSendingEventArgs e);
+
+        /// <summary>
+        /// This event is called after a message is successfully sent.  If you delivery
+        /// the message asynchronously, this event will fire after the asynchonous callback
+        /// is received.
+        /// </summary>
         public event OnMailSentEvent OnMailSent;
+
+        /// <summary>
+        /// This event is called before any messages are delivered.  You can use this
+        /// event to inspect the MailMessage before it goes out or to cancel altogether.
+        /// </summary>
         public event OnMailSendingEvent OnMailSending;
 
         internal void Deliver(MailMessage message, bool async) {
@@ -86,26 +109,59 @@ namespace ActionMailer.Net {
             Headers = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email() {
             return Email(null, null, null);
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName) {
             return Email(viewName, null, null);
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="model">The model object used while rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(object model) {
             return Email(null, null, model);
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="model">The model object used while rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, object model) {
             return Email(viewName, null, model);
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">The master page to use when rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName) {
             return Email(viewName, masterName, null);
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">The master page to use when rendering the message body.</param>
+        /// <param name="model">The model object used while rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName, object model) {
             var message = GenerateMailMessage();
             var result = new EmailResult(message, viewName, model);

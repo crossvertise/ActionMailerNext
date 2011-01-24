@@ -52,10 +52,18 @@ namespace ActionMailer.Net {
             _message.Body = RenderViewToString(context);
         }
 
+        /// <summary>
+        /// Sends your message.  This call will block while the message is being sent. (not recommended)
+        /// </summary>
         public void Deliver() {
             _mailer.Deliver(_message, false);
         }
 
+        /// <summary>
+        /// Sends your message asynchronously.  This method does not block.  If you need to know
+        /// when the message has been sent, then use the OnMailSent event on MailerBase which
+        /// will not fire until the asyonchronous send operation is complete.
+        /// </summary>
         public void DeliverAsync() {
             _mailer.Deliver(_message, true);
         }

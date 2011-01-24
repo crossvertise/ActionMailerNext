@@ -29,6 +29,10 @@ namespace ActionMailer.Net {
         public MailMessage MailMessage { get; set; }
         public bool Cancel { get; set; }
 
+        /// <summary>
+        /// The arguments for the OnMailSending event.
+        /// </summary>
+        /// <param name="message">The mail message that should be sent.</param>
         public MailSendingEventArgs(MailMessage message) : base() {
             MailMessage = message;
             Cancel = false;
