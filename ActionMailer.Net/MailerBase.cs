@@ -29,6 +29,9 @@ using System.Web.Mvc;
 using System.IO;
 using System.Net.Mail;
 using System.ComponentModel;
+using System.Web.Routing;
+using System.Diagnostics;
+using System.Web;
 
 namespace ActionMailer.Net {
     public class MailerBase : ControllerBase {
@@ -38,6 +41,7 @@ namespace ActionMailer.Net {
         public List<string> CC { get; set; }
         public List<string> BCC { get; set; }
         public Dictionary<string, string> Headers { get; set; }
+        
 
         /// <summary>
         /// Event details for the OnMailSent event
@@ -165,7 +169,27 @@ namespace ActionMailer.Net {
         public EmailResult Email(string viewName, string masterName, object model) {
             var message = GenerateMailMessage();
             var result = new EmailResult(message, viewName, model);
-            result.ExecuteResult(ControllerContext);
+
+            var routeData = new RouteData();
+            routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
+
+            // since the stack trace is a "stack" we can work our way up the stack
+            // until we find a method that isn't named "Email."  The first method
+            // we encounter without that name *should* be our action.
+            var trace = new StackTrace();
+            for (int i = 0; i < trace.FrameCount; i++) {
+                int counter = i;
+                var methodName = trace.GetFrame(counter).GetMethod().Name;
+                if (methodName != "Email") {
+                    routeData.Values["action"] = methodName;
+                    break;
+                }
+            }
+
+            var requestContext = new RequestContext(new HttpContextWrapper(HttpContext.Current), routeData);
+            var context = new ControllerContext(requestContext, this);
+
+            result.ExecuteResult(context);
             return result;
         }
 
@@ -187,7 +211,6 @@ namespace ActionMailer.Net {
         /// <summary>
         /// Nothing to do here, left empty for now.
         /// </summary>
-        protected override void ExecuteCore() {
-        }
+        protected override void ExecuteCore() { }
     }
 }
