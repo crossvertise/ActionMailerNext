@@ -25,8 +25,19 @@ using System;
 using System.Net.Mail;
 
 namespace ActionMailer.Net {
+    /// <summary>
+    /// Event arguments for the OnMailSending event.
+    /// </summary>
     public class MailSendingEventArgs : EventArgs {
+        /// <summary>
+        /// The mail message that is being sent
+        /// </summary>
         public MailMessage MailMessage { get; set; }
+
+        /// <summary>
+        /// When set to true, the sending of this message
+        /// will be cancelled.  Defaults to false;
+        /// </summary>
         public bool Cancel { get; set; }
 
         /// <summary>

@@ -21,25 +21,49 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using System.IO;
-using System.Net.Mail;
 using System.ComponentModel;
-using System.Web.Routing;
 using System.Diagnostics;
+using System.Net.Mail;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace ActionMailer.Net {
+    /// <summary>
+    /// The base class that your controller should inherit from if you wish
+    /// to send emails through ActionMailer.Net.
+    /// </summary>
     public class MailerBase : ControllerBase {
+        /// <summary>
+        /// A string representation of who this mail should be from.  Could be
+        /// your name and email address or just an email address by itself.
+        /// </summary>
         public string From { get; set; }
+
+        /// <summary>
+        /// The subject line of the email.
+        /// </summary>
         public string Subject { get; set; }
+
+        /// <summary>
+        /// A collection of addresses this email should be sent to.
+        /// </summary>
         public List<string> To { get; set; }
+
+        /// <summary>
+        /// A collection of addresses that should be CC'ed.
+        /// </summary>
         public List<string> CC { get; set; }
+
+        /// <summary>
+        /// A collection of addresses that should be BCC'ed.
+        /// </summary>
         public List<string> BCC { get; set; }
+
+        /// <summary>
+        /// Any custom headers (name and value) that should be placed on the message.
+        /// </summary>
         public Dictionary<string, string> Headers { get; set; }
         
 
@@ -104,6 +128,9 @@ namespace ActionMailer.Net {
             }
         }
 
+        /// <summary>
+        /// Initializes MailerBase.
+        /// </summary>
         public MailerBase() {
             From = null;
             Subject = null;
@@ -168,7 +195,7 @@ namespace ActionMailer.Net {
         /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName, object model) {
             var message = GenerateMailMessage();
-            var result = new EmailResult(message, viewName, model);
+            var result = new EmailResult(message, viewName, masterName, model);
 
             var routeData = new RouteData();
             routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);

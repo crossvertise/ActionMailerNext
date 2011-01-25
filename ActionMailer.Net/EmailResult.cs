@@ -27,23 +27,37 @@ using System.Net.Mail;
 using System.Web.Mvc;
 
 namespace ActionMailer.Net {
+    /// <summary>
+    /// A special result that should be returned from each eaction in your
+    /// mail controller.  Your controller must inherit from MailerBase.
+    /// </summary>
     public class EmailResult : ViewResult {
         private readonly MailMessage _message;
         private readonly object _model;
         private MailerBase _mailer;
 
-        public EmailResult(MailMessage message) : this(message, null, null, null) { }
-        public EmailResult(MailMessage message, object model) : this(message, null, null, model) { }
-        public EmailResult(MailMessage message, string viewName) : this(message, viewName, null, null) { }
-        public EmailResult(MailMessage message, string viewName, object model) : this(message, viewName, null, model) { }
-        public EmailResult(MailMessage message, string viewName, string masterName) : this(message, viewName, masterName, null) { }
+        /// <summary>
+        /// Creates a new EmailResult.  You must call ExecuteCore() before this result
+        /// can be successfully delivered.
+        /// </summary>
+        /// <param name="message">The mail message who's body needs populating.</param>
+        /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
+        /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
+        /// <param name="model">The model object to pass to the view when rendering the message body (can be null)</param>
         public EmailResult(MailMessage message, string viewName, string masterName, object model) {
+            if (message == null)
+                throw new ArgumentNullException("message");
+
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             _message = message;
             _model = model;
         }
 
+        /// <summary>
+        /// Causes the body of the mail message to be generated.
+        /// </summary>
+        /// <param name="context">The controller context to use while rendering the body.</param>
         public override void ExecuteResult(ControllerContext context) {
             _mailer = context.Controller as MailerBase;
             if (_mailer == null)

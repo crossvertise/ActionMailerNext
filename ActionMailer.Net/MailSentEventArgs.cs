@@ -25,7 +25,13 @@ using System;
 using System.Net.Mail;
 
 namespace ActionMailer.Net {
+    /// <summary>
+    /// The event arguments to be used by the OnMailSent event.
+    /// </summary>
     public class MailSentEventArgs : EventArgs {
+        /// <summary>
+        /// The mail message that was sent.
+        /// </summary>
         public MailMessage MailMessage { get; set; }
 
         /// <summary>
