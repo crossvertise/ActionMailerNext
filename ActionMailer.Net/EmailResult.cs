@@ -78,7 +78,7 @@ namespace ActionMailer.Net {
                 var viewResult = ViewEngines.Engines.FindView(context, ViewName, MasterName);
                 var viewContext = new ViewContext(context, viewResult.View, ViewData, TempData, writer);
                 viewResult.View.Render(viewContext, writer);
-                return writer.GetStringBuilder().ToString();
+                return writer.GetStringBuilder().ToString().Trim();
             }
         }
     }
