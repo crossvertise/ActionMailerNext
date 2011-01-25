@@ -1,17 +1,17 @@
 Introduction
-============
+------------
 ActionMailer.Net aims to be an easy, and relatively painless way to send email from your ASP.NET MVC application.  The concept is pretty simple.  We render HTML by utilizing some pretty snazzy view engines, so why can't we do the same thing for email?
 
 
 Installation
-============
+------------
 Right now you'll have to check the downloads section on bitbucket, or grab the source and build it yourself.  Once done, you just have to reference the **ActionMailer.Net.dll** within your project and you're ready to go!
 
 I know NuGet is out there, and once this project stabilizes a bit, I'll be happy to add it.  I'm hoping to get a few early adopters to be my ever-so-helpful guinea pigs.
 
 
 Usage
-=====
+-----
 This is the easy part, I swear!  There are three steps on the way to email awesomeness:
 
  1. Create a new controller in your project.  I called mine **MailController**, but any name will do.  Inside your controller, each action will need to return **EmailResult** objects.  The best way to do that is to use the handy **Email()** method.  Here's some sample code to get you started.
@@ -50,19 +50,19 @@ This is the easy part, I swear!  There are three steps on the way to email aweso
 
 
 Advanced Stuff
-==============
+--------------
 The astute reader will notice that **MailerBase** has a couple of events:  **OnMailSent** and **OnMailSending**.  Feel free to have fun with those :)
 
 You might also notice that there is a **DeliverAsync()** method.  I don't offer a callback here because even with Async delivery, the **OnMailSent** event will fire after the send operation completes.
 
 
 Notice
-======
+------
 Please realize that this library is a *super-early alpha* and I'd love some help!  Feel free to submit pull requests or patches.
 
 
 To-Do
-=====
+-----
 This is just a short list of things that are still left to do.  I will make my way through this list eventually, but your help is appreciated.
 
   - **Attachments**:  I really want to add more than just simple attachments.  I'd like the ability to do inline attachments as well.  This needs to be done with some HtmlHelper extension methods, probably.  Still brainstorming.
