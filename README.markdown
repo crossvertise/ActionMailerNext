@@ -26,6 +26,7 @@ This is the easy part, I swear!  There are three steps on the way to email aweso
                 return Email(model);
             }
         }
+
  2. Now we need to create a **View** for this email.  The view can use any ViewEngine you like, and it will even work with master pages (or layouts in Razor).  The views live in the same place your normal views do.  Here's a sample view that matches the nifty email action above.
 
         @model User
@@ -41,10 +42,12 @@ This is the easy part, I swear!  There are three steps on the way to email aweso
         @Url.Action("Verify", "Account", new { code = @User.EmailActivationToken.ToString() })
 
         Thanks!
+
  3. Now it's just a matter of calling your action directly any time you need to send an email.  You can call it like this:
 
         var newUser = _myRepository.CreateUser(model);
         new MailController().VerificationEmail(newUser).Deliver();
+
 
 Advanced Stuff
 ==============
@@ -56,6 +59,7 @@ You might also notice that there is a **DeliverAsync()** method.  I don't offer 
 Notice
 ======
 Please realize that this library is a *super-early alpha* and I'd love some help!  Feel free to submit pull requests or patches.
+
 
 To-Do
 =====
