@@ -42,19 +42,21 @@ namespace ActionMailer.Net {
         public readonly MailMessage Mail;
 
         /// <summary>
-        /// The underlying SmtpClient object that is used to send any outbound emails.
+        /// The underlying ISmtpClient object that is used to send any outbound emails.
         /// </summary>
-        public SmtpClient Client;
+        public IMailSender MailSender;
 
         /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
         /// can be successfully delivered.
         /// </summary>
+        /// <param name="interceptor">The IMailInterceptor that we will call when delivering mail.</param>
+        /// <param name="sender">The IMailSender that we will use to send mail.</param>
         /// <param name="mail">The mail message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
         /// <param name="model">The model object to pass to the view when rendering the message body (can be null)</param>
-        public EmailResult(IMailInterceptor interceptor, MailMessage mail, string viewName, string masterName, object model) {
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, object model) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
             
@@ -64,7 +66,7 @@ namespace ActionMailer.Net {
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             Mail = mail;
-            Client = new SmtpClient();
+            MailSender = sender;
             _model = model;
             _interceptor = interceptor;
         }
@@ -101,22 +103,21 @@ namespace ActionMailer.Net {
                 return;
             }
 
-            using (var client = new SmtpClient()) {
+            using (MailSender) {
                 if (async) {
-                    client.SendCompleted += new SendCompletedEventHandler(AsyncSendCompleted);
-                    client.SendAsync(mail, mail);
+                    MailSender.SendAsync(mail, AsyncSendCompleted);
                     return; // prevent the OnMailSent() method from being called too early.
                 }
                 else {
-                    client.Send(mail);
+                    MailSender.Send(mail);
                 }
             }
 
             _interceptor.OnMailSent(mail);
         }
 
-        private void AsyncSendCompleted(object sender, AsyncCompletedEventArgs e) {
-            _interceptor.OnMailSent(e.UserState as MailMessage);
+        private void AsyncSendCompleted(MailMessage mail) {
+            _interceptor.OnMailSent(mail);
         }
 
         private string RenderViewToString(ControllerContext context) {

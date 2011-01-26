@@ -39,7 +39,7 @@ namespace ActionMailer.Net {
         /// A special flag that you can toggle to prevent this mail
         /// from being sent.
         /// </summary>
-        public readonly bool Cancel;
+        public bool Cancel;
 
         /// <summary>
         /// Returns a populated context to be used for the OnMailSending()

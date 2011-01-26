@@ -44,7 +44,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmailSenderTests.cs" />
     <Compile Include="MailerBaseTests.cs" />
+    <Compile Include="MailSendingContextTests.cs" />
     <Compile Include="Mocks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

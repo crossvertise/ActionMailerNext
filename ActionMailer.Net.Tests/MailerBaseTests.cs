@@ -21,25 +21,12 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-using System.Web;
-using Moq;
 using System.Web.Mvc;
+using Xunit;
+using Moq;
 
 namespace ActionMailer.Net.Tests {
     public class MailerBaseTests {
-        /*
-         * - OnMailSending() should allow emails to be cancelled
-         * - OnMailSending() should be called
-         * - OnMailSent() should be called
-         * - Various message properties should be set (To, From, Subject, etc.)
-         * - Headers should be set.
-         */
-
         [Fact]
         public void EmailMethodShouldSetPropertiesOnMailMessage() {
             var mailer = new MailerBase();
@@ -58,6 +45,30 @@ namespace ActionMailer.Net.Tests {
             Assert.Equal("test subject", result.Mail.Subject);
             Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
             Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
+        }
+
+        [Fact]
+        public void PassingAMailSenderShouldWork() {
+            var mockSender = new Mock<IMailSender>();
+            
+            var mailer = new MailerBase(mockSender.Object);
+
+            Assert.Equal(mockSender.Object, mailer.MailSender);
+        }
+
+        [Fact]
+        public void EmailMethodShouldRenderViewAsMessageBody() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Add(new TestViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            // there's no need to test the built-in view engines.
+            // this test just ensures that our Email() method actually
+            // populates the mail body properly.
+            var result = mailer.Email();
+
+            Assert.Equal("TestView", result.Mail.Body);
         }
     }
 }

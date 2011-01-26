@@ -71,6 +71,11 @@ namespace ActionMailer.Net {
         public HttpContextBase HttpContextBase { get; set; }
 
         /// <summary>
+        /// The underlying IMailSender to use for outgoing messages.
+        /// </summary>
+        public IMailSender MailSender { get; set; }
+
+        /// <summary>
         /// This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
@@ -93,15 +98,17 @@ namespace ActionMailer.Net {
         }
 
         /// <summary>
-        /// Initializes MailerBase.
+        /// Initializes MailerBase using the default SmtpMailSender.
         /// </summary>
-        public MailerBase() {
+        /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
+        public MailerBase(IMailSender mailSender = null) {
             From = null;
             Subject = null;
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
             Headers = new Dictionary<string, string>();
+            MailSender = mailSender ?? new SmtpMailSender();
             if (HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(HttpContext.Current);
             }
@@ -162,7 +169,8 @@ namespace ActionMailer.Net {
         /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName, object model) {
             var mail = GenerateMail();
-            var result = new EmailResult(this, mail, viewName, masterName, model);
+            var sender = new SmtpMailSender();
+            var result = new EmailResult(this, sender, mail, viewName, masterName, model);
 
             var routeData = new RouteData();
             routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
