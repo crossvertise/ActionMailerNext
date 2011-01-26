@@ -26,6 +26,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using System.Web;
+using Moq;
+using System.Web.Mvc;
 
 namespace ActionMailer.Net.Tests {
     public class MailerBaseTests {
@@ -36,5 +39,25 @@ namespace ActionMailer.Net.Tests {
          * - Various message properties should be set (To, From, Subject, etc.)
          * - Headers should be set.
          */
+
+        [Fact]
+        public void EmailMethodShouldSetPropertiesOnMailMessage() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Add(new TestViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.To.Add("test@test.com");
+            mailer.From = "no-reply@mysite.com";
+            mailer.Subject = "test subject";
+            mailer.CC.Add("test-cc@test.com");
+            mailer.BCC.Add("test-bcc@test.com");
+
+            var result = mailer.Email();
+
+            Assert.Equal("test@test.com", result.Mail.To[0].Address);
+            Assert.Equal("no-reply@mysite.com", result.Mail.From.Address);
+            Assert.Equal("test subject", result.Mail.Subject);
+            Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
+            Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
+        }
     }
 }

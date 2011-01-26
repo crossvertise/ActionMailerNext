@@ -33,12 +33,18 @@ namespace ActionMailer.Net {
     /// mail controller.  Your controller must inherit from MailerBase.
     /// </summary>
     public class EmailResult : ViewResult {
+        private readonly object _model;
+        private readonly IMailInterceptor _interceptor;
+
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
         public readonly MailMessage Mail;
-        private readonly object _model;
-        private MailerBase _mailer;
+
+        /// <summary>
+        /// The underlying SmtpClient object that is used to send any outbound emails.
+        /// </summary>
+        public SmtpClient Client;
 
         /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
@@ -48,14 +54,19 @@ namespace ActionMailer.Net {
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
         /// <param name="model">The model object to pass to the view when rendering the message body (can be null)</param>
-        public EmailResult(MailMessage mail, string viewName, string masterName, object model) {
+        public EmailResult(IMailInterceptor interceptor, MailMessage mail, string viewName, string masterName, object model) {
+            if (interceptor == null)
+                throw new ArgumentNullException("interceptor");
+            
             if (mail == null)
                 throw new ArgumentNullException("message");
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             Mail = mail;
+            Client = new SmtpClient();
             _model = model;
+            _interceptor = interceptor;
         }
 
         /// <summary>
@@ -63,10 +74,6 @@ namespace ActionMailer.Net {
         /// </summary>
         /// <param name="context">The controller context to use while rendering the body.</param>
         public override void ExecuteResult(ControllerContext context) {
-            _mailer = context.Controller as MailerBase;
-            if (_mailer == null)
-                throw new ArgumentException("If you want to use the Email helper, your controller must inherit from MailerBase.");
-
             Mail.Body = RenderViewToString(context);
         }
 
@@ -86,10 +93,9 @@ namespace ActionMailer.Net {
             Deliver(Mail, true);
         }
 
-        internal void Deliver(MailMessage mail, bool async) {
-            var interceptor = (IMailInterceptor)_mailer;
+        private void Deliver(MailMessage mail, bool async) {
             var mailContext = new MailSendingContext(mail);
-            interceptor.OnMailSending(mailContext);
+            _interceptor.OnMailSending(mailContext);
 
             if (mailContext.Cancel) {
                 return;
@@ -106,12 +112,11 @@ namespace ActionMailer.Net {
                 }
             }
 
-            interceptor.OnMailSent(mail);
+            _interceptor.OnMailSent(mail);
         }
 
         private void AsyncSendCompleted(object sender, AsyncCompletedEventArgs e) {
-            var interceptor = (IMailInterceptor)_mailer;
-            interceptor.OnMailSent(e.UserState as MailMessage);
+            _interceptor.OnMailSent(e.UserState as MailMessage);
         }
 
         private string RenderViewToString(ControllerContext context) {
@@ -121,9 +126,11 @@ namespace ActionMailer.Net {
             ViewData.Model = _model;
 
             using (var writer = new StringWriter()) {
-                var viewResult = ViewEngines.Engines.FindView(context, ViewName, MasterName);
-                var viewContext = new ViewContext(context, viewResult.View, ViewData, TempData, writer);
-                viewResult.View.Render(viewContext, writer);
+                if (View == null)
+                    View = FindView(context).View;
+
+                var viewContext = new ViewContext(context, View, ViewData, TempData, writer);
+                View.Render(viewContext, writer);
                 return writer.GetStringBuilder().ToString().Trim();
             }
         }

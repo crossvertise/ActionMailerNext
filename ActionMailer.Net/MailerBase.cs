@@ -66,6 +66,11 @@ namespace ActionMailer.Net {
         public Dictionary<string, string> Headers { get; set; }
 
         /// <summary>
+        /// Gets or sets the http context to use when constructing EmailResult's.
+        /// </summary>
+        public HttpContextBase HttpContextBase { get; set; }
+
+        /// <summary>
         /// This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
@@ -97,6 +102,9 @@ namespace ActionMailer.Net {
             CC = new List<string>();
             BCC = new List<string>();
             Headers = new Dictionary<string, string>();
+            if (HttpContext.Current != null) {
+                HttpContextBase = new HttpContextWrapper(HttpContext.Current);
+            }
         }
 
         /// <summary>
@@ -154,13 +162,13 @@ namespace ActionMailer.Net {
         /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName, object model) {
             var mail = GenerateMail();
-            var result = new EmailResult(mail, viewName, masterName, model);
+            var result = new EmailResult(this, mail, viewName, masterName, model);
 
             var routeData = new RouteData();
             routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
             routeData.Values["action"] = FindActionName();
 
-            var requestContext = new RequestContext(new HttpContextWrapper(HttpContext.Current), routeData);
+            var requestContext = new RequestContext(HttpContextBase, routeData);
             var context = new ControllerContext(requestContext, this);
 
             result.ExecuteResult(context);
