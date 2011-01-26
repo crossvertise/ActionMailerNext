@@ -8,7 +8,7 @@ using System.Net.Mail;
 using System.Threading;
 
 namespace ActionMailer.Net.Tests {
-    public class EmailSenderTests {
+    public class EmailResultTests {
         [Fact]
         public void DeliverShouldSendMailSynchronously() {
             var mockInterceptor = new Mock<IMailInterceptor>();
