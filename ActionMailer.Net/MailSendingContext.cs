@@ -21,25 +21,34 @@
  */
 #endregion
 
-using System;
 using System.Net.Mail;
 
 namespace ActionMailer.Net {
     /// <summary>
-    /// The event arguments to be used by the OnMailSent event.
+    /// A special context object used by the OnMailSending() method
+    /// to allow you to inspect the underlying MailMessage before it
+    /// is sent, or prevent it from being sent altogether.
     /// </summary>
-    public class MailSentEventArgs : EventArgs {
+    public class MailSendingContext {
         /// <summary>
-        /// The mail message that was sent.
+        /// The generated mail message that is being sent.
         /// </summary>
-        public MailMessage MailMessage { get; set; }
+        public readonly MailMessage Mail;
 
         /// <summary>
-        /// The event arguments for the OnMailSent event.
+        /// A special flag that you can toggle to prevent this mail
+        /// from being sent.
         /// </summary>
-        /// <param name="message">The mail message that was sent.</param>
-        public MailSentEventArgs(MailMessage message) : base() {
-            MailMessage = message;
+        public readonly bool Cancel;
+
+        /// <summary>
+        /// Returns a populated context to be used for the OnMailSending()
+        /// method in MailerBase.
+        /// </summary>
+        /// <param name="mail">The message you wish to wrap within this context.</param>
+        public MailSendingContext(MailMessage mail) {
+            Mail = mail;
+            Cancel = false;
         }
     }
 }

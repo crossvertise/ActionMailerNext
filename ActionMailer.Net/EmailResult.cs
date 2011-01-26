@@ -25,6 +25,7 @@ using System;
 using System.IO;
 using System.Net.Mail;
 using System.Web.Mvc;
+using System.ComponentModel;
 
 namespace ActionMailer.Net {
     /// <summary>
@@ -32,7 +33,10 @@ namespace ActionMailer.Net {
     /// mail controller.  Your controller must inherit from MailerBase.
     /// </summary>
     public class EmailResult : ViewResult {
-        private readonly MailMessage _message;
+        /// <summary>
+        /// The underlying MailMessage object that was passed to this object's constructor.
+        /// </summary>
+        public readonly MailMessage Mail;
         private readonly object _model;
         private MailerBase _mailer;
 
@@ -40,17 +44,17 @@ namespace ActionMailer.Net {
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
         /// can be successfully delivered.
         /// </summary>
-        /// <param name="message">The mail message who's body needs populating.</param>
+        /// <param name="mail">The mail message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
         /// <param name="model">The model object to pass to the view when rendering the message body (can be null)</param>
-        public EmailResult(MailMessage message, string viewName, string masterName, object model) {
-            if (message == null)
+        public EmailResult(MailMessage mail, string viewName, string masterName, object model) {
+            if (mail == null)
                 throw new ArgumentNullException("message");
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
-            _message = message;
+            Mail = mail;
             _model = model;
         }
 
@@ -63,23 +67,51 @@ namespace ActionMailer.Net {
             if (_mailer == null)
                 throw new ArgumentException("If you want to use the Email helper, your controller must inherit from MailerBase.");
 
-            _message.Body = RenderViewToString(context);
+            Mail.Body = RenderViewToString(context);
         }
 
         /// <summary>
         /// Sends your message.  This call will block while the message is being sent. (not recommended)
         /// </summary>
         public void Deliver() {
-            _mailer.Deliver(_message, false);
+            Deliver(Mail, false);
         }
 
         /// <summary>
         /// Sends your message asynchronously.  This method does not block.  If you need to know
-        /// when the message has been sent, then use the OnMailSent event on MailerBase which
+        /// when the message has been sent, then override the OnMailSent method in MailerBase which
         /// will not fire until the asyonchronous send operation is complete.
         /// </summary>
         public void DeliverAsync() {
-            _mailer.Deliver(_message, true);
+            Deliver(Mail, true);
+        }
+
+        internal void Deliver(MailMessage mail, bool async) {
+            var interceptor = (IMailInterceptor)_mailer;
+            var mailContext = new MailSendingContext(mail);
+            interceptor.OnMailSending(mailContext);
+
+            if (mailContext.Cancel) {
+                return;
+            }
+
+            using (var client = new SmtpClient()) {
+                if (async) {
+                    client.SendCompleted += new SendCompletedEventHandler(AsyncSendCompleted);
+                    client.SendAsync(mail, mail);
+                    return; // prevent the OnMailSent() method from being called too early.
+                }
+                else {
+                    client.Send(mail);
+                }
+            }
+
+            interceptor.OnMailSent(mail);
+        }
+
+        private void AsyncSendCompleted(object sender, AsyncCompletedEventArgs e) {
+            var interceptor = (IMailInterceptor)_mailer;
+            interceptor.OnMailSent(e.UserState as MailMessage);
         }
 
         private string RenderViewToString(ControllerContext context) {

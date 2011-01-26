@@ -22,7 +22,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Mail;
 using System.Web;
@@ -34,7 +33,7 @@ namespace ActionMailer.Net {
     /// The base class that your controller should inherit from if you wish
     /// to send emails through ActionMailer.Net.
     /// </summary>
-    public class MailerBase : ControllerBase {
+    public class MailerBase : ControllerBase, IMailInterceptor {
         /// <summary>
         /// A string representation of who this mail should be from.  Could be
         /// your name and email address or just an email address by itself.
@@ -65,67 +64,27 @@ namespace ActionMailer.Net {
         /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         public Dictionary<string, string> Headers { get; set; }
-        
 
         /// <summary>
-        /// Event details for the OnMailSent event
+        /// This method is called after each mail is sent.
         /// </summary>
-        /// <param name="sender">The event sender.  Usually &quot;this&quot;</param>
-        /// <param name="e">Event arguments including the MailMessage that was sent.</param>
-        public delegate void OnMailSentEvent(object sender, MailSentEventArgs e);
+        /// <param name="mail">The mail that was sent.</param>
+        protected virtual void OnMailSent(MailMessage mail) { }
 
         /// <summary>
-        /// Event details for the OnMailSending event.  You can prevent messages from
-        /// being sent by setting the e.Cancel boolean to &quot;true&quot;
+        /// This method is called before each mail is sent
         /// </summary>
-        /// <param name="sender">The event sender.  Usually &quot;this&quot;</param>
-        /// <param name="e">Event arguments including the MailMessage that is being sent.</param>
-        public delegate void OnMailSendingEvent(object sender, MailSendingEventArgs e);
+        /// <param name="context">A simple context containing the mail
+        /// and a boolean value that can be toggled to prevent this
+        /// mail from being sent.</param>
+        protected virtual void OnMailSending(MailSendingContext context) { }
 
-        /// <summary>
-        /// This event is called after a message is successfully sent.  If you delivery
-        /// the message asynchronously, this event will fire after the asynchonous callback
-        /// is received.
-        /// </summary>
-        public event OnMailSentEvent OnMailSent;
-
-        /// <summary>
-        /// This event is called before any messages are delivered.  You can use this
-        /// event to inspect the MailMessage before it goes out or to cancel altogether.
-        /// </summary>
-        public event OnMailSendingEvent OnMailSending;
-
-        internal void Deliver(MailMessage message, bool async) {
-            var sendingArgs = new MailSendingEventArgs(message);
-            if (OnMailSending != null) {
-                OnMailSending(this, sendingArgs);
-            }
-
-            if (sendingArgs.Cancel) {
-                return;
-            }
-
-            using (var client = new SmtpClient()) {
-                if (async) {
-                    client.SendCompleted += new SendCompletedEventHandler(AsyncSendCompleted);
-                    client.SendAsync(message, message);
-                    return;
-                }
-                else {
-                    client.Send(message);
-                }
-            }
-
-            if (OnMailSent != null) {
-                var sentArgs = new MailSentEventArgs(message);
-                OnMailSent(this, sentArgs);
-            }
+        void IMailInterceptor.OnMailSending(MailSendingContext context) {
+            OnMailSending(context);
         }
 
-        void AsyncSendCompleted(object sender, AsyncCompletedEventArgs e) {
-            if (OnMailSent != null) {
-                OnMailSent(this, new MailSentEventArgs(e.UserState as MailMessage));
-            }
+        void IMailInterceptor.OnMailSent(MailMessage mail) {
+            OnMailSent(mail);
         }
 
         /// <summary>
@@ -194,24 +153,12 @@ namespace ActionMailer.Net {
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
         public EmailResult Email(string viewName, string masterName, object model) {
-            var message = GenerateMailMessage();
-            var result = new EmailResult(message, viewName, masterName, model);
+            var mail = GenerateMail();
+            var result = new EmailResult(mail, viewName, masterName, model);
 
             var routeData = new RouteData();
             routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
-
-            // since the stack trace is a "stack" we can work our way up the stack
-            // until we find a method that isn't named "Email."  The first method
-            // we encounter without that name *should* be our action.
-            var trace = new StackTrace();
-            for (int i = 0; i < trace.FrameCount; i++) {
-                int counter = i;
-                var methodName = trace.GetFrame(counter).GetMethod().Name;
-                if (methodName != "Email") {
-                    routeData.Values["action"] = methodName;
-                    break;
-                }
-            }
+            routeData.Values["action"] = FindActionName();
 
             var requestContext = new RequestContext(new HttpContextWrapper(HttpContext.Current), routeData);
             var context = new ControllerContext(requestContext, this);
@@ -220,7 +167,28 @@ namespace ActionMailer.Net {
             return result;
         }
 
-        private MailMessage GenerateMailMessage() {
+        // TODO:  Is there a better way to do this?  It feels dirty... Maybe
+        //        check MVC3's source and see how they do it.
+        private string FindActionName() {
+            // since the stack trace is a "stack" we can work our way up the stack
+            // until we find a method that isn't named "Email."  The first method
+            // we encounter without that name *should* be our action.
+            string action = null;
+            var trace = new StackTrace();
+            // start at 1, since 0 will be this method.
+            for (int i = 1; i < trace.FrameCount; i++) {
+                int counter = i;
+                var methodName = trace.GetFrame(counter).GetMethod().Name;
+                if (methodName != "Email") {
+                    action = methodName;
+                    break;
+                }
+            }
+
+            return action;
+        }
+
+        private MailMessage GenerateMail() {
             var message = new MailMessage();
             To.ForEach(x => message.To.Add(new MailAddress(x)));
             CC.ForEach(x => message.CC.Add(new MailAddress(x)));

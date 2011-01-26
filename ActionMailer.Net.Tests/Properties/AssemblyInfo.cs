@@ -21,32 +21,19 @@
  */
 #endregion
 
-using System;
-using System.Net.Mail;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
-namespace ActionMailer.Net {
-    /// <summary>
-    /// Event arguments for the OnMailSending event.
-    /// </summary>
-    public class MailSendingEventArgs : EventArgs {
-        /// <summary>
-        /// The mail message that is being sent
-        /// </summary>
-        public MailMessage MailMessage { get; set; }
+[assembly: AssemblyTitle("ActionMailer.Net.Tests")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("ActionMailer.Net")]
+[assembly: AssemblyCopyright("Copyright © 2011 by Scott W. Anderson")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: ComVisible(false)]
+[assembly: Guid("6374909b-fa78-4f4c-b1bc-41331740c4d0")]
 
-        /// <summary>
-        /// When set to true, the sending of this message
-        /// will be cancelled.  Defaults to false;
-        /// </summary>
-        public bool Cancel { get; set; }
-
-        /// <summary>
-        /// The arguments for the OnMailSending event.
-        /// </summary>
-        /// <param name="message">The mail message that should be sent.</param>
-        public MailSendingEventArgs(MailMessage message) : base() {
-            MailMessage = message;
-            Cancel = false;
-        }
-    }
-}
+[assembly: AssemblyVersion("0.1.1.0")]
+[assembly: AssemblyFileVersion("0.1.1.0")]
