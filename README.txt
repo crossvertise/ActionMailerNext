@@ -1,0 +1,1 @@
+Please see https://bitbucket.org/swaj/actionmailer.net/wiki/Home for more information.
