@@ -35,16 +35,12 @@ namespace ActionMailer.Net {
     public class EmailResult : ViewResult {
         private readonly object _model;
         private readonly IMailInterceptor _interceptor;
+        private readonly IMailSender _mailSender;
 
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
         public readonly MailMessage Mail;
-
-        /// <summary>
-        /// The underlying ISmtpClient object that is used to send any outbound emails.
-        /// </summary>
-        public IMailSender MailSender;
 
         /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
@@ -59,14 +55,17 @@ namespace ActionMailer.Net {
         public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, object model) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
-            
+
+            if (sender == null)
+                throw new ArgumentNullException("sender");
+
             if (mail == null)
                 throw new ArgumentNullException("message");
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             Mail = mail;
-            MailSender = sender;
+            _mailSender = sender;
             _model = model;
             _interceptor = interceptor;
         }
@@ -103,13 +102,13 @@ namespace ActionMailer.Net {
                 return;
             }
 
-            using (MailSender) {
+            using (_mailSender) {
                 if (async) {
-                    MailSender.SendAsync(mail, AsyncSendCompleted);
+                    _mailSender.SendAsync(mail, AsyncSendCompleted);
                     return; // prevent the OnMailSent() method from being called too early.
                 }
                 else {
-                    MailSender.Send(mail);
+                    _mailSender.Send(mail);
                 }
             }
 
