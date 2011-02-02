@@ -22,7 +22,6 @@
 #endregion
 
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Mail;
@@ -65,7 +64,7 @@ namespace ActionMailer.Net {
         /// <summary>
         /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
-        public NameValueCollection Headers { get; private set; }
+        public Dictionary<string, string> Headers { get; private set; }
 
         /// <summary>
         /// Any attachments you wish to add.  The key of this collection is what
@@ -119,7 +118,7 @@ namespace ActionMailer.Net {
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
-            Headers = new NameValueCollection();
+            Headers = new Dictionary<string, string>();
             Attachments = new Dictionary<string, byte[]>();
             MailSender = mailSender ?? new SmtpMailSender();
             if (HttpContext.Current != null) {
@@ -224,8 +223,8 @@ namespace ActionMailer.Net {
             BCC.ForEach(x => message.Bcc.Add(new MailAddress(x)));
             message.From = new MailAddress(From);
             message.Subject = Subject;
-            foreach (var key in Headers.AllKeys)
-                message.Headers[key] = Headers[key];
+            foreach (var kvp in Headers)
+                message.Headers[kvp.Key] = kvp.Value;
 
             foreach (var kvp in Attachments) {
                 // ideally we'd like to find the mime type for each attachment automatically
