@@ -25,7 +25,6 @@ using System;
 using System.IO;
 using System.Net.Mail;
 using System.Web.Mvc;
-using System.ComponentModel;
 
 namespace ActionMailer.Net {
     /// <summary>

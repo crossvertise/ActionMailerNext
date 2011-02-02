@@ -22,7 +22,9 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
@@ -48,22 +50,32 @@ namespace ActionMailer.Net {
         /// <summary>
         /// A collection of addresses this email should be sent to.
         /// </summary>
-        public List<string> To { get; set; }
+        public List<string> To { get; private set; }
 
         /// <summary>
         /// A collection of addresses that should be CC'ed.
         /// </summary>
-        public List<string> CC { get; set; }
+        public List<string> CC { get; private set; }
 
         /// <summary>
         /// A collection of addresses that should be BCC'ed.
         /// </summary>
-        public List<string> BCC { get; set; }
+        public List<string> BCC { get; private set; }
 
         /// <summary>
         /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
-        public Dictionary<string, string> Headers { get; set; }
+        public NameValueCollection Headers { get; private set; }
+
+        /// <summary>
+        /// Any attachments you wish to add.  The key of this collection is what
+        /// the file should be named.  The value is should represent the binary bytes
+        /// of the file.
+        /// </summary>
+        /// <example>
+        /// Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
+        /// </example>
+        public Dictionary<string, byte[]> Attachments { get; private set; }
 
         /// <summary>
         /// Gets or sets the http context to use when constructing EmailResult's.
@@ -107,7 +119,8 @@ namespace ActionMailer.Net {
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
-            Headers = new Dictionary<string, string>();
+            Headers = new NameValueCollection();
+            Attachments = new Dictionary<string, byte[]>();
             MailSender = mailSender ?? new SmtpMailSender();
             if (HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(HttpContext.Current);
@@ -211,9 +224,20 @@ namespace ActionMailer.Net {
             BCC.ForEach(x => message.Bcc.Add(new MailAddress(x)));
             message.From = new MailAddress(From);
             message.Subject = Subject;
+            foreach (var key in Headers.AllKeys)
+                message.Headers[key] = Headers[key];
 
-            foreach (var header in Headers) {
-                message.Headers.Add(header.Key, header.Value);
+            foreach (var kvp in Attachments) {
+                // ideally we'd like to find the mime type for each attachment automatically
+                // based on the file extension.
+                string mimeType = null;
+                var extension = kvp.Key.Substring(kvp.Key.LastIndexOf("."));
+                if (!string.IsNullOrEmpty(extension))
+                    mimeType = MimeTypes.ResolveByExtension(extension);
+
+                var stream = new MemoryStream(kvp.Value);
+                var attachment = new Attachment(stream, kvp.Key, mimeType);
+                message.Attachments.Add(attachment);
             }
 
             return message;

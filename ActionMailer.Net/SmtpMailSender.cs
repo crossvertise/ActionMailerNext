@@ -66,7 +66,8 @@ namespace ActionMailer.Net {
         }
 
         private void AsyncSendCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e) {
-            _client.SendCompleted += AsyncSendCompleted;
+            // unsubscribe from the event so _client can be GC'ed if necessary
+            _client.SendCompleted -= AsyncSendCompleted;
             _callback(e.UserState as MailMessage);
         }
 

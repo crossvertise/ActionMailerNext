@@ -45,6 +45,7 @@
     <Compile Include="MailSendingContext.cs" />
     <Compile Include="EmailResult.cs" />
     <Compile Include="MailerBase.cs" />
+    <Compile Include="MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmtpMailSender.cs" />
   </ItemGroup>

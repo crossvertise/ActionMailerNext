@@ -21,9 +21,13 @@
  */
 #endregion
 
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
-using Xunit;
 using Moq;
+using Xunit;
 
 namespace ActionMailer.Net.Tests {
     public class MailerBaseTests {
@@ -37,6 +41,7 @@ namespace ActionMailer.Net.Tests {
             mailer.Subject = "test subject";
             mailer.CC.Add("test-cc@test.com");
             mailer.BCC.Add("test-bcc@test.com");
+            mailer.Headers.Add("X-No-Spam", "True");
 
             var result = mailer.Email();
 
@@ -45,6 +50,7 @@ namespace ActionMailer.Net.Tests {
             Assert.Equal("test subject", result.Mail.Subject);
             Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
             Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
+            Assert.Equal("True", result.Mail.Headers["X-No-Spam"]);
         }
 
         [Fact]
@@ -69,6 +75,26 @@ namespace ActionMailer.Net.Tests {
             var result = mailer.Email();
 
             Assert.Equal("TestView", result.Mail.Body);
+        }
+
+        [Fact]
+        public void AttachmentsShouldAttachProperly() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Add(new TestViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+            var imagePath = Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData", "logo.png");
+            var imageBytes = File.ReadAllBytes(imagePath);
+            mailer.Attachments["logo.png"] = imageBytes;
+
+            var result = mailer.Email();
+            var attachment = result.Mail.Attachments[0];
+            byte[] attachmentBytes = new byte[attachment.ContentStream.Length];
+            attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
+
+            Assert.Equal("logo.png", attachment.Name);
+            Assert.Equal("image/png", attachment.ContentType.MediaType);
+            Assert.True(attachmentBytes.SequenceEqual(imageBytes));
         }
     }
 }
