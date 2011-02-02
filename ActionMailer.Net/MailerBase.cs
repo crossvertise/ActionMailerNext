@@ -62,6 +62,11 @@ namespace ActionMailer.Net {
         public List<string> BCC { get; private set; }
 
         /// <summary>
+        /// A collection of addresses that should be listed in Reply-To header.
+        /// </summary>
+        public List<string> ReplyTo { get; private set; }
+
+        /// <summary>
         /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         public Dictionary<string, string> Headers { get; private set; }
@@ -118,6 +123,7 @@ namespace ActionMailer.Net {
             To = new List<string>();
             CC = new List<string>();
             BCC = new List<string>();
+            ReplyTo = new List<string>();
             Headers = new Dictionary<string, string>();
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
@@ -221,8 +227,10 @@ namespace ActionMailer.Net {
             To.ForEach(x => message.To.Add(new MailAddress(x)));
             CC.ForEach(x => message.CC.Add(new MailAddress(x)));
             BCC.ForEach(x => message.Bcc.Add(new MailAddress(x)));
+            ReplyTo.ForEach(x => message.ReplyToList.Add(new MailAddress(x)));
             message.From = new MailAddress(From);
             message.Subject = Subject;
+
             foreach (var kvp in Headers)
                 message.Headers[kvp.Key] = kvp.Value;
 

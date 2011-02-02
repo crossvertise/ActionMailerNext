@@ -41,6 +41,7 @@ namespace ActionMailer.Net.Tests {
             mailer.Subject = "test subject";
             mailer.CC.Add("test-cc@test.com");
             mailer.BCC.Add("test-bcc@test.com");
+            mailer.ReplyTo.Add("test-reply-to@test.com");
             mailer.Headers.Add("X-No-Spam", "True");
 
             var result = mailer.Email();
@@ -50,6 +51,7 @@ namespace ActionMailer.Net.Tests {
             Assert.Equal("test subject", result.Mail.Subject);
             Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
             Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
+            Assert.Equal("test-reply-to@test.com", result.Mail.ReplyToList[0].Address);
             Assert.Equal("True", result.Mail.Headers["X-No-Spam"]);
         }
 
