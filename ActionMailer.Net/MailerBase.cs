@@ -74,7 +74,7 @@ namespace ActionMailer.Net {
         /// <example>
         /// Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
         /// </example>
-        public Dictionary<string, byte[]> Attachments { get; private set; }
+        public AttachmentCollection Attachments { get; private set; }
 
         /// <summary>
         /// Gets or sets the http context to use when constructing EmailResult's.
@@ -119,7 +119,7 @@ namespace ActionMailer.Net {
             CC = new List<string>();
             BCC = new List<string>();
             Headers = new Dictionary<string, string>();
-            Attachments = new Dictionary<string, byte[]>();
+            Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
             if (HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(HttpContext.Current);
@@ -226,20 +226,27 @@ namespace ActionMailer.Net {
             foreach (var kvp in Headers)
                 message.Headers[kvp.Key] = kvp.Value;
 
-            foreach (var kvp in Attachments) {
-                // ideally we'd like to find the mime type for each attachment automatically
-                // based on the file extension.
-                string mimeType = null;
-                var extension = kvp.Key.Substring(kvp.Key.LastIndexOf("."));
-                if (!string.IsNullOrEmpty(extension))
-                    mimeType = MimeTypes.ResolveByExtension(extension);
+            foreach (var kvp in Attachments)
+                message.Attachments.Add(CreateAttachment(kvp.Key, kvp.Value, false));
 
-                var stream = new MemoryStream(kvp.Value);
-                var attachment = new Attachment(stream, kvp.Key, mimeType);
-                message.Attachments.Add(attachment);
-            }
+            foreach (var kvp in Attachments.Inline)
+                message.Attachments.Add(CreateAttachment(kvp.Key, kvp.Value, true));
 
             return message;
+        }
+
+        private Attachment CreateAttachment(string fileName, byte[] fileContents, bool inline) {
+            // ideally we'd like to find the mime type for each attachment automatically
+            // based on the file extension.
+            string mimeType = null;
+            var extension = fileName.Substring(fileName.LastIndexOf("."));
+            if (!string.IsNullOrEmpty(extension))
+                mimeType = MimeTypes.ResolveByExtension(extension);
+
+            var stream = new MemoryStream(fileContents);
+            var attachment = new Attachment(stream, fileName, mimeType);
+            attachment.ContentDisposition.Inline = inline;
+            return attachment;
         }
 
         /// <summary>

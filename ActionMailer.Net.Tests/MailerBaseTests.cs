@@ -86,15 +86,18 @@ namespace ActionMailer.Net.Tests {
             var imagePath = Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData", "logo.png");
             var imageBytes = File.ReadAllBytes(imagePath);
             mailer.Attachments["logo.png"] = imageBytes;
+            mailer.Attachments.Inline["logo-inline.png"] = imageBytes;
 
             var result = mailer.Email();
             var attachment = result.Mail.Attachments[0];
+            var inlineAttachment = result.Mail.Attachments[1];
             byte[] attachmentBytes = new byte[attachment.ContentStream.Length];
             attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
 
             Assert.Equal("logo.png", attachment.Name);
             Assert.Equal("image/png", attachment.ContentType.MediaType);
             Assert.True(attachmentBytes.SequenceEqual(imageBytes));
+            Assert.True(inlineAttachment.ContentDisposition.Inline);
         }
     }
 }
