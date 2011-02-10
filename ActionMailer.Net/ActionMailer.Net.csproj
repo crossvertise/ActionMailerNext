@@ -38,9 +38,11 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttachmentCollection.cs" />
+    <Compile Include="HtmlHelperExtensions.cs" />
     <Compile Include="NoViewsFoundException.cs" />
     <Compile Include="UrlHelperExtensions.cs" />
     <Compile Include="IMailInterceptor.cs" />

@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\Libs\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\Libs\Moq.dll</HintPath>
     </Reference>
@@ -39,12 +42,14 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
     <Reference Include="xunit">
       <HintPath>..\Libs\xunit.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EmailResultTests.cs" />
+    <Compile Include="HtmlHelperExtensionsTests.cs" />
     <Compile Include="MailerBaseTests.cs" />
     <Compile Include="MailSendingContextTests.cs" />
     <Compile Include="Mocks.cs" />
