@@ -255,6 +255,7 @@ namespace ActionMailer.Net {
             var stream = new MemoryStream(fileContents);
             var attachment = new Attachment(stream, fileName, mimeType);
             attachment.ContentDisposition.Inline = inline;
+            attachment.ContentId = fileName;
             return attachment;
         }
 

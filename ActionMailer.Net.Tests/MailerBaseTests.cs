@@ -123,11 +123,18 @@ namespace ActionMailer.Net.Tests {
             var attachment = result.Mail.Attachments[0];
             var inlineAttachment = result.Mail.Attachments[1];
             byte[] attachmentBytes = new byte[attachment.ContentStream.Length];
+            byte[] inlineAttachmentBytes = new byte[inlineAttachment.ContentStream.Length];
             attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
+            inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0, Convert.ToInt32(inlineAttachment.ContentStream.Length));
 
             Assert.Equal("logo.png", attachment.Name);
+            Assert.Equal("logo-inline.png", inlineAttachment.Name);
             Assert.Equal("image/png", attachment.ContentType.MediaType);
+            Assert.Equal("image/png", inlineAttachment.ContentType.MediaType);
+            Assert.Equal("logo.png", attachment.ContentId);
+            Assert.Equal("logo-inline.png", inlineAttachment.ContentId);
             Assert.True(attachmentBytes.SequenceEqual(imageBytes));
+            Assert.True(inlineAttachmentBytes.SequenceEqual(imageBytes));
             Assert.True(inlineAttachment.ContentDisposition.Inline);
         }
     }
