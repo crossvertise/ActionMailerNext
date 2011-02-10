@@ -30,6 +30,11 @@ using Xunit;
 namespace ActionMailer.Net.Tests {
     public class EmailResultTests {
         [Fact]
+        public void ConstructorWithNullInterceptorThrows() {
+            var mockSender = new Mock<IMailSender>();
+        }
+
+        [Fact]
         public void DeliverShouldSendMailSynchronously() {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();

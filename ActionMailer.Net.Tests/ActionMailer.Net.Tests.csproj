@@ -48,6 +48,7 @@
     <Compile Include="MailerBaseTests.cs" />
     <Compile Include="MailSendingContextTests.cs" />
     <Compile Include="Mocks.cs" />
+    <Compile Include="MvcHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UrlHelperExtensionsTests.cs" />
   </ItemGroup>
