@@ -27,13 +27,16 @@ using System.Web.Mvc;
 namespace ActionMailer.Net.Tests {
     public class EmptyHttpContextBase : HttpContextBase { }
 
-    public class TestViewEngine : IViewEngine {
+    public class TextViewEngine : IViewEngine {
         public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache) {
             throw new System.NotImplementedException();
         }
 
         public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache) {
-            return new ViewEngineResult(new TestView(), this);
+            if (viewName.Contains("txt"))
+                return new ViewEngineResult(new TextView(), this);
+
+            return new ViewEngineResult(new[] { "" });
         }
 
         public void ReleaseView(ControllerContext controllerContext, IView view) {
@@ -41,9 +44,33 @@ namespace ActionMailer.Net.Tests {
         }
     }
 
-    public class TestView : IView {
+    public class MultipartViewEngine : IViewEngine {
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache) {
+            throw new System.NotImplementedException();
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache) {
+            if (viewName.Contains("txt"))
+                return new ViewEngineResult(new TextView(), this);
+            
+            return new ViewEngineResult(new HtmlView(), this);
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view) {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public class TextView : IView {
         public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
-            writer.Write("TestView");
+            writer.Write("TextView");
+        }
+    }
+
+    public class HtmlView : IView {
+        public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
+            writer.Write("HtmlView");
         }
     }
 }

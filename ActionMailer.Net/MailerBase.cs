@@ -230,6 +230,7 @@ namespace ActionMailer.Net {
             ReplyTo.ForEach(x => message.ReplyToList.Add(new MailAddress(x)));
             message.From = new MailAddress(From);
             message.Subject = Subject;
+            message.IsBodyHtml = true;
 
             foreach (var kvp in Headers)
                 message.Headers[kvp.Key] = kvp.Value;

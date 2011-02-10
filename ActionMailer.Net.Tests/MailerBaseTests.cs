@@ -34,7 +34,8 @@ namespace ActionMailer.Net.Tests {
         [Fact]
         public void EmailMethodShouldSetPropertiesOnMailMessage() {
             var mailer = new MailerBase();
-            ViewEngines.Engines.Add(new TestViewEngine());
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.To.Add("test@test.com");
             mailer.From = "no-reply@mysite.com";
@@ -67,7 +68,8 @@ namespace ActionMailer.Net.Tests {
         [Fact]
         public void EmailMethodShouldRenderViewAsMessageBody() {
             var mailer = new MailerBase();
-            ViewEngines.Engines.Add(new TestViewEngine());
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.From = "no-reply@mysite.com";
 
@@ -76,13 +78,40 @@ namespace ActionMailer.Net.Tests {
             // populates the mail body properly.
             var result = mailer.Email();
 
-            Assert.Equal("TestView", result.Mail.Body);
+            Assert.Equal("TextView", result.Mail.Body);
+        }
+
+        [Fact]
+        public void EmailMethodShouldAllowMultipleViews() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new MultipartViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            // there's no need to test the built-in view engines.
+            // this test just ensures that our Email() method actually
+            // populates the mail body properly.
+            var result = mailer.Email();
+
+            Assert.Equal(2, result.Mail.AlternateViews.Count());
+
+            var htmlReader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var htmlBody = htmlReader.ReadToEnd();
+            Assert.Contains("HtmlView", htmlBody);
+            Assert.Equal("text/html", result.Mail.AlternateViews[0].ContentType.MediaType);
+
+            var textReader = new StreamReader(result.Mail.AlternateViews[1].ContentStream);
+            var textBody = textReader.ReadToEnd();
+            Assert.Contains("TextView", textBody);
+            Assert.Equal("text/plain", result.Mail.AlternateViews[1].ContentType.MediaType);
         }
 
         [Fact]
         public void AttachmentsShouldAttachProperly() {
             var mailer = new MailerBase();
-            ViewEngines.Engines.Add(new TestViewEngine());
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.From = "no-reply@mysite.com";
             var imagePath = Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData", "logo.png");

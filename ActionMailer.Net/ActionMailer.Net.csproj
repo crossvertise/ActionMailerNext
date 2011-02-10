@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttachmentCollection.cs" />
+    <Compile Include="NoViewsFoundException.cs" />
     <Compile Include="UrlHelperExtensions.cs" />
     <Compile Include="IMailInterceptor.cs" />
     <Compile Include="IMailSender.cs" />
