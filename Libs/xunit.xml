@@ -649,6 +649,13 @@
             </summary>
             <param name="expected">The expected object value</param>
         </member>
+        <member name="M:Xunit.Sdk.ContainsException.#ctor(System.Object,System.Object)">
+            <summary>
+            Creates a new instance of the <see cref="T:Xunit.Sdk.ContainsException"/> class.
+            </summary>
+            <param name="expected">The expected object value</param>
+            <param name="actual">The actual value</param>
+        </member>
         <member name="T:Xunit.Sdk.ParameterCountMismatchException">
             <summary>
             Exception to be thrown from <see cref="M:Xunit.Sdk.IMethodInfo.Invoke(System.Object,System.Object[])"/> when the number of
