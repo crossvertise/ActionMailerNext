@@ -67,7 +67,7 @@ namespace ActionMailer.Net {
                 throw new ArgumentNullException("sender");
 
             if (mail == null)
-                throw new ArgumentNullException("message");
+                throw new ArgumentNullException("mail");
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;

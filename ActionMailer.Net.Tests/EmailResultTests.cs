@@ -32,6 +32,29 @@ namespace ActionMailer.Net.Tests {
         [Fact]
         public void ConstructorWithNullInterceptorThrows() {
             var mockSender = new Mock<IMailSender>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new EmailResult(null, mockSender.Object, new MailMessage(), null, null, null);
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullSenderThrows() {
+            var mockInterceptor = new Mock<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new EmailResult(mockInterceptor.Object, null, new MailMessage(), null, null, null);
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullMailMessageThrows() {
+            var mockSender = new Mock<IMailSender>();
+            var mockInterceptor = new Mock<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new EmailResult(mockInterceptor.Object, mockSender.Object, null, null, null, null);
+            });
         }
 
         [Fact]
