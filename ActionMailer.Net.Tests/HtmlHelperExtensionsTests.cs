@@ -74,6 +74,138 @@ namespace ActionMailer.Net.Tests {
             Assert.Equal("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
             Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+        }
+
+        [Fact]
+        public void InlineImageWithContentIdAndAltAndHtmlAttributes() {
+            var generatedImageTag = _helper.InlineImage("test.png", "alt message", new { @class = "test" }).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            var imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["class"] != null);
+            Assert.Equal("test", imgTag.Attributes["class"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+        }
+
+        [Fact]
+        public void InlineImageWithContentIdAndAltAndId() {
+            var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            var imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+
+            Assert.True(imgTag.Attributes["id"] != null);
+            Assert.Equal("image-id", imgTag.Attributes["id"].Value);
+        }
+
+        [Fact]
+        public void InlineImagewithContentIdAndAltAndIdAndHtmlAttributes() {
+            var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id", new {@class = "test"}).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            var imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["class"] != null);
+            Assert.Equal("test", imgTag.Attributes["class"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+
+            Assert.True(imgTag.Attributes["id"] != null);
+            Assert.Equal("image-id", imgTag.Attributes["id"].Value);
+        }
+
+        [Fact]
+        public void InlineCSSWithContentId() {
+            var generatedLinkTag = _helper.InlineCSS("test.css").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedLinkTag);
+            var linkTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("link", linkTag.Name);
+            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+
+            Assert.True(linkTag.Attributes["href"] != null);
+            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+        }
+
+        [Fact]
+        public void InlineCSSWithContentIdAndHtmlAttributes() {
+            var generatedLinkTag = _helper.InlineCSS("test.css", new {trunk = "junk"}).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedLinkTag);
+            var linkTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("link", linkTag.Name);
+            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+
+            Assert.True(linkTag.Attributes["href"] != null);
+            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+
+            Assert.True(linkTag.Attributes["trunk"] != null);
+            Assert.Equal("junk", linkTag.Attributes["trunk"].Value);
+        }
+
+        [Fact]
+        public void InlineCSSWithContentIdAndMedia() {
+            var generatedLinkTag = _helper.InlineCSS("test.css", "screen").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedLinkTag);
+            var linkTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("link", linkTag.Name);
+            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+
+            Assert.True(linkTag.Attributes["href"] != null);
+            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+
+            Assert.True(linkTag.Attributes["media"] != null);
+            Assert.Equal("screen", linkTag.Attributes["media"].Value);
+        }
+
+        [Fact]
+        public void InlineCSSWithContentIdAndMediaAndHtmlAttributes() {
+            var generatedLinkTag = _helper.InlineCSS("test.css", "screen", new { trunk = "junk" }).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedLinkTag);
+            var linkTag = doc.DocumentNode.FirstChild;
+
+            Assert.Equal("link", linkTag.Name);
+            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+
+            Assert.True(linkTag.Attributes["href"] != null);
+            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+
+            Assert.True(linkTag.Attributes["media"] != null);
+            Assert.Equal("screen", linkTag.Attributes["media"].Value);
+
+            Assert.True(linkTag.Attributes["trunk"] != null);
+            Assert.Equal("junk", linkTag.Attributes["trunk"].Value);
         }
     }
 }
