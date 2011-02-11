@@ -77,8 +77,10 @@ namespace ActionMailer.Net.Tests {
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
             var result = mailer.Email();
+            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var body = reader.ReadToEnd().Trim();
 
-            Assert.Equal("TextView", result.Mail.Body);
+            Assert.Equal("TextView", body);
         }
 
         [Fact]

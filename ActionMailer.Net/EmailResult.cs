@@ -166,35 +166,18 @@ namespace ActionMailer.Net {
                 throw new NoViewsFoundException(message);
             }
 
-            var multiPart = false;
-            if (_textView != null && _htmlView != null)
-                multiPart = true;
-
             ViewData.Model = _model;
 
             if (_htmlView != null) {
                 var body = RenderViewAsString(context, _htmlView);
-
-                if (multiPart) {
-                    var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Html);
-                    Mail.AlternateViews.Add(altView);
-                }
-                else {
-                    Mail.IsBodyHtml = true;
-                    Mail.Body = body;
-                }
+                var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Html);
+                Mail.AlternateViews.Add(altView);
             }
 
             if (_textView != null) {
                 var body = RenderViewAsString(context, _textView);
-
-                if (multiPart) {
-                    var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Plain);
-                    Mail.AlternateViews.Add(altView);
-                }
-                else {
-                    Mail.Body = body;
-                }
+                var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Plain);
+                Mail.AlternateViews.Add(altView);
             }
         }
     }
