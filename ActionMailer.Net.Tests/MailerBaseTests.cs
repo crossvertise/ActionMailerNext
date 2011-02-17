@@ -59,10 +59,44 @@ namespace ActionMailer.Net.Tests {
         [Fact]
         public void PassingAMailSenderShouldWork() {
             var mockSender = new Mock<IMailSender>();
-            
-            var mailer = new MailerBase(mockSender.Object);
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
 
-            Assert.Equal(mockSender.Object, mailer.MailSender);
+            var mailer = new MailerBase(mockSender.Object);
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+            var result = mailer.Email();
+
+            Assert.Same(mockSender.Object, mailer.MailSender);
+            Assert.Same(mockSender.Object, result.MailSender);
+        }
+
+        [Fact]
+        public void ViewBagDataShouldCopyToEmailResult() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            mailer.ViewBag.Test = "12345";
+            var result = mailer.Email();
+
+            Assert.Equal("12345", result.ViewBag.Test);
+        }
+
+        [Fact]
+        public void ModelObjectShouldCopyToEmailResult() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            object model = "12345";
+            var result = mailer.Email(model);
+
+            Assert.Same(model, result.ViewData.Model);
         }
 
         [Fact]

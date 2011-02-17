@@ -136,7 +136,7 @@ namespace ActionMailer.Net {
         /// Constructs your mail message ready for delivery.
         /// </summary>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email() {
+        public virtual EmailResult Email() {
             return Email(null, null, null);
         }
 
@@ -145,7 +145,7 @@ namespace ActionMailer.Net {
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email(string viewName) {
+        public virtual EmailResult Email(string viewName) {
             return Email(viewName, null, null);
         }
 
@@ -154,7 +154,7 @@ namespace ActionMailer.Net {
         /// </summary>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email(object model) {
+        public virtual EmailResult Email(object model) {
             return Email(null, null, model);
         }
 
@@ -164,7 +164,7 @@ namespace ActionMailer.Net {
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email(string viewName, object model) {
+        public virtual EmailResult Email(string viewName, object model) {
             return Email(viewName, null, model);
         }
 
@@ -174,7 +174,7 @@ namespace ActionMailer.Net {
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email(string viewName, string masterName) {
+        public virtual EmailResult Email(string viewName, string masterName) {
             return Email(viewName, masterName, null);
         }
 
@@ -185,10 +185,11 @@ namespace ActionMailer.Net {
         /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public EmailResult Email(string viewName, string masterName, object model) {
+        public virtual EmailResult Email(string viewName, string masterName, object model) {
             var mail = GenerateMail();
-            var sender = new SmtpMailSender();
-            var result = new EmailResult(this, sender, mail, viewName, masterName, model);
+            var result = new EmailResult(this, MailSender, mail, viewName, masterName);
+            ViewData.Model = model;
+            result.ViewData = ViewData;
 
             var routeData = new RouteData();
             routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);

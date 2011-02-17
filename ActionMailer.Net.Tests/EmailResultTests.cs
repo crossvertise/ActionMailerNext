@@ -34,7 +34,7 @@ namespace ActionMailer.Net.Tests {
             var mockSender = new Mock<IMailSender>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(null, mockSender.Object, new MailMessage(), null, null, null);
+                new EmailResult(null, mockSender.Object, new MailMessage(), null, null);
             });
         }
 
@@ -43,7 +43,7 @@ namespace ActionMailer.Net.Tests {
             var mockInterceptor = new Mock<IMailInterceptor>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor.Object, null, new MailMessage(), null, null, null);
+                new EmailResult(mockInterceptor.Object, null, new MailMessage(), null, null);
             });
         }
 
@@ -53,7 +53,7 @@ namespace ActionMailer.Net.Tests {
             var mockInterceptor = new Mock<IMailInterceptor>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor.Object, mockSender.Object, null, null, null, null);
+                new EmailResult(mockInterceptor.Object, mockSender.Object, null, null, null);
             });
         }
 
@@ -61,7 +61,7 @@ namespace ActionMailer.Net.Tests {
         public void DeliverShouldSendMailSynchronously() {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();
-            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null, null);
+            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null);
 
             result.Deliver();
 
@@ -72,7 +72,7 @@ namespace ActionMailer.Net.Tests {
         public void DeliverAsyncShouldSendMailAsynchronously() {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();
-            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null, null);
+            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null);
 
             result.DeliverAsync();
 
@@ -83,7 +83,7 @@ namespace ActionMailer.Net.Tests {
         public void DeliverShouldCallOnMailSendingAndOnMailSent() {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();
-            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null, null);
+            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null);
 
             result.Deliver();
 
@@ -95,7 +95,7 @@ namespace ActionMailer.Net.Tests {
         public void DeliverAsyncShouldCallOnMailSendingAndOnMailSent() {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();
-            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null, null);
+            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, new MailMessage(), null, null);
 
             // this ensures that when the email result calls SendAsync, the callback it
             // passes is actually fired, which is what we want to test here :)
@@ -113,7 +113,7 @@ namespace ActionMailer.Net.Tests {
             var mockInterceptor = new Mock<IMailInterceptor>();
             var mockSender = new Mock<IMailSender>();
             var mail = new MailMessage("no-reply@test.com", "test@test.com", "test subject", "body");
-            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, mail, null, null, null);
+            var result = new EmailResult(mockInterceptor.Object, mockSender.Object, mail, null, null);
 
             // this ensures that the Cancel property on the MailSendingContext gets
             // set to "true", which should trigger the cancellation :)

@@ -34,9 +34,7 @@ namespace ActionMailer.Net {
     /// mail controller.  Your controller must inherit from MailerBase.
     /// </summary>
     public class EmailResult : ViewResult {
-        private readonly object _model;
         private readonly IMailInterceptor _interceptor;
-        private readonly IMailSender _mailSender;
 
         private IView _htmlView;
         private string _htmlViewName;
@@ -50,6 +48,11 @@ namespace ActionMailer.Net {
         public readonly MailMessage Mail;
 
         /// <summary>
+        /// The IMailSender instance that is used to deliver mail.
+        /// </summary>
+        public readonly IMailSender MailSender;
+
+        /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
         /// can be successfully delivered.
         /// </summary>
@@ -58,8 +61,7 @@ namespace ActionMailer.Net {
         /// <param name="mail">The mail message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
-        /// <param name="model">The model object to pass to the view when rendering the message body (can be null)</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, object model) {
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
 
@@ -72,8 +74,7 @@ namespace ActionMailer.Net {
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             Mail = mail;
-            _mailSender = sender;
-            _model = model;
+            MailSender = sender;
             _interceptor = interceptor;
         }
 
@@ -109,13 +110,13 @@ namespace ActionMailer.Net {
                 return;
             }
 
-            using (_mailSender) {
+            using (MailSender) {
                 if (async) {
-                    _mailSender.SendAsync(mail, AsyncSendCompleted);
+                    MailSender.SendAsync(mail, AsyncSendCompleted);
                     return; // prevent the OnMailSent() method from being called too early.
                 }
                 else {
-                    _mailSender.Send(mail);
+                    MailSender.Send(mail);
                 }
             }
 
@@ -165,8 +166,6 @@ namespace ActionMailer.Net {
                 var message = String.Format("You must provide a view for this email.  Views should be named {0}.text.cshtml or {1}.html.cshtml (or aspx for WebFormsViewEngine) depending on the format you wish to render.", ViewName, ViewName);
                 throw new NoViewsFoundException(message);
             }
-
-            ViewData.Model = _model;
 
             if (_htmlView != null) {
                 var body = RenderViewAsString(context, _htmlView);
