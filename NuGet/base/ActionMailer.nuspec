@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>ActionMailer</id> 
-    <version>0.4.2</version> 
+    <version>0.4.3</version> 
     <authors>Scott Anderson</authors>
     <description>An MVC 3-based port of the Rails ActionMailer library to ASP.NET MVC. The goal is to make it easy and relatively painless to send email from your application.</description> 
     <language>en-US</language>
