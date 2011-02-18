@@ -110,14 +110,16 @@ namespace ActionMailer.Net {
                 return;
             }
 
+            if (async) {
+                // we don't have a using here because the SmtpClient will be disposed
+                // before the async delivery is finished.  Therefore, we will Dispose()
+                // the MailSender instance in the AsyncSendCompleted method.
+                MailSender.SendAsync(mail, AsyncSendCompleted);
+                return;
+            }
+            
             using (MailSender) {
-                if (async) {
-                    MailSender.SendAsync(mail, AsyncSendCompleted);
-                    return; // prevent the OnMailSent() method from being called too early.
-                }
-                else {
-                    MailSender.Send(mail);
-                }
+                MailSender.Send(mail);
             }
 
             _interceptor.OnMailSent(mail);
@@ -125,6 +127,7 @@ namespace ActionMailer.Net {
 
         private void AsyncSendCompleted(MailMessage mail) {
             _interceptor.OnMailSent(mail);
+            MailSender.Dispose();
         }
 
         private void LocateViews(ControllerContext context) {
