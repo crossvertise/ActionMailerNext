@@ -28,6 +28,8 @@ using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System;
+using System.Text;
 
 namespace ActionMailer.Net {
     /// <summary>
@@ -70,6 +72,11 @@ namespace ActionMailer.Net {
         /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         public Dictionary<string, string> Headers { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the default message encoding when delivering mail.
+        /// </summary>
+        public Encoding MessageEncoding { get; set; }
 
         /// <summary>
         /// Any attachments you wish to add.  The key of this collection is what
@@ -117,7 +124,8 @@ namespace ActionMailer.Net {
         /// Initializes MailerBase using the default SmtpMailSender.
         /// </summary>
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
-        public MailerBase(IMailSender mailSender = null) {
+        /// <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
+        public MailerBase(IMailSender mailSender = null, Encoding defaultMessageEncoding = null) {
             From = null;
             Subject = null;
             To = new List<string>();
@@ -127,6 +135,7 @@ namespace ActionMailer.Net {
             Headers = new Dictionary<string, string>();
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
+            MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
             if (HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(HttpContext.Current);
             }
@@ -137,7 +146,8 @@ namespace ActionMailer.Net {
         /// </summary>
         /// <returns>An EmailResult that you can Deliver();</returns>
         public virtual EmailResult Email() {
-            return Email(null, null, null);
+            var viewName = FindActionName();
+            return Email(viewName, null, null);
         }
 
         /// <summary>
@@ -155,7 +165,8 @@ namespace ActionMailer.Net {
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
         public virtual EmailResult Email(object model) {
-            return Email(null, null, model);
+            var viewName = FindActionName();
+            return Email(viewName, null, model);
         }
 
         /// <summary>
@@ -187,7 +198,7 @@ namespace ActionMailer.Net {
         /// <returns>An EmailResult that you can Deliver();</returns>
         public virtual EmailResult Email(string viewName, string masterName, object model) {
             var mail = GenerateMail();
-            var result = new EmailResult(this, MailSender, mail, viewName, masterName);
+            var result = new EmailResult(this, MailSender, mail, viewName, masterName, MessageEncoding);
             ViewData.Model = model;
             result.ViewData = ViewData;
 
@@ -204,12 +215,13 @@ namespace ActionMailer.Net {
 
         // TODO:  Is there a better way to do this?  It feels dirty... Maybe
         //        check MVC3's source and see how they do it.
-        private string FindActionName() {
+        private static string FindActionName() {
             // since the stack trace is a "stack" we can work our way up the stack
             // until we find a method that isn't named "Email."  The first method
             // we encounter without that name *should* be our action.
             string action = null;
             var trace = new StackTrace();
+
             // start at 1, since 0 will be this method.
             for (int i = 1; i < trace.FrameCount; i++) {
                 int counter = i;
@@ -220,6 +232,16 @@ namespace ActionMailer.Net {
                 }
             }
 
+            var file = File.OpenWrite(@"C:\temp\" + action + ".txt");
+            var writer = new StreamWriter(file);
+            foreach (var frame in trace.GetFrames()) {
+                writer.WriteLine(frame.ToString());
+            }
+            writer.Flush();
+            writer.Dispose();
+            file.Close();
+            file.Dispose();
+
             return action;
         }
 
@@ -229,9 +251,12 @@ namespace ActionMailer.Net {
             CC.ForEach(x => message.CC.Add(new MailAddress(x)));
             BCC.ForEach(x => message.Bcc.Add(new MailAddress(x)));
             ReplyTo.ForEach(x => message.ReplyToList.Add(new MailAddress(x)));
-            message.From = new MailAddress(From);
+
+            // From is optional because it could be set in <mailSettings>
+            if (!String.IsNullOrWhiteSpace(From))
+                message.From = new MailAddress(From);
+
             message.Subject = Subject;
-            message.IsBodyHtml = true;
 
             foreach (var kvp in Headers)
                 message.Headers[kvp.Key] = kvp.Value;
@@ -245,7 +270,7 @@ namespace ActionMailer.Net {
             return message;
         }
 
-        private Attachment CreateAttachment(string fileName, byte[] fileContents, bool inline) {
+        private static Attachment CreateAttachment(string fileName, byte[] fileContents, bool inline) {
             // ideally we'd like to find the mime type for each attachment automatically
             // based on the file extension.
             string mimeType = null;

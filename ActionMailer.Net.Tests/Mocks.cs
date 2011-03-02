@@ -23,9 +23,26 @@
 
 using System.Web;
 using System.Web.Mvc;
+using ActionMailer.Net;
+using System.Runtime.CompilerServices;
 
 namespace ActionMailer.Net.Tests {
     public class EmptyHttpContextBase : HttpContextBase { }
+
+    public class UTF8ViewEngine : IViewEngine {
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache) {
+            throw new System.NotImplementedException();
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache) {
+            return new ViewEngineResult(new UTF8View(), this);
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view) {
+            throw new System.NotImplementedException();
+        }
+    }
 
     public class TextViewEngine : IViewEngine {
         public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache) {
@@ -62,6 +79,12 @@ namespace ActionMailer.Net.Tests {
         }
     }
 
+    public class UTF8View : IView {
+        public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
+            writer.Write("Umlauts are Über!");
+        }
+    }
+
     public class TextView : IView {
         public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
             writer.Write("TextView");
@@ -71,6 +94,25 @@ namespace ActionMailer.Net.Tests {
     public class HtmlView : IView {
         public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
             writer.Write("HtmlView");
+        }
+    }
+
+    public class TestMailController : MailerBase {
+        public TestMailController() {
+            From = "test@test.com";
+            Subject = "test subject";
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public EmailResult TestMail() {
+            return this.Email();
+        }
+    }
+
+    public class TestController : Controller {
+        public string TestAction() {
+            var email = new TestMailController { HttpContextBase = new EmptyHttpContextBase() }.TestMail();
+            return email.ViewName;
         }
     }
 }

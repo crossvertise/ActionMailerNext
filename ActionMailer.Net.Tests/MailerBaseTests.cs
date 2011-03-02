@@ -28,6 +28,7 @@ using System.Reflection;
 using System.Web.Mvc;
 using Moq;
 using Xunit;
+using System.Text;
 
 namespace ActionMailer.Net.Tests {
     public class MailerBaseTests {
@@ -118,6 +119,23 @@ namespace ActionMailer.Net.Tests {
         }
 
         [Fact]
+        public void MessageEncodingOverrideShouldWork() {
+            var mailer = new MailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new UTF8ViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+            mailer.MessageEncoding = Encoding.UTF8;
+
+            var result = mailer.Email();
+            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var body = reader.ReadToEnd();
+
+            Assert.Equal(Encoding.UTF8, result.MessageEncoding);
+            Assert.Equal("Umlauts are Über!", body);
+        }
+
+        [Fact]
         public void EmailMethodShouldAllowMultipleViews() {
             var mailer = new MailerBase();
             ViewEngines.Engines.Clear();
@@ -172,6 +190,29 @@ namespace ActionMailer.Net.Tests {
             Assert.True(attachmentBytes.SequenceEqual(imageBytes));
             Assert.True(inlineAttachmentBytes.SequenceEqual(imageBytes));
             Assert.True(inlineAttachment.ContentDisposition.Inline);
+        }
+
+        [Fact]
+        public void ActionNameShouldBeFoundProperly() {
+            var mailer = new TestMailController();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+
+            var email = mailer.TestMail();
+
+            Assert.Equal("TestMail", email.ViewName);
+        }
+
+        [Fact]
+        public void CallingEmailFromRealControllerShouldFindMailersActionName() {
+            var controller = new TestController();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+
+            var action = controller.TestAction();
+
+            Assert.Equal("TestMail", action);
         }
     }
 }

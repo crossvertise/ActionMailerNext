@@ -53,6 +53,11 @@ namespace ActionMailer.Net {
         public readonly IMailSender MailSender;
 
         /// <summary>
+        /// The default encoding used to send a message.
+        /// </summary>
+        public readonly Encoding MessageEncoding;
+
+        /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
         /// can be successfully delivered.
         /// </summary>
@@ -61,7 +66,8 @@ namespace ActionMailer.Net {
         /// <param name="mail">The mail message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName) {
+        /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, Encoding messageEncoding) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
 
@@ -73,6 +79,7 @@ namespace ActionMailer.Net {
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
+            MessageEncoding = messageEncoding;
             Mail = mail;
             MailSender = sender;
             _interceptor = interceptor;
@@ -172,13 +179,13 @@ namespace ActionMailer.Net {
 
             if (_htmlView != null) {
                 var body = RenderViewAsString(context, _htmlView);
-                var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Html);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
             }
 
             if (_textView != null) {
                 var body = RenderViewAsString(context, _textView);
-                var altView = AlternateView.CreateAlternateViewFromString(body, Encoding.Default, MediaTypeNames.Text.Plain);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
                 Mail.AlternateViews.Add(altView);
             }
         }
