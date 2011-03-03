@@ -232,16 +232,6 @@ namespace ActionMailer.Net {
                 }
             }
 
-            var file = File.OpenWrite(@"C:\temp\" + action + ".txt");
-            var writer = new StreamWriter(file);
-            foreach (var frame in trace.GetFrames()) {
-                writer.WriteLine(frame.ToString());
-            }
-            writer.Flush();
-            writer.Dispose();
-            file.Close();
-            file.Dispose();
-
             return action;
         }
 
