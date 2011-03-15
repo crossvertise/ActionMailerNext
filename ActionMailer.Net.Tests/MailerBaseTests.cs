@@ -46,7 +46,7 @@ namespace ActionMailer.Net.Tests {
             mailer.ReplyTo.Add("test-reply-to@test.com");
             mailer.Headers.Add("X-No-Spam", "True");
 
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
 
             Assert.Equal("test@test.com", result.Mail.To[0].Address);
             Assert.Equal("no-reply@mysite.com", result.Mail.From.Address);
@@ -66,7 +66,7 @@ namespace ActionMailer.Net.Tests {
             var mailer = new MailerBase(mockSender.Object);
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.From = "no-reply@mysite.com";
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
 
             Assert.Same(mockSender.Object, mailer.MailSender);
             Assert.Same(mockSender.Object, result.MailSender);
@@ -81,7 +81,7 @@ namespace ActionMailer.Net.Tests {
             mailer.From = "no-reply@mysite.com";
 
             mailer.ViewBag.Test = "12345";
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
 
             Assert.Equal("12345", result.ViewBag.Test);
         }
@@ -95,7 +95,7 @@ namespace ActionMailer.Net.Tests {
             mailer.From = "no-reply@mysite.com";
 
             object model = "12345";
-            var result = mailer.Email(model);
+            var result = mailer.Email("TestView", model);
 
             Assert.Same(model, result.ViewData.Model);
         }
@@ -111,7 +111,7 @@ namespace ActionMailer.Net.Tests {
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var body = reader.ReadToEnd().Trim();
 
@@ -127,7 +127,7 @@ namespace ActionMailer.Net.Tests {
             mailer.From = "no-reply@mysite.com";
             mailer.MessageEncoding = Encoding.UTF8;
 
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var body = reader.ReadToEnd();
 
@@ -146,7 +146,7 @@ namespace ActionMailer.Net.Tests {
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
 
             Assert.Equal(2, result.Mail.AlternateViews.Count());
 
@@ -173,7 +173,7 @@ namespace ActionMailer.Net.Tests {
             mailer.Attachments["logo.png"] = imageBytes;
             mailer.Attachments.Inline["logo-inline.png"] = imageBytes;
 
-            var result = mailer.Email();
+            var result = mailer.Email("TestView");
             var attachment = result.Mail.Attachments[0];
             var inlineAttachment = result.Mail.Attachments[1];
             byte[] attachmentBytes = new byte[attachment.ContentStream.Length];
@@ -193,7 +193,7 @@ namespace ActionMailer.Net.Tests {
         }
 
         [Fact]
-        public void ActionNameShouldBeFoundProperly() {
+        public void ViewNameShouldBePassedProperly() {
             var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
@@ -201,18 +201,42 @@ namespace ActionMailer.Net.Tests {
 
             var email = mailer.TestMail();
 
-            Assert.Equal("TestMail", email.ViewName);
+            Assert.Equal("TestView", email.ViewName);
         }
 
         [Fact]
-        public void CallingEmailFromRealControllerShouldFindMailersActionName() {
-            var controller = new TestController();
+        public void MasterNameShouldBePassedProperly() {
+            var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
 
-            var action = controller.TestAction();
+            var email = mailer.TestMaster();
 
-            Assert.Equal("TestMail", action);
+            Assert.Equal("TestMaster", email.MasterName);
+        }
+
+        [Fact]
+        public void ViewNameShouldBeRequiredWhenUsingCallingEmailMethod() {
+            var mailer = new MailerBase();
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                var email = mailer.Email(null);
+            });
+        }
+
+        [Fact]
+        public void AreasAreDetectedProperly() {
+            var mailer = new Areas.TestArea.Controllers.MailController();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+
+            var email = mailer.TestEmail();
+
+            Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
+            Assert.Equal("TestArea", mailer.ControllerContext.RouteData.DataTokens["area"]);
         }
     }
 }

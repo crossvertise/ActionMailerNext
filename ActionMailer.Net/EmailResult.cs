@@ -173,7 +173,7 @@ namespace ActionMailer.Net {
             LocateViews(context);
 
             if (_textView == null && _htmlView == null) {
-                var message = String.Format("You must provide a view for this email.  Views should be named {0}.text.cshtml or {1}.html.cshtml (or aspx for WebFormsViewEngine) depending on the format you wish to render.", ViewName, ViewName);
+                var message = String.Format("You must provide a view for this email.  Views should be named {0}.txt.cshtml or {1}.html.cshtml (or aspx for WebFormsViewEngine) depending on the format you wish to render.", ViewName, ViewName);
                 throw new NoViewsFoundException(message);
             }
 

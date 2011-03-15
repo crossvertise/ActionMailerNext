@@ -103,9 +103,12 @@ namespace ActionMailer.Net.Tests {
             Subject = "test subject";
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public EmailResult TestMail() {
-            return this.Email();
+            return Email("TestView");
+        }
+
+        public EmailResult TestMaster() {
+            return Email("TestView", masterName: "TestMaster");
         }
     }
 
@@ -113,6 +116,16 @@ namespace ActionMailer.Net.Tests {
         public string TestAction() {
             var email = new TestMailController { HttpContextBase = new EmptyHttpContextBase() }.TestMail();
             return email.ViewName;
+        }
+    }
+}
+
+namespace ActionMailer.Net.Tests.Areas.TestArea.Controllers {
+    public class MailController : MailerBase {
+        public EmailResult TestEmail() {
+            From = "test@test.com";
+            Subject = "test subject";
+            return Email("TestView");
         }
     }
 }

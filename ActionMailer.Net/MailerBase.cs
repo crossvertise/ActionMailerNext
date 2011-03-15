@@ -21,15 +21,14 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using System;
-using System.Text;
 
 namespace ActionMailer.Net {
     /// <summary>
@@ -144,95 +143,40 @@ namespace ActionMailer.Net {
         /// <summary>
         /// Constructs your mail message ready for delivery.
         /// </summary>
-        /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email() {
-            var viewName = FindActionName();
-            return Email(viewName, null, null);
-        }
-
-        /// <summary>
-        /// Constructs your mail message ready for delivery.
-        /// </summary>
-        /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(string viewName) {
-            return Email(viewName, null, null);
-        }
-
-        /// <summary>
-        /// Constructs your mail message ready for delivery.
-        /// </summary>
-        /// <param name="model">The model object used while rendering the message body.</param>
-        /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(object model) {
-            var viewName = FindActionName();
-            return Email(viewName, null, model);
-        }
-
-        /// <summary>
-        /// Constructs your mail message ready for delivery.
-        /// </summary>
-        /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <param name="model">The model object used while rendering the message body.</param>
-        /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(string viewName, object model) {
-            return Email(viewName, null, model);
-        }
-
-        /// <summary>
-        /// Constructs your mail message ready for delivery.
-        /// </summary>
-        /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <param name="masterName">The master page to use when rendering the message body.</param>
-        /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(string viewName, string masterName) {
-            return Email(viewName, masterName, null);
-        }
-
-        /// <summary>
-        /// Constructs your mail message ready for delivery.
-        /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(string viewName, string masterName, object model) {
+        public virtual EmailResult Email(string viewName, object model = null, string masterName = null) {
+            if (viewName == null)
+                throw new ArgumentNullException("viewName");
+
             var mail = GenerateMail();
             var result = new EmailResult(this, MailSender, mail, viewName, masterName, MessageEncoding);
             ViewData.Model = model;
             result.ViewData = ViewData;
 
             var routeData = new RouteData();
-            routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
-            routeData.Values["action"] = FindActionName();
+            routeData.DataTokens["area"] = FindAreaName();
+            routeData.Values["controller"] = GetType().Name.Replace("Controller", string.Empty);
+            routeData.Values["action"] = viewName;
 
             var requestContext = new RequestContext(HttpContextBase, routeData);
-            var context = new ControllerContext(requestContext, this);
+            ControllerContext = new ControllerContext(requestContext, this);
 
-            result.ExecuteResult(context);
+            result.ExecuteResult(ControllerContext);
             return result;
         }
 
-        // TODO:  Is there a better way to do this?  It feels dirty... Maybe
-        //        check MVC3's source and see how they do it.
-        private static string FindActionName() {
-            // since the stack trace is a "stack" we can work our way up the stack
-            // until we find a method that isn't named "Email."  The first method
-            // we encounter without that name *should* be our action.
-            string action = null;
-            var trace = new StackTrace();
-
-            // start at 1, since 0 will be this method.
-            for (int i = 1; i < trace.FrameCount; i++) {
-                int counter = i;
-                var methodName = trace.GetFrame(counter).GetMethod().Name;
-                if (methodName != "Email") {
-                    action = methodName;
-                    break;
-                }
+        private string FindAreaName() {
+            var name = GetType().Namespace;
+            if (name != null && name.Contains(".Areas.")) {
+                var startIndex = name.IndexOf(".Areas.") + 7;
+                var length = name.LastIndexOf(".") - startIndex;
+                return name.Substring(startIndex, length);
             }
 
-            return action;
+            return null;
         }
 
         private MailMessage GenerateMail() {
