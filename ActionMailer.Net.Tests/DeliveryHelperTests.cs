@@ -94,5 +94,18 @@ namespace ActionMailer.Net.Tests {
 
             A.CallTo(() => interceptor.OnMailSent(mail)).MustHaveHappened();
         }
+
+        [Fact]
+        public void DeliverShouldAllowSendingToBeCancelled() {
+            var sender = A.Fake<IMailSender>();
+            var interceptor = A.Fake<IMailInterceptor>();
+            var helper = new DeliveryHelper(sender, interceptor);
+            A.CallTo(() => interceptor.OnMailSending(A<MailSendingContext>.Ignored))
+                .Invokes(x => x.GetArgument<MailSendingContext>(0).Cancel = true);
+
+            helper.Deliver(false, new MailMessage());
+
+            A.CallTo(() => sender.Send(A<MailMessage>.Ignored)).MustNotHaveHappened();
+        }
     }
 }
