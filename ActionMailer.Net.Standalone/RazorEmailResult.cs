@@ -1,4 +1,27 @@
-﻿using System;
+﻿#region License
+/* Copyright (C) 2011 by Scott W. Anderson
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+#endregion
+
+using System;
 using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -47,7 +70,7 @@ namespace ActionMailer.Net.Standalone {
         /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
         /// <param name="model">The model that should be passed to the razor view during compilation.</param>
-        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding, string viewPath, object model) {
+        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding, string viewPath) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
 
@@ -67,7 +90,6 @@ namespace ActionMailer.Net.Standalone {
             MailSender = sender;
             Mail = mail;
             MessageEncoding = messageEncoding;
-            Model = model;
             _viewName = viewName;
             _viewPath = viewPath;
             _deliveryHelper = new DeliveryHelper(sender, interceptor);
@@ -92,22 +114,22 @@ namespace ActionMailer.Net.Standalone {
         /// <summary>
         /// Compiles the email body using the specified Razor view and model.
         /// </summary>
-        public void Compile() {
+        public void Compile<T>(T model) {
             var textView = FindView("txt");
             var htmlView = FindView("html");
 
             if (htmlView == null && textView == null)
                 throw new NoViewsFoundException(string.Format("Could not find any CSHTML or VBHTML views named [{0}] in the path [{1}].  Ensure that you specify the format in the file name (ie: {0}.txt.cshtml or {0}.html.cshtml)", _viewName, _viewPath));
 
-            if (htmlView != null) {
-                var body = Razor.Parse<dynamic>(htmlView, Model, _viewName);
-                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Html);
+            if (textView != null) {
+                var body = Razor.Parse(textView, model);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Plain);
                 Mail.AlternateViews.Add(altView);
             }
 
-            if (textView != null) {
-                var body = Razor.Parse<dynamic>(textView, Model, _viewName);
-                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Plain);
+            if (htmlView != null) {
+                var body = Razor.Parse(htmlView, model);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
             }
         }

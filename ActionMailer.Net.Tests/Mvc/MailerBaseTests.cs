@@ -24,39 +24,13 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Web.Mvc;
 using FakeItEasy;
 using Xunit;
-using System.Text;
 
 namespace ActionMailer.Net.Tests.Mvc {
     public class MailerBaseTests {
-        [Fact]
-        public void EmailMethodShouldSetPropertiesOnMailMessage() {
-            var mailer = new TestMailerBase();
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
-            mailer.To.Add("test@test.com");
-            mailer.From = "no-reply@mysite.com";
-            mailer.Subject = "test subject";
-            mailer.CC.Add("test-cc@test.com");
-            mailer.BCC.Add("test-bcc@test.com");
-            mailer.ReplyTo.Add("test-reply-to@test.com");
-            mailer.Headers.Add("X-No-Spam", "True");
-
-            var result = mailer.Email("TestView");
-
-            Assert.Equal("test@test.com", result.Mail.To[0].Address);
-            Assert.Equal("no-reply@mysite.com", result.Mail.From.Address);
-            Assert.Equal("test subject", result.Mail.Subject);
-            Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
-            Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
-            Assert.Equal("test-reply-to@test.com", result.Mail.ReplyToList[0].Address);
-            Assert.Equal("True", result.Mail.Headers["X-No-Spam"]);
-        }
-
         [Fact]
         public void PassingAMailSenderShouldWork() {
             var mockSender = A.Fake<IMailSender>();
@@ -159,37 +133,6 @@ namespace ActionMailer.Net.Tests.Mvc {
             var textBody = textReader.ReadToEnd();
             Assert.Contains("TextView", textBody);
             Assert.Equal("text/plain", result.Mail.AlternateViews[1].ContentType.MediaType);
-        }
-
-        [Fact]
-        public void AttachmentsShouldAttachProperly() {
-            var mailer = new TestMailerBase();
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
-            mailer.From = "no-reply@mysite.com";
-            var imagePath = Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData", "logo.png");
-            var imageBytes = File.ReadAllBytes(imagePath);
-            mailer.Attachments["logo.png"] = imageBytes;
-            mailer.Attachments.Inline["logo-inline.png"] = imageBytes;
-
-            var result = mailer.Email("TestView");
-            var attachment = result.Mail.Attachments[0];
-            var inlineAttachment = result.Mail.Attachments[1];
-            byte[] attachmentBytes = new byte[attachment.ContentStream.Length];
-            byte[] inlineAttachmentBytes = new byte[inlineAttachment.ContentStream.Length];
-            attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
-            inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0, Convert.ToInt32(inlineAttachment.ContentStream.Length));
-
-            Assert.Equal("logo.png", attachment.Name);
-            Assert.Equal("logo-inline.png", inlineAttachment.Name);
-            Assert.Equal("image/png", attachment.ContentType.MediaType);
-            Assert.Equal("image/png", inlineAttachment.ContentType.MediaType);
-            Assert.Equal("logo.png", attachment.ContentId);
-            Assert.Equal("logo-inline.png", inlineAttachment.ContentId);
-            Assert.True(attachmentBytes.SequenceEqual(imageBytes));
-            Assert.True(inlineAttachmentBytes.SequenceEqual(imageBytes));
-            Assert.True(inlineAttachment.ContentDisposition.Inline);
         }
 
         [Fact]

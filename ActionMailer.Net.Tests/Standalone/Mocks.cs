@@ -35,4 +35,8 @@ namespace ActionMailer.Net.Tests.Standalone {
             get { return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone", "TestViews"); }
         }
     }
+
+    public class TestModel {
+        public string Name { get; set; }
+    }
 }

@@ -21,30 +21,81 @@
  */
 #endregion
 
+using System;
+using System.IO;
+using System.Text;
+using FakeItEasy;
 using Xunit;
 
 namespace ActionMailer.Net.Tests.Standalone {
     public class RazorMailerBaseTests {
         [Fact]
-        public void EmailMethodShouldSetPropertiesOnMailMessage() {
-            var mailer = new TestMailerBase();
-            mailer.To.Add("test@test.com");
-            mailer.From = "no-reply@mysite.com";
-            mailer.Subject = "test subject";
-            mailer.CC.Add("test-cc@test.com");
-            mailer.BCC.Add("test-bcc@test.com");
-            mailer.ReplyTo.Add("test-reply-to@test.com");
-            mailer.Headers.Add("X-No-Spam", "True");
+        public void EmailWithNoViewNameShouldThrow() {
+            var mockSender = A.Fake<IMailSender>();
+            var mailer = new TestMailerBase(mockSender);
 
-            var result = mailer.Email("TextViewNoModel");
+            Assert.Throws<ArgumentNullException>(() => mailer.Email(null));
+        }
 
-            Assert.Equal("test@test.com", result.Mail.To[0].Address);
-            Assert.Equal("no-reply@mysite.com", result.Mail.From.Address);
-            Assert.Equal("test subject", result.Mail.Subject);
-            Assert.Equal("test-cc@test.com", result.Mail.CC[0].Address);
-            Assert.Equal("test-bcc@test.com", result.Mail.Bcc[0].Address);
-            Assert.Equal("test-reply-to@test.com", result.Mail.ReplyToList[0].Address);
-            Assert.Equal("True", result.Mail.Headers["X-No-Spam"]);
+        [Fact]
+        public void PassingAMailSenderShouldWork() {
+            var mockSender = A.Fake<IMailSender>();
+
+            var mailer = new TestMailerBase(mockSender);
+            var email = mailer.Email("TextViewNoModel");
+
+            Assert.Same(mockSender, mailer.MailSender);
+            Assert.Same(mockSender, email.MailSender);
+        }
+
+        [Fact]
+        public void PassingAnEncodingShouldWork() {
+            var mockSender = A.Fake<IMailSender>();
+
+            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
+            var email = mailer.Email("UTF8TextView");
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+
+            Assert.Equal(Encoding.UTF8, email.MessageEncoding);
+            Assert.Equal("Umlauts are Über!", body);
+        }
+
+        [Fact]
+        public void RazorViewWithNoModelShouldRenderProperly() {
+            var mockSender = A.Fake<IMailSender>();
+            var mailer = new TestMailerBase(mockSender);
+
+            var email = mailer.Email("TextViewNoModel");
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+
+            Assert.Equal("This is a test", body);
+        }
+
+        [Fact]
+        public void PassingAModelShouldWork() {
+            var mockSender = A.Fake<IMailSender>();
+            var mailer = new TestMailerBase(mockSender);
+            var model = new TestModel {
+                Name = "Foo"
+            };
+
+            var email = mailer.Email("TextViewWithModel", model);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+
+            Assert.Equal("Your name is:  Foo", body);
+        }
+
+        [Fact]
+        public void MultipartMessagesShouldRenderBothViews() {
+            var mockSender = A.Fake<IMailSender>();
+            var mailer = new TestMailerBase(mockSender);
+
+            var email = mailer.Email("MultipartNoModel");
+            var textBody = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var htmlBody = new StreamReader(email.Mail.AlternateViews[1].ContentStream).ReadToEnd().Trim();
+
+            Assert.Equal("Testing multipart.", textBody);
+            Assert.Equal("<p>Testing multipart.</p>", htmlBody);
         }
     }
 }

@@ -23,7 +23,6 @@
 
 using System;
 using System.Net.Mail;
-using System.Threading;
 using ActionMailer.Net.Mvc;
 using FakeItEasy;
 using Xunit;
@@ -56,82 +55,6 @@ namespace ActionMailer.Net.Tests.Mvc {
             Assert.Throws<ArgumentNullException>(() => {
                 new EmailResult(mockInterceptor, mockSender, null, null, null, null);
             });
-        }
-
-        [Fact]
-        public void DeliverShouldSendMailSynchronously() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockSender = A.Fake<IMailSender>();
-            var result = new EmailResult(mockInterceptor, mockSender, new MailMessage(), null, null, null);
-
-            result.Deliver();
-
-            A.CallTo(() => mockSender.Send(A<MailMessage>.Ignored)).MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Fact]
-        public void DeliverAsyncShouldSendMailAsynchronously() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockSender = A.Fake<IMailSender>();
-            var result = new EmailResult(mockInterceptor, mockSender, new MailMessage(), null, null, null);
-
-            result.DeliverAsync();
-
-            A.CallTo(() => mockSender.SendAsync(A<MailMessage>.Ignored, A<Action<MailMessage>>.Ignored))
-                .MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Fact]
-        public void DeliverShouldCallOnMailSendingAndOnMailSent() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockSender = A.Fake<IMailSender>();
-            var result = new EmailResult(mockInterceptor, mockSender, new MailMessage(), null, null, null);
-
-            result.Deliver();
-
-            A.CallTo(() => mockInterceptor.OnMailSending(A<MailSendingContext>.Ignored))
-                .MustHaveHappened(Repeated.Exactly.Once);
-            
-            A.CallTo(() => mockInterceptor.OnMailSent(A<MailMessage>.Ignored))
-                .MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Fact]
-        public void DeliverAsyncShouldCallOnMailSendingAndOnMailSent() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockSender = A.Fake<IMailSender>();
-            var result = new EmailResult(mockInterceptor, mockSender, new MailMessage(), null, null, null);
-
-            // this ensures that when the email result calls SendAsync, the callback it
-            // passes is actually fired, which is what we want to test here :)
-            A.CallTo(() => mockSender.SendAsync(A<MailMessage>.Ignored, A<Action<MailMessage>>.Ignored))
-                .Invokes(x => x.GetArgument<Action<MailMessage>>(1).Invoke(x.GetArgument<MailMessage>(0)));
-
-            result.DeliverAsync();
-            Thread.Sleep(100); // sleep slighty, just to make sure the callback is actually executed.
-
-            A.CallTo(() => mockInterceptor.OnMailSending(A<MailSendingContext>.Ignored))
-                .MustHaveHappened(Repeated.Exactly.Once);
-
-            A.CallTo(() => mockInterceptor.OnMailSent(A<MailMessage>.Ignored))
-                .MustHaveHappened(Repeated.Exactly.Once);
-        }
-
-        [Fact]
-        public void DeliverShouldNotSendIfOnMailSendingIsCancelled() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockSender = A.Fake<IMailSender>();
-            var mail = new MailMessage("no-reply@test.com", "test@test.com", "test subject", "body");
-            var result = new EmailResult(mockInterceptor, mockSender, mail, null, null, null);
-
-            // this ensures that the Cancel property on the MailSendingContext gets
-            // set to "true", which should trigger the cancellation :)
-            A.CallTo(() => mockInterceptor.OnMailSending(A<MailSendingContext>.Ignored))
-                .Invokes(x => x.GetArgument<MailSendingContext>(0).Cancel = true);
-
-            result.Deliver();
-
-            A.CallTo(() => mockSender.Send(A<MailMessage>.Ignored)).MustNotHaveHappened();
         }
     }
 }

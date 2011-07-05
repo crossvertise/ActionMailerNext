@@ -66,6 +66,8 @@
     <Compile Include="Standalone\Mocks.cs" />
     <Compile Include="Standalone\RazorEmailResultTests.cs" />
     <Compile Include="Standalone\RazorMailerBaseTests.cs" />
+    <None Include="Standalone\TestViews\TextViewWithModel.txt.cshtml" />
+    <None Include="Standalone\TestViews\UTF8TextView.txt.cshtml" />
     <None Include="Standalone\TestViews\TextViewNoModel.txt.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +86,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="SampleData\logo.png" />
+    <None Include="Standalone\TestViews\MultipartNoModel.html.cshtml" />
+    <None Include="Standalone\TestViews\MultipartNoModel.txt.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

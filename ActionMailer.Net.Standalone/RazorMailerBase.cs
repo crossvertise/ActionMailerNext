@@ -132,6 +132,10 @@ namespace ActionMailer.Net.Standalone {
             MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
         }
 
+        public virtual RazorEmailResult Email(string viewName, string masterName = null) {
+            return Email<object>(viewName, null, masterName);
+        }
+
         /// <summary>
         /// Constructs your mail message ready for delivery.
         /// </summary>
@@ -139,14 +143,14 @@ namespace ActionMailer.Net.Standalone {
         /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual RazorEmailResult Email(string viewName, object model = null, string masterName = null) {
+        public virtual RazorEmailResult Email<T>(string viewName, T model = null, string masterName = null) where T : class {
             if (viewName == null)
                 throw new ArgumentNullException("viewName");
 
             var mail = this.GenerateMail();
-            var result = new RazorEmailResult(this, MailSender, mail, viewName, MessageEncoding, ViewPath, model);
+            var result = new RazorEmailResult(this, MailSender, mail, viewName, MessageEncoding, ViewPath);
             
-            result.Compile();
+            result.Compile(model);
             return result;
         }
     }
