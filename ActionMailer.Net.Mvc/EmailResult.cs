@@ -35,6 +35,7 @@ namespace ActionMailer.Net.Mvc {
     /// </summary>
     public class EmailResult : ViewResult {
         private readonly IMailInterceptor _interceptor;
+        private readonly DeliveryHelper _deliveryHelper;
 
         private IView _htmlView;
         private string _htmlViewName;
@@ -83,6 +84,7 @@ namespace ActionMailer.Net.Mvc {
             Mail = mail;
             MailSender = sender;
             _interceptor = interceptor;
+            _deliveryHelper = new DeliveryHelper(sender, interceptor);
         }
 
         /// <summary>
@@ -97,7 +99,7 @@ namespace ActionMailer.Net.Mvc {
         /// Sends your message.  This call will block while the message is being sent. (not recommended)
         /// </summary>
         public void Deliver() {
-            Deliver(Mail, false);
+            _deliveryHelper.Deliver(false, Mail);
         }
 
         /// <summary>
@@ -106,35 +108,7 @@ namespace ActionMailer.Net.Mvc {
         /// will not fire until the asyonchronous send operation is complete.
         /// </summary>
         public void DeliverAsync() {
-            Deliver(Mail, true);
-        }
-
-        private void Deliver(MailMessage mail, bool async) {
-            var mailContext = new MailSendingContext(mail);
-            _interceptor.OnMailSending(mailContext);
-
-            if (mailContext.Cancel) {
-                return;
-            }
-
-            if (async) {
-                // we don't have a using here because the SmtpClient will be disposed
-                // before the async delivery is finished.  Therefore, we will Dispose()
-                // the MailSender instance in the AsyncSendCompleted method.
-                MailSender.SendAsync(mail, AsyncSendCompleted);
-                return;
-            }
-            
-            using (MailSender) {
-                MailSender.Send(mail);
-            }
-
-            _interceptor.OnMailSent(mail);
-        }
-
-        private void AsyncSendCompleted(MailMessage mail) {
-            _interceptor.OnMailSent(mail);
-            MailSender.Dispose();
+            _deliveryHelper.Deliver(true, Mail);
         }
 
         private void LocateViews(ControllerContext context) {

@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttachmentCollection.cs" />
+    <Compile Include="DeliveryHelper.cs" />
     <Compile Include="IMailerBase.cs" />
     <Compile Include="MailerBaseExtensions.cs" />
     <Compile Include="NoViewsFoundException.cs" />

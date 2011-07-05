@@ -21,12 +21,19 @@
  */
 #endregion
 
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using ActionMailer.Net.Mvc;
+using ActionMailer.Net.Tests.Mvc;
 
 namespace ActionMailer.Net.Tests.Mvc {
     public class EmptyHttpContextBase : HttpContextBase { }
+
+    public class TestMailerBase : MailerBase {
+        public TestMailerBase(IMailSender sender = null, Encoding defaultMessageEncoding = null)
+            : base(sender, defaultMessageEncoding) { }
+    }
 
     public class UTF8ViewEngine : IViewEngine {
 
@@ -96,7 +103,7 @@ namespace ActionMailer.Net.Tests.Mvc {
         }
     }
 
-    public class TestMailController : MailerBase {
+    public class TestMailController : TestMailerBase {
         public TestMailController() {
             From = "test@test.com";
             Subject = "test subject";
@@ -120,7 +127,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 }
 
 namespace ActionMailer.Net.Tests.Areas.TestArea.Controllers {
-    public class MailController : MailerBase {
+    public class MailController : TestMailerBase {
         public EmailResult TestEmail() {
             From = "test@test.com";
             Subject = "test subject";

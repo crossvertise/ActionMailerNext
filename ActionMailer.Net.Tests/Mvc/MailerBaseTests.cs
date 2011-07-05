@@ -26,7 +26,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using ActionMailer.Net.Mvc;
 using FakeItEasy;
 using Xunit;
 using System.Text;
@@ -35,7 +34,7 @@ namespace ActionMailer.Net.Tests.Mvc {
     public class MailerBaseTests {
         [Fact]
         public void EmailMethodShouldSetPropertiesOnMailMessage() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -64,7 +63,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
 
-            var mailer = new MailerBase(mockSender);
+            var mailer = new TestMailerBase(mockSender);
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.From = "no-reply@mysite.com";
             var result = mailer.Email("TestView");
@@ -75,7 +74,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void ViewBagDataShouldCopyToEmailResult() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -89,7 +88,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void ModelObjectShouldCopyToEmailResult() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -103,7 +102,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void EmailMethodShouldRenderViewAsMessageBody() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -121,7 +120,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void MessageEncodingOverrideShouldWork() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new UTF8ViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -138,7 +137,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void EmailMethodShouldAllowMultipleViews() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new MultipartViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -164,7 +163,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void AttachmentsShouldAttachProperly() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
@@ -219,7 +218,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void ViewNameShouldBeRequiredWhenUsingCallingEmailMethod() {
-            var mailer = new MailerBase();
+            var mailer = new TestMailerBase();
             mailer.HttpContextBase = new EmptyHttpContextBase();
 
             Assert.Throws<ArgumentNullException>(() => {

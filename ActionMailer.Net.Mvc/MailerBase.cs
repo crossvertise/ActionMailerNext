@@ -34,7 +34,7 @@ namespace ActionMailer.Net.Mvc {
     /// The base class that your controller should inherit from if you wish
     /// to send emails through ActionMailer.Net.
     /// </summary>
-    public class MailerBase : ControllerBase, IMailerBase {
+    public abstract class MailerBase : ControllerBase, IMailerBase {
         /// <summary>
         /// A string representation of who this mail should be from.  Could be
         /// your name and email address or just an email address by itself.
@@ -119,11 +119,11 @@ namespace ActionMailer.Net.Mvc {
         }
 
         /// <summary>
-        /// Initializes MailerBase using the default SmtpMailSender.
+        /// Initializes MailerBase using the default SmtpMailSender and system Encoding.
         /// </summary>
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         /// <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
-        public MailerBase(IMailSender mailSender = null, Encoding defaultMessageEncoding = null) {
+        protected MailerBase(IMailSender mailSender = null, Encoding defaultMessageEncoding = null) {
             From = null;
             Subject = null;
             To = new List<string>();

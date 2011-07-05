@@ -21,6 +21,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text;
@@ -29,7 +30,12 @@ namespace ActionMailer.Net.Standalone {
     /// <summary>
     /// This is a standalone MailerBase that relies on RazorEngine to generate emails.
     /// </summary>
-    public class RazorMailerBase : IMailerBase {
+    public abstract class RazorMailerBase : IMailerBase {
+        /// <summary>
+        /// The path to the folder containing your Razor views.
+        /// </summary>
+        public abstract string ViewPath { get; }
+
         /// <summary>
         /// A string representation of who this mail should be from.  Could be
         /// your name and email address or just an email address by itself.
@@ -106,6 +112,42 @@ namespace ActionMailer.Net.Standalone {
 
         void IMailInterceptor.OnMailSent(MailMessage mail) {
             OnMailSent(mail);
+        }
+
+        /// <summary>
+        /// Initializes MailerBase using the default SmtpMailSender and system Encoding.
+        /// </summary>
+        /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
+        /// <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
+        protected RazorMailerBase(IMailSender mailSender = null, Encoding defaultMessageEncoding = null) {
+            From = null;
+            Subject = null;
+            To = new List<string>();
+            CC = new List<string>();
+            BCC = new List<string>();
+            ReplyTo = new List<string>();
+            Headers = new Dictionary<string, string>();
+            Attachments = new AttachmentCollection();
+            MailSender = mailSender ?? new SmtpMailSender();
+            MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
+        }
+
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">The master page to use when rendering the message body.</param>
+        /// <param name="model">The model object used while rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
+        public virtual RazorEmailResult Email(string viewName, object model = null, string masterName = null) {
+            if (viewName == null)
+                throw new ArgumentNullException("viewName");
+
+            var mail = this.GenerateMail();
+            var result = new RazorEmailResult(this, MailSender, mail, viewName, MessageEncoding, ViewPath, model);
+            
+            result.Compile();
+            return result;
         }
     }
 }
