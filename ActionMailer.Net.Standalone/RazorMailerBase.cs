@@ -132,6 +132,12 @@ namespace ActionMailer.Net.Standalone {
             MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
         }
 
+        /// <summary>
+        /// Constructs your mail message ready for delivery.
+        /// </summary>
+        /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">The master page to use when rendering the message body.</param>
+        /// <returns>An EmailResult that you can Deliver();</returns>
         public virtual RazorEmailResult Email(string viewName, string masterName = null) {
             return Email<object>(viewName, null, masterName);
         }
