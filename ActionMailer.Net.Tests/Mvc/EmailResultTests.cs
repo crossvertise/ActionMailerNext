@@ -34,7 +34,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mockSender = A.Fake<IMailSender>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(null, mockSender, new MailMessage(), null, null, null);
+                new EmailResult(null, mockSender, new MailMessage(), "View", "Master", null);
             });
         }
 
@@ -43,7 +43,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mockInterceptor = A.Fake<IMailInterceptor>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor, null, new MailMessage(), null, null, null);
+                new EmailResult(mockInterceptor, null, new MailMessage(), "View", "Master", null);
             });
         }
 
@@ -53,7 +53,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mockInterceptor = A.Fake<IMailInterceptor>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor, mockSender, null, null, null, null);
+                new EmailResult(mockInterceptor, mockSender, null, "View", "Master", null);
             });
         }
     }

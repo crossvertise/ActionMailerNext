@@ -40,11 +40,6 @@ namespace ActionMailer.Net.Standalone {
         private readonly string _viewPath;
 
         /// <summary>
-        /// The model object used to render the Razor template
-        /// </summary>
-        public readonly object Model;
-
-        /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
         public readonly MailMessage Mail;
@@ -69,7 +64,6 @@ namespace ActionMailer.Net.Standalone {
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
-        /// <param name="model">The model that should be passed to the razor view during compilation.</param>
         public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding, string viewPath) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");

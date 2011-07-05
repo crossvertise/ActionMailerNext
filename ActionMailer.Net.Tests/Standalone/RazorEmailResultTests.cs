@@ -22,13 +22,59 @@
 #endregion
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Mail;
+using ActionMailer.Net.Standalone;
+using FakeItEasy;
 using Xunit;
 
 namespace ActionMailer.Net.Tests.Standalone {
     public class RazorEmailResultTests {
-        
+        [Fact]
+        public void ConstructorWithNullInterceptorThrows() {
+            var mockSender = A.Fake<IMailSender>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new RazorEmailResult(null, mockSender, new MailMessage(), "View", null, "Path");
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullSenderThrows() {
+            var mockInterceptor = A.Fake<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new RazorEmailResult(mockInterceptor, null, new MailMessage(), "View", null, "Path");
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullMailMessageThrows() {
+            var mockSender = A.Fake<IMailSender>();
+            var mockInterceptor = A.Fake<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new RazorEmailResult(mockInterceptor, mockSender, null, "View", null, "Path");
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullViewNameThrows() {
+            var mockSender = A.Fake<IMailSender>();
+            var mockInterceptor = A.Fake<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new RazorEmailResult(mockInterceptor, mockSender, new MailMessage(), null, null, "Path");
+            });
+        }
+
+        [Fact]
+        public void ConstructorWithNullViewPathThrows() {
+            var mockSender = A.Fake<IMailSender>();
+            var mockInterceptor = A.Fake<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(() => {
+                new RazorEmailResult(mockInterceptor, mockSender, new MailMessage(), "View", null, null);
+            });
+        }
     }
 }
