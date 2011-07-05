@@ -25,8 +25,9 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ActionMailer.Net.Mvc;
 
-namespace ActionMailer.Net {
+namespace ActionMailer.Net.Mvc {
     /// <summary>
     /// Simple extension methods for UrlHelper to always generate absolute urls.
     /// </summary>

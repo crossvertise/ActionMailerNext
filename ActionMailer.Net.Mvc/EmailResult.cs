@@ -28,7 +28,7 @@ using System.Web.Mvc;
 using System.Text;
 using System.Net.Mime;
 
-namespace ActionMailer.Net {
+namespace ActionMailer.Net.Mvc {
     /// <summary>
     /// A special result that should be returned from each eaction in your
     /// mail controller.  Your controller must inherit from MailerBase.

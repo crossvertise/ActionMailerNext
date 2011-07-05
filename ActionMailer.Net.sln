@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net", "ActionM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Tests", "ActionMailer.Net.Tests\ActionMailer.Net.Tests.csproj", "{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc", "ActionMailer.Net.Mvc\ActionMailer.Net.Mvc.csproj", "{F6389DEF-0B5C-46CA-BAAF-241E210C8744}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6389DEF-0B5C-46CA-BAAF-241E210C8744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6389DEF-0B5C-46CA-BAAF-241E210C8744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6389DEF-0B5C-46CA-BAAF-241E210C8744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6389DEF-0B5C-46CA-BAAF-241E210C8744}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

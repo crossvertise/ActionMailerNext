@@ -30,7 +30,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace ActionMailer.Net {
+namespace ActionMailer.Net.Mvc {
     /// <summary>
     /// The base class that your controller should inherit from if you wish
     /// to send emails through ActionMailer.Net.

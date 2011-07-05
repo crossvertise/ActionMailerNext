@@ -1,3 +1,15 @@
+[0.6.0] - TBD
+
+  * Started support for standalone Razor-based email generation.  This means you can
+      now generate emails with the Razor syntax without any need for ASP.NET MVC 3.
+
+  * Re-namespaced EmailResult, MailerBase and all UrlHelper and HtmlHelper extensions
+      into the ActionMailer.Net.Mvc namespace.  This is because of the new standalone
+      Razor support that has been introduced.  All this really means is that you need
+      to change your using/imports statements to ActionMailer.Net.Mvc.
+
+  * Re-organized unit tests to account for the separation between MVC and standalone.
+
 [0.5.0] - 3/15/2011
 
   * Change log started.

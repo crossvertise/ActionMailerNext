@@ -22,19 +22,20 @@
 #endregion
 
 using System.Web.Mvc;
+using ActionMailer.Net.Mvc;
+using FakeItEasy;
 using HtmlAgilityPack;
-using Moq;
 using Xunit;
 
-namespace ActionMailer.Net.Tests {
+namespace ActionMailer.Net.Tests.Mvc {
     public class HtmlHelperExtensionsTests {
         private readonly HtmlHelper _helper;
 
         public HtmlHelperExtensionsTests() {
-            var context = new Mock<ViewContext>();
-            var container = new Mock<IViewDataContainer>();
+            var context = A.Fake<ViewContext>();
+            var container = A.Fake<IViewDataContainer>();
 
-            _helper  = new HtmlHelper(context.Object, container.Object);
+            _helper  = new HtmlHelper(context, container);
         }
 
         [Fact]

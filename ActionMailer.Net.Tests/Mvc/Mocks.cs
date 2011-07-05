@@ -23,10 +23,9 @@
 
 using System.Web;
 using System.Web.Mvc;
-using ActionMailer.Net;
-using System.Runtime.CompilerServices;
+using ActionMailer.Net.Mvc;
 
-namespace ActionMailer.Net.Tests {
+namespace ActionMailer.Net.Tests.Mvc {
     public class EmptyHttpContextBase : HttpContextBase { }
 
     public class UTF8ViewEngine : IViewEngine {

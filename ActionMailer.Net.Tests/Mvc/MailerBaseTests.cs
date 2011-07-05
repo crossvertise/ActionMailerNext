@@ -26,11 +26,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using Moq;
+using ActionMailer.Net.Mvc;
+using FakeItEasy;
 using Xunit;
 using System.Text;
 
-namespace ActionMailer.Net.Tests {
+namespace ActionMailer.Net.Tests.Mvc {
     public class MailerBaseTests {
         [Fact]
         public void EmailMethodShouldSetPropertiesOnMailMessage() {
@@ -59,17 +60,17 @@ namespace ActionMailer.Net.Tests {
 
         [Fact]
         public void PassingAMailSenderShouldWork() {
-            var mockSender = new Mock<IMailSender>();
+            var mockSender = A.Fake<IMailSender>();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
 
-            var mailer = new MailerBase(mockSender.Object);
+            var mailer = new MailerBase(mockSender);
             mailer.HttpContextBase = new EmptyHttpContextBase();
             mailer.From = "no-reply@mysite.com";
             var result = mailer.Email("TestView");
 
-            Assert.Same(mockSender.Object, mailer.MailSender);
-            Assert.Same(mockSender.Object, result.MailSender);
+            Assert.Same(mockSender, mailer.MailSender);
+            Assert.Same(mockSender, result.MailSender);
         }
 
         [Fact]
