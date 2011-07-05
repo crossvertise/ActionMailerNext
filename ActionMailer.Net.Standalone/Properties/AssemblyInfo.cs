@@ -27,11 +27,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ActionMailer.Net.Mvc")]
+[assembly: AssemblyTitle("ActionMailer.Net.Standalone")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ActionMailer.Net.Mvc")]
+[assembly: AssemblyProduct("ActionMailer.Net.Standalone")]
 [assembly: AssemblyCopyright("Copyright © 2011 by Scott W. Anderson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("150c7b1e-b753-440d-b86a-7340b531b32f")]
+[assembly: Guid("0a98ced8-4d95-485a-9bf8-0e310d422430")]
 
 // Version information for an assembly consists of the following four values:
 //

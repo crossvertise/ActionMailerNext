@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{85EC0023-CBBF-4C91-8681-D88DA6334305}</ProjectGuid>
+    <ProjectGuid>{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActionMailer.Net</RootNamespace>
-    <AssemblyName>ActionMailer.Net</AssemblyName>
+    <RootNamespace>ActionMailer.Net.Standalone</RootNamespace>
+    <AssemblyName>ActionMailer.Net.Standalone</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\ActionMailer.Net.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,26 +29,33 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\ActionMailer.Net.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ActionMailer.Net.Standalone.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RazorEngine">
+      <HintPath>..\packages\RazorEngine.2.1\lib\.NetFramework 4.0\RazorEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.Razor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\RazorEngine.2.1\lib\.NetFramework 4.0\System.Web.Razor.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AttachmentCollection.cs" />
-    <Compile Include="IMailerBase.cs" />
-    <Compile Include="MailerBaseExtensions.cs" />
-    <Compile Include="NoViewsFoundException.cs" />
-    <Compile Include="IMailInterceptor.cs" />
-    <Compile Include="IMailSender.cs" />
-    <Compile Include="MailSendingContext.cs" />
-    <Compile Include="MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SmtpMailSender.cs" />
+    <Compile Include="RazorMailerBase.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ActionMailer.Net\ActionMailer.Net.csproj">
+      <Project>{85EC0023-CBBF-4C91-8681-D88DA6334305}</Project>
+      <Name>ActionMailer.Net</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
