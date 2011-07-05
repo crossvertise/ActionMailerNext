@@ -21,14 +21,35 @@
  */
 #endregion
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net.Mail;
 using System.Text;
-using Xunit;
+using FakeItEasy;
 
-namespace ActionMailer.Net.Tests.Standalone {
-    public class RazorEmailResultTests {
-        
+namespace ActionMailer.Net.Tests {
+    public class StubMailerBase : IMailerBase {
+        public string From { get; set; }
+        public string Subject { get; set; }
+        public IList<string> To { get; private set; }
+        public IList<string> CC { get; private set; }
+        public IList<string> BCC { get; private set; }
+        public IList<string> ReplyTo { get; private set; }
+        public IDictionary<string, string> Headers { get; private set; }
+        public Encoding MessageEncoding { get; set; }
+        public AttachmentCollection Attachments { get; private set; }
+        public IMailSender MailSender { get; set; }
+        public void OnMailSending(MailSendingContext context) { }
+        public void OnMailSent(MailMessage mail) { }
+
+        public StubMailerBase() {
+            To = new List<string>();
+            CC = new List<string>();
+            BCC = new List<string>();
+            ReplyTo = new List<string>();
+            Headers = new Dictionary<string, string>();
+            MessageEncoding = Encoding.Default;
+            Attachments = new AttachmentCollection();
+            MailSender = A.Fake<IMailSender>();
+        }
     }
 }

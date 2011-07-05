@@ -222,7 +222,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             mailer.HttpContextBase = new EmptyHttpContextBase();
 
             Assert.Throws<ArgumentNullException>(() => {
-                var email = mailer.Email(null);
+                mailer.Email(null);
             });
         }
 
@@ -233,7 +233,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = new EmptyHttpContextBase();
 
-            var email = mailer.TestEmail();
+            mailer.TestEmail();
 
             Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
             Assert.Equal("TestArea", mailer.ControllerContext.RouteData.DataTokens["area"]);

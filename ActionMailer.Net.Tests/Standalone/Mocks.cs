@@ -21,14 +21,18 @@
  */
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.Reflection;
 using System.Text;
-using Xunit;
+using ActionMailer.Net.Standalone;
 
 namespace ActionMailer.Net.Tests.Standalone {
-    public class RazorEmailResultTests {
-        
+    public class TestMailerBase : RazorMailerBase {
+        public TestMailerBase(IMailSender sender = null, Encoding defaultMessageEncoding = null)
+            : base(sender, defaultMessageEncoding) { }
+
+        public override string ViewPath {
+            get { return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone", "TestViews"); }
+        }
     }
 }
