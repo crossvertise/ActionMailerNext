@@ -1,4 +1,4 @@
-[0.6.0] - TBD
+[0.6.0] - 7/5/2011
 
   * Started support for standalone Razor-based email generation.  This means you can
       now generate emails with the Razor syntax without any need for ASP.NET MVC 3.
