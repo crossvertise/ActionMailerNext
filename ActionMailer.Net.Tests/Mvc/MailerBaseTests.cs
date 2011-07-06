@@ -75,6 +75,21 @@ namespace ActionMailer.Net.Tests.Mvc {
         }
 
         [Fact]
+        public void ViewDataShouldCopyToEmailResult() {
+            var mailer = new TestMailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new TextViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            mailer.ViewData["foo"] = "bar";
+            var result = mailer.Email("TestView");
+
+            Assert.True(result.ViewData.ContainsKey("foo"));
+            Assert.Equal("bar", result.ViewData["foo"]);
+        }
+
+        [Fact]
         public void EmailMethodShouldRenderViewAsMessageBody() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
