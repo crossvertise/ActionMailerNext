@@ -10,7 +10,7 @@
 
   * Re-organized unit tests to account for the separation between MVC and standalone.
 
-  * Breaking Change:  MailerBase is now an abstract class with a protected controller.
+  * Breaking Change:  MailerBase is now an abstract class with a protected constructor.
       This basically ensures that MailerBase can only be inherited (not instantiated).
       This should have been the case all along, but I just forgot to make it happen.
 
