@@ -151,15 +151,15 @@ namespace ActionMailer.Net.Mvc {
                 throw new NoViewsFoundException(message);
             }
 
-            if (_htmlView != null) {
-                var body = RenderViewAsString(context, _htmlView);
-                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                Mail.AlternateViews.Add(altView);
-            }
-
             if (_textView != null) {
                 var body = RenderViewAsString(context, _textView);
                 var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
+                Mail.AlternateViews.Add(altView);
+            }
+
+            if (_htmlView != null) {
+                var body = RenderViewAsString(context, _htmlView);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
             }
         }

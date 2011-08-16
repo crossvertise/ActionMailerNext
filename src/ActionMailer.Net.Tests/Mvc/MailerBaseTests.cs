@@ -139,15 +139,15 @@ namespace ActionMailer.Net.Tests.Mvc {
 
             Assert.Equal(2, result.Mail.AlternateViews.Count());
 
-            var htmlReader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
-            var htmlBody = htmlReader.ReadToEnd();
-            Assert.Contains("HtmlView", htmlBody);
-            Assert.Equal("text/html", result.Mail.AlternateViews[0].ContentType.MediaType);
-
-            var textReader = new StreamReader(result.Mail.AlternateViews[1].ContentStream);
+            var textReader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var textBody = textReader.ReadToEnd();
             Assert.Contains("TextView", textBody);
-            Assert.Equal("text/plain", result.Mail.AlternateViews[1].ContentType.MediaType);
+            Assert.Equal("text/plain", result.Mail.AlternateViews[0].ContentType.MediaType);
+
+            var htmlReader = new StreamReader(result.Mail.AlternateViews[1].ContentStream);
+            var htmlBody = htmlReader.ReadToEnd();
+            Assert.Contains("HtmlView", htmlBody);
+            Assert.Equal("text/html", result.Mail.AlternateViews[1].ContentType.MediaType);
         }
 
         [Fact]
