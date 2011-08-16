@@ -1,3 +1,8 @@
+[0.6.1] - 8/16/2011
+  * Multipart messages will now render the plain text view first and the HTML view
+      last.  This fixes Issue #23 and should cause multipart messages to render
+      correctly in standards-compliant email clients (i.e. Thunderbird).
+
 [0.6.0] - 7/5/2011
 
   * Started support for standalone Razor-based email generation.  This means you can
