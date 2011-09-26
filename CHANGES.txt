@@ -1,3 +1,12 @@
+[0.6.2] - 9/26/2011
+  * The default encoding for mail messages has been changed from UTF8.  It was
+      previously set to Encoding.Default.  This resolves issue #30.
+  * There is a new Url helper called Url.AbsoluteContent.  This can be used in the
+      same way that Url.Content is used in ASP.NET MVC to generate absolute URL's
+      for virtual content paths.  This resolves issue #24.
+  * Assemblies are now strongly-named as requested in issue #31.  The main key is
+      located at src/ActionMailer.Net/ActionMailer.Net.snk.
+
 [0.6.1] - 8/16/2011
   * Multipart messages will now render the plain text view first and the HTML view
       last.  This fixes Issue #23 and should cause multipart messages to render
