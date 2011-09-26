@@ -133,7 +133,7 @@ namespace ActionMailer.Net.Mvc {
             Headers = new Dictionary<string, string>();
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
-            MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
+            MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
             if (HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(HttpContext.Current);
             }

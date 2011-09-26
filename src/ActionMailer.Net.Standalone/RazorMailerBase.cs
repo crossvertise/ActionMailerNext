@@ -129,7 +129,7 @@ namespace ActionMailer.Net.Standalone {
             Headers = new Dictionary<string, string>();
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
-            MessageEncoding = defaultMessageEncoding ?? Encoding.Default;
+            MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
         }
 
         /// <summary>

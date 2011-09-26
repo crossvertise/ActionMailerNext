@@ -177,6 +177,15 @@ namespace ActionMailer.Net.Tests.Mvc {
             Assert.Equal(expectedUrl, generatedUrl);
         }
 
+        [Fact]
+        public void AbsoluteContent() {
+            var expectedUrl = String.Format("http://localhost{0}/app/content/abc.txt", MvcHelper.AppPathModifier);
+
+            var generatedUrl = _helper.AbsoluteContent("~/content/abc.txt");
+
+            Assert.Equal(expectedUrl, generatedUrl);
+        }
+
         #region Helpers taken from MVC 3 source.
         private static RouteCollection GetRouteCollection() {
             var rt = new RouteCollection();

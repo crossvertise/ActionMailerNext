@@ -203,6 +203,17 @@ namespace ActionMailer.Net.Mvc {
             var url = helper.RouteUrl(routeName, routeValues, protocol);
             return GetAbsoluteUrl(helper.RequestContext.HttpContext.Request, url).ToString();
         }
+
+        /// <summary>
+        /// Generates an absolute url for the provided virtual content path.
+        /// </summary>
+        /// <param name="helper">The UrlHelper instance to use for generation.</param>
+        /// <param name="contentPath">The virtual path of the content.</param>
+        /// <returns></returns>
+        public static string AbsoluteContent(this UrlHelper helper, string contentPath) {
+            var url = helper.Content(contentPath);
+            return GetAbsoluteUrl(helper.RequestContext.HttpContext.Request, url).ToString();
+        }
         
         /// <summary>
         /// Generates an absolute url for the provided route.
