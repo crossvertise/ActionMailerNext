@@ -1,5 +1,5 @@
 ﻿#region License
-/* Copyright (C) 2011 by Scott W. Anderson
+/* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,11 +29,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ActionMailer.Net")]
-[assembly: AssemblyCopyright("Copyright © 2011 by Scott W. Anderson")]
+[assembly: AssemblyCopyright("Copyright © 2012 by Scott W. Anderson")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6125d9cc-3dec-454c-82ed-c57bf6f0d482")]
 
-[assembly: AssemblyVersion("0.6.2.0")]
-[assembly: AssemblyFileVersion("0.6.2.0")]
+[assembly: AssemblyVersion("0.7.0.0")]
+[assembly: AssemblyFileVersion("0.7.0.0")]
