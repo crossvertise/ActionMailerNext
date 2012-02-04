@@ -1,3 +1,7 @@
+[0.7.0] - TBD
+  * Adding a new standard mail sender that supports sending messages through
+      Postmark (www.postmarkapp.com).
+
 [0.6.2] - 9/26/2011
   * The default encoding for mail messages has been changed from UTF8.  It was
       previously set to Encoding.Default.  This resolves issue #30.
