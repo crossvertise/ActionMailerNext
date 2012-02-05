@@ -66,6 +66,19 @@ namespace ActionMailer.Net.Postmark {
                 }
             }
 
+            foreach (var attachment in mail.Attachments) {
+                using (var stream = new MemoryStream()) {
+                    attachment.ContentStream.CopyTo(stream);
+                    var base64Data = Convert.ToBase64String(stream.ToArray());
+
+                    pmMail.Attachments.Add(new PostmarkAttachment {
+                        Name = attachment.ContentId,
+                        Content = base64Data,
+                        ContentType = attachment.ContentType.MediaType
+                    });
+                }
+            }
+
             return pmMail;
         }
     }

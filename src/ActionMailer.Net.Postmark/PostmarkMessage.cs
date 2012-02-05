@@ -81,10 +81,16 @@ namespace ActionMailer.Net.Postmark {
         public List<PostmarkHeader> Headers { get; set; }
 
         /// <summary>
+        /// A list of attachments for the message.
+        /// </summary>
+        public List<PostmarkAttachment> Attachments { get; set; }
+
+        /// <summary>
         /// Creates a new PostmarkMessage to use when sending mail via Postmark.
         /// </summary>
         public PostmarkMessage() {
             Headers = new List<PostmarkHeader>();
+            Attachments = new List<PostmarkAttachment>();
         }
     }
 }
