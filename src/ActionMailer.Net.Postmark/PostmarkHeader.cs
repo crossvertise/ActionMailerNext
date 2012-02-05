@@ -21,23 +21,9 @@
  */
 #endregion
 
-using System;
-using System.Net.Mail;
-
-namespace ActionMailer.Net {
-    /// <summary>
-    /// Implementation of IMailSender that supports sending mail through Postmark.
-    /// </summary>
-    public class PostmarkMailSender : IMailSender {
-        public void Dispose() {
-        }
-
-        public void Send(MailMessage mail) {
-            
-        }
-
-        public void SendAsync(MailMessage mail, Action<MailMessage> callback) {
-            
-        }
+namespace ActionMailer.Net.Postmark {
+    public class PostmarkHeader {
+        public string Name { get; set; }
+        public string Value { get; set; }
     }
 }

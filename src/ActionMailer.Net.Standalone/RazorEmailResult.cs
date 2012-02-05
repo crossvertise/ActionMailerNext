@@ -25,8 +25,8 @@ using System;
 using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Text;
 using RazorEngine;
+using Encoding = System.Text.Encoding;
 
 namespace ActionMailer.Net.Standalone {
     /// <summary>

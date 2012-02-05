@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc", "Act
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Standalone", "ActionMailer.Net.Standalone\ActionMailer.Net.Standalone.csproj", "{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Postmark", "ActionMailer.Net.Postmark\ActionMailer.Net.Postmark.csproj", "{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
