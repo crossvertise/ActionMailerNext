@@ -58,13 +58,11 @@ namespace ActionMailer.Net.Postmark {
                 using (var reader = new StreamReader(view.ContentStream)) {
                     var body = reader.ReadToEnd();
 
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain) {
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
                         pmMail.TextBody = body;
-                    }
 
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html) {
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                         pmMail.HtmlBody = body;
-                    }
                 }
             }
 

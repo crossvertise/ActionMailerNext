@@ -22,10 +22,7 @@
 #endregion
 
 using System;
-using System.IO;
-using System.Linq;
 using System.Net.Mail;
-using System.Net.Mime;
 using RestSharp;
 
 namespace ActionMailer.Net.Postmark {
@@ -58,7 +55,14 @@ namespace ActionMailer.Net.Postmark {
         /// </summary>
         /// <param name="mail">The mail message to send.</param>
         public void Send(MailMessage mail) {
-            
+            var request = CreateEmailRequest(mail.ToPostmarkMessage());
+            var response = _client.Execute<PostmarkResponse>(request);
+
+            if (response.ErrorException != null)
+                throw response.ErrorException;
+
+            if (response.Data.ErrorCode > 0)
+                throw new PostmarkException(response.Data);
         }
 
         /// <summary>
@@ -68,7 +72,25 @@ namespace ActionMailer.Net.Postmark {
         /// <param name="mail">The mail message to send.</param>
         /// <param name="callback">The callback to execute when sending is complete.</param>
         public void SendAsync(MailMessage mail, Action<MailMessage> callback) {
-            
+            var request = CreateEmailRequest(mail.ToPostmarkMessage());
+            _client.ExecuteAsync<PostmarkResponse>(request, response => {
+                if (response.ErrorException != null)
+                    throw response.ErrorException;
+
+                if (response.Data.ErrorCode > 0)
+                    throw new PostmarkException(response.Data);
+
+                callback(mail);
+            });
+        }
+
+        private static RestRequest CreateEmailRequest(PostmarkMessage message) {
+            var request = new RestRequest("email", Method.POST) {
+                RequestFormat = DataFormat.Json
+            };
+
+            request.AddObject(message);
+            return request;
         }
     }
 }

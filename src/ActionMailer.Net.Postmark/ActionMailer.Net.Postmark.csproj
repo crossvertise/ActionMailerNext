@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MailMessageExtensions.cs" />
+    <Compile Include="PostmarkException.cs" />
     <Compile Include="PostmarkHeader.cs" />
     <Compile Include="PostmarkMailSender.cs" />
     <Compile Include="PostmarkMessage.cs" />
