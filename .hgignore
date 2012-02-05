@@ -6,7 +6,6 @@ syntax: glob
 # Ignore Visual Studio 2008 files
 *.obj
 *.exe
-*.pdb
 *.user
 *.aps
 *.pch
@@ -24,7 +23,7 @@ syntax: glob
 *.lib
 *.sbr
 *.scc
-[Bb]in
+[Bb]in/
 [Db]ebug*/
 obj/
 [Rr]elease*/

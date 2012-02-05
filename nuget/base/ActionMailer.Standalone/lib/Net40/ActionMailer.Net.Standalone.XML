@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ActionMailer.Net.Standalone</name>
+    </assembly>
+    <members>
+        <member name="T:ActionMailer.Net.Standalone.RazorEmailResult">
+            <summary>
+            An container for MailMessage with the appropriate body rendered by Razor.
+            </summary>
+        </member>
+        <member name="F:ActionMailer.Net.Standalone.RazorEmailResult.Mail">
+            <summary>
+            The underlying MailMessage object that was passed to this object's constructor.
+            </summary>
+        </member>
+        <member name="F:ActionMailer.Net.Standalone.RazorEmailResult.MailSender">
+            <summary>
+            The IMailSender instance that is used to deliver mail.
+            </summary>
+        </member>
+        <member name="F:ActionMailer.Net.Standalone.RazorEmailResult.MessageEncoding">
+            <summary>
+            The default encoding used to send a message.
+            </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.#ctor(ActionMailer.Net.IMailInterceptor,ActionMailer.Net.IMailSender,System.Net.Mail.MailMessage,System.String,System.Text.Encoding,System.String)">
+            <summary>
+            Creates a new EmailResult.  You must call Compile() before this result
+            can be successfully delivered.
+            </summary>
+            <param name="interceptor">The IMailInterceptor that we will call when delivering mail.</param>
+            <param name="sender">The IMailSender that we will use to send mail.</param>
+            <param name="mail">The mail message who's body needs populating.</param>
+            <param name="viewName">The view to use when rendering the message body.</param>
+            <param name="messageEncoding">The encoding to use when rendering a message.</param>
+            <param name="viewPath">The path where we should search for the view.</param>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.Deliver">
+            <summary>
+            Sends your message.  This call will block while the message is being sent. (not recommended)
+            </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.DeliverAsync">
+            <summary>
+            Sends your message asynchronously.  This method does not block.  If you need to know
+            when the message has been sent, then override the OnMailSent method in MailerBase which
+            will not fire until the asyonchronous send operation is complete.
+            </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.Compile``1(``0)">
+            <summary>
+            Compiles the email body using the specified Razor view and model.
+            </summary>
+        </member>
+        <member name="T:ActionMailer.Net.Standalone.RazorMailerBase">
+            <summary>
+            This is a standalone MailerBase that relies on RazorEngine to generate emails.
+            </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.OnMailSent(System.Net.Mail.MailMessage)">
+            <summary>
+            This method is called after each mail is sent.
+            </summary>
+            <param name="mail">The mail that was sent.</param>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.OnMailSending(ActionMailer.Net.MailSendingContext)">
+            <summary>
+            This method is called before each mail is sent
+            </summary>
+            <param name="context">A simple context containing the mail
+            and a boolean value that can be toggled to prevent this
+            mail from being sent.</param>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.#ctor(ActionMailer.Net.IMailSender,System.Text.Encoding)">
+            <summary>
+            Initializes MailerBase using the default SmtpMailSender and system Encoding.
+            </summary>
+            <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
+            <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email(System.String,System.String)">
+            <summary>
+            Constructs your mail message ready for delivery.
+            </summary>
+            <param name="viewName">The view to use when rendering the message body.</param>
+            <param name="masterName">The master page to use when rendering the message body.</param>
+            <returns>An EmailResult that you can Deliver();</returns>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email``1(System.String,``0,System.String)">
+            <summary>
+            Constructs your mail message ready for delivery.
+            </summary>
+            <param name="viewName">The view to use when rendering the message body.</param>
+            <param name="masterName">The master page to use when rendering the message body.</param>
+            <param name="model">The model object used while rendering the message body.</param>
+            <returns>An EmailResult that you can Deliver();</returns>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.ViewPath">
+            <summary>
+            The path to the folder containing your Razor views.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.From">
+            <summary>
+            A string representation of who this mail should be from.  Could be
+            your name and email address or just an email address by itself.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.Subject">
+            <summary>
+            The subject line of the email.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.To">
+            <summary>
+            A collection of addresses this email should be sent to.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.CC">
+            <summary>
+            A collection of addresses that should be CC'ed.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.BCC">
+            <summary>
+            A collection of addresses that should be BCC'ed.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.ReplyTo">
+            <summary>
+            A collection of addresses that should be listed in Reply-To header.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.Headers">
+            <summary>
+            Any custom headers (name and value) that should be placed on the message.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.MessageEncoding">
+            <summary>
+            Gets or sets the default message encoding when delivering mail.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.Attachments">
+            <summary>
+            Any attachments you wish to add.  The key of this collection is what
+            the file should be named.  The value is should represent the binary bytes
+            of the file.
+            </summary>
+            <example>
+            Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
+            </example>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.MailSender">
+            <summary>
+            The underlying IMailSender to use for outgoing messages.
+            </summary>
+        </member>
+    </members>
+</doc>
