@@ -23,6 +23,7 @@
 
 using System;
 using System.Net.Mail;
+using System.Net.Mime;
 using RestSharp;
 
 namespace ActionMailer.Net.Postmark {
@@ -87,7 +88,8 @@ namespace ActionMailer.Net.Postmark {
                 RequestFormat = DataFormat.Json
             };
 
-            request.AddObject(message);
+            request.AddHeader("Accept", "application/json");
+            request.AddBody(message);
             return request;
         }
     }
