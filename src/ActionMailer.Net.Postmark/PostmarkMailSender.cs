@@ -30,7 +30,6 @@ namespace ActionMailer.Net.Postmark {
     /// Implementation of IMailSender that supports sending mail through Postmark.
     /// </summary>
     public class PostmarkMailSender : IMailSender {
-        private string _serverToken;
         private RestClient _client;
 
         /// <summary>
@@ -38,7 +37,6 @@ namespace ActionMailer.Net.Postmark {
         /// </summary>
         /// <param name="serverToken">Your Postmark API server token to be used for sending emails.</param>
         public PostmarkMailSender(string serverToken) {
-            _serverToken = serverToken;
             _client = new RestClient("http://api.postmarkapp.com");
             _client.AddDefaultHeader("X-Postmark-Server-Token", serverToken);
         }
