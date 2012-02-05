@@ -70,39 +70,5 @@ namespace ActionMailer.Net.Postmark {
         public void SendAsync(MailMessage mail, Action<MailMessage> callback) {
             
         }
-
-        private static PostmarkMessage ConvertToPostmarkMessage(MailMessage mail) {
-            var pmMail = new PostmarkMessage {
-                From = mail.From.ToString(),
-                To = String.Join(",", mail.To.Select(x => x.ToString())),
-                Cc = mail.CC.Count > 0 ? String.Join(",", mail.CC.Select(x => x.ToString())) : null,
-                Bcc = mail.Bcc.Count > 0 ? String.Join(",", mail.Bcc.Select(x => x.ToString())) : null,
-                Subject = mail.Subject,
-                ReplyTo = mail.ReplyToList.Count > 0 ? String.Join(",", mail.ReplyToList.Select(x => x.ToString())) : null
-            };
-
-            for (int i = 0; i < mail.Headers.Count; i++) {
-                pmMail.Headers.Add(new PostmarkHeader {
-                    Name = mail.Headers.Keys[i],
-                    Value = mail.Headers[i]
-                });
-            }
-
-            foreach (var view in mail.AlternateViews) {
-                using (var reader = new StreamReader(view.ContentStream)) {
-                    var body = reader.ReadToEnd();
-
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain) {
-                        pmMail.TextBody = body;
-                    }
-
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html) {
-                        pmMail.HtmlBody = body;
-                    }
-                }
-            }
-
-            return pmMail;
-        }
     }
 }
