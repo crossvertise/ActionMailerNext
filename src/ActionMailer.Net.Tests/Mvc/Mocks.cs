@@ -28,8 +28,6 @@ using ActionMailer.Net.Mvc;
 using ActionMailer.Net.Tests.Mvc;
 
 namespace ActionMailer.Net.Tests.Mvc {
-    public class EmptyHttpContextBase : HttpContextBase { }
-
     public class TestMailerBase : MailerBase {
         public TestMailerBase(IMailSender sender = null, Encoding defaultMessageEncoding = null)
             : base(sender, defaultMessageEncoding) { }
@@ -141,7 +139,7 @@ namespace ActionMailer.Net.Tests.Mvc {
 
     public class TestController : Controller {
         public string TestAction() {
-            var email = new TestMailController { HttpContextBase = new EmptyHttpContextBase() }.TestMail();
+            var email = new TestMailController { HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null) }.TestMail();
             return email.ViewName;
         }
     }

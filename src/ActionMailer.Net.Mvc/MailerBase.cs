@@ -166,14 +166,28 @@ namespace ActionMailer.Net.Mvc {
         }
 
         private string FindAreaName() {
-            var name = GetType().Namespace;
-            if (name != null && name.Contains(".Areas.")) {
-                var startIndex = name.IndexOf(".Areas.") + 7;
-                var length = name.LastIndexOf(".") - startIndex;
-                return name.Substring(startIndex, length);
+            string area = null;
+
+            if (this.HttpContextBase != null &&
+                this.HttpContextBase.Request != null &&
+                this.HttpContextBase.Request.RequestContext != null &&
+                this.HttpContextBase.Request.RequestContext.RouteData != null) {
+
+                    if (this.HttpContextBase.Request.RequestContext.RouteData.DataTokens.ContainsKey("area")) {
+                        area = this.HttpContextBase.Request.RequestContext.RouteData.DataTokens["area"].ToString();
+                    }
             }
 
-            return null;
+            if (area == null) {
+                var name = GetType().Namespace;
+                if (name != null && name.Contains(".Areas.")) {
+                    var startIndex = name.IndexOf(".Areas.") + 7;
+                    var length = name.LastIndexOf(".") - startIndex;
+                    area = name.Substring(startIndex, length);
+                }
+            }
+
+            return area;
         }
 
         /// <summary>

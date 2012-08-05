@@ -25,14 +25,16 @@ using System;
 using System.Collections;
 using System.Web;
 using FakeItEasy;
+using System.Web.Routing;
 
 namespace ActionMailer.Net.Tests.Mvc {
     // Some helpers yanked from the MVC 3 source.
     public static class MvcHelper {
         public const string AppPathModifier = "/$(SESSION)";
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port) {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port, RouteData routeData) {
             var httpContext = A.Fake<HttpContextBase>();
+            var requestContext = A.Fake<RequestContext>();
 
             // required because FakeItEasy will initialize this, and then MVC will use
             // it to determine if the Url was rewritten (which returns true, which
@@ -53,9 +55,12 @@ namespace ActionMailer.Net.Tests.Mvc {
             else
                 uri = new Uri(protocol + "://localhost");
 
+            A.CallTo(() => requestContext.RouteData).Returns(routeData);
+            
             A.CallTo(() => httpContext.Request.Url).Returns(uri);
-
+            A.CallTo(() => httpContext.Request.RequestContext).Returns(requestContext);
             A.CallTo(() => httpContext.Request.PathInfo).Returns(string.Empty);
+
             if (!String.IsNullOrEmpty(httpMethod)) {
                 A.CallTo(() => httpContext.Request.HttpMethod).Returns(httpMethod);
             }
@@ -69,7 +74,7 @@ namespace ActionMailer.Net.Tests.Mvc {
         }
 
         public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod) {
-            return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1);
+            return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1, null);
         }
     }
 }

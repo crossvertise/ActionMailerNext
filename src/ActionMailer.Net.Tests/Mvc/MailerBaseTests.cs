@@ -28,6 +28,7 @@ using System.Text;
 using System.Web.Mvc;
 using FakeItEasy;
 using Xunit;
+using System.Web.Routing;
 
 namespace ActionMailer.Net.Tests.Mvc {
     public class MailerBaseTests {
@@ -36,9 +37,9 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mockSender = A.Fake<IMailSender>();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-
+            
             var mailer = new TestMailerBase(mockSender);
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
             var result = mailer.Email("TestView");
 
@@ -51,7 +52,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             mailer.ViewBag.Test = "12345";
@@ -65,7 +66,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             object model = "12345";
@@ -79,7 +80,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             mailer.ViewData["foo"] = "bar";
@@ -94,7 +95,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             // there's no need to test the built-in view engines.
@@ -112,7 +113,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new UTF8ViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
             mailer.MessageEncoding = Encoding.UTF8;
 
@@ -129,7 +130,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new MultipartViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             // there's no need to test the built-in view engines.
@@ -155,7 +156,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
 
             var email = mailer.TestMail();
 
@@ -167,7 +168,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
 
             var email = mailer.TestMaster();
 
@@ -177,7 +178,7 @@ namespace ActionMailer.Net.Tests.Mvc {
         [Fact]
         public void ViewNameShouldBeRequiredWhenUsingCallingEmailMethod() {
             var mailer = new TestMailerBase();
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
 
             Assert.Throws<ArgumentNullException>(() => {
                 mailer.Email(null);
@@ -186,10 +187,12 @@ namespace ActionMailer.Net.Tests.Mvc {
 
         [Fact]
         public void AreasAreDetectedProperly() {
+            var rd = new RouteData();
+            rd.Values.Add("area", "TestArea");
             var mailer = new Areas.TestArea.Controllers.MailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
 
             mailer.TestEmail();
 
@@ -202,7 +205,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             // there's no need to test the built-in view engines.
@@ -220,7 +223,7 @@ namespace ActionMailer.Net.Tests.Mvc {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
-            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
             mailer.From = "no-reply@mysite.com";
 
             // there's no need to test the built-in view engines.
