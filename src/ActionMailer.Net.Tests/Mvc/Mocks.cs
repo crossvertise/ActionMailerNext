@@ -85,6 +85,21 @@ namespace ActionMailer.Net.Tests.Mvc {
         }
     }
 
+    public class WhiteSpaceViewEngine : IViewEngine {
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache) {
+            throw new System.NotImplementedException();
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache) {
+            return new ViewEngineResult(new WhiteSpaceView(), this);
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view) {
+            throw new System.NotImplementedException();
+        }
+    }
+
     public class UTF8View : IView {
         public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
             writer.Write("Umlauts are Über!");
@@ -100,6 +115,12 @@ namespace ActionMailer.Net.Tests.Mvc {
     public class HtmlView : IView {
         public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
             writer.Write("HtmlView");
+        }
+    }
+
+    public class WhiteSpaceView : IView {
+        public void Render(ViewContext viewContext, System.IO.TextWriter writer) {
+            writer.Write("\r\n  \r\n This thing has leading and trailing whitespace.  \r\n \r\n");
         }
     }
 

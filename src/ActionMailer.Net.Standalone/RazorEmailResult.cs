@@ -108,7 +108,7 @@ namespace ActionMailer.Net.Standalone {
         /// <summary>
         /// Compiles the email body using the specified Razor view and model.
         /// </summary>
-        public void Compile<T>(T model) {
+        public void Compile<T>(T model, bool trimBody) {
             var textView = FindView("txt");
             var htmlView = FindView("html");
 
@@ -117,12 +117,18 @@ namespace ActionMailer.Net.Standalone {
 
             if (textView != null) {
                 var body = Razor.Parse(textView, model);
+                if (trimBody)
+                    body = body.Trim();
+
                 var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Plain);
                 Mail.AlternateViews.Add(altView);
             }
 
             if (htmlView != null) {
                 var body = Razor.Parse(htmlView, model);
+                if (trimBody)
+                    body = body.Trim();
+
                 var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
             }

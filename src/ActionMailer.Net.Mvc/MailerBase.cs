@@ -146,12 +146,12 @@ namespace ActionMailer.Net.Mvc {
         /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual EmailResult Email(string viewName, object model = null, string masterName = null) {
+        public virtual EmailResult Email(string viewName, object model = null, string masterName = null, bool trimBody = true) {
             if (viewName == null)
                 throw new ArgumentNullException("viewName");
 
             var mail = this.GenerateMail();
-            var result = new EmailResult(this, MailSender, mail, viewName, masterName, MessageEncoding);
+            var result = new EmailResult(this, MailSender, mail, viewName, masterName, MessageEncoding, trimBody);
             ViewData.Model = model;
             result.ViewData = ViewData;
 

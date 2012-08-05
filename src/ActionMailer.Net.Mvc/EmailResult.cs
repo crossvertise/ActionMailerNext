@@ -36,6 +36,7 @@ namespace ActionMailer.Net.Mvc {
     public class EmailResult : ViewResult {
         private readonly IMailInterceptor _interceptor;
         private readonly DeliveryHelper _deliveryHelper;
+        private readonly bool _trimBody;
 
         private IView _htmlView;
         private string _htmlViewName;
@@ -68,7 +69,7 @@ namespace ActionMailer.Net.Mvc {
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
         /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, Encoding messageEncoding) {
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, Encoding messageEncoding, bool trimBody) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
 
@@ -85,6 +86,7 @@ namespace ActionMailer.Net.Mvc {
             MailSender = sender;
             _interceptor = interceptor;
             _deliveryHelper = new DeliveryHelper(sender, interceptor);
+            _trimBody = trimBody;
         }
 
         /// <summary>
@@ -136,7 +138,12 @@ namespace ActionMailer.Net.Mvc {
             using (var writer = new StringWriter()) {
                 var viewContext = new ViewContext(context, view, ViewData, TempData, writer);
                 view.Render(viewContext, writer);
-                return writer.GetStringBuilder().ToString();
+
+                string output = writer.GetStringBuilder().ToString();
+                if (_trimBody)
+                    output = output.Trim();
+
+                return output;
             }
         }
 

@@ -97,5 +97,28 @@ namespace ActionMailer.Net.Tests.Standalone {
             Assert.Equal("Testing multipart.", textBody);
             Assert.Equal("<p>Testing multipart.</p>", htmlBody);
         }
+
+        [Fact]
+        public void WhiteSpaceShouldBeTrimmedWhenRequired() {
+            var mockSender = A.Fake<IMailSender>();
+
+            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
+            var email = mailer.Email("WhitespaceTrimTest", trimBody: true);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
+
+            Assert.Equal("This thing has leading and trailing whitespace.", body);
+        }
+
+        [Fact]
+        public void WhiteSpaceShouldBeIncludedWhenRequired() {
+            var mockSender = A.Fake<IMailSender>();
+
+            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
+            var email = mailer.Email("WhitespaceTrimTest", trimBody: false);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
+
+            Assert.True(body.StartsWith(Environment.NewLine));
+            Assert.True(body.EndsWith(Environment.NewLine));
+        }
     }
 }

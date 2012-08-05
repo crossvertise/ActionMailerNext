@@ -196,5 +196,42 @@ namespace ActionMailer.Net.Tests.Mvc {
             Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
             Assert.Equal("TestArea", mailer.ControllerContext.RouteData.DataTokens["area"]);
         }
+
+        [Fact]
+        public void WhiteSpaceShouldBeTrimmedWhenRequired() {
+            var mailer = new TestMailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            // there's no need to test the built-in view engines.
+            // this test just ensures that our Email() method actually
+            // populates the mail body properly.
+            var result = mailer.Email("WhiteSpaceView", trimBody: true);
+            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var body = reader.ReadToEnd();
+
+            Assert.Equal("This thing has leading and trailing whitespace.", body);
+        }
+
+        [Fact]
+        public void WhiteSpaceShouldBeIncludedWhenRequired() {
+            var mailer = new TestMailerBase();
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
+            mailer.HttpContextBase = new EmptyHttpContextBase();
+            mailer.From = "no-reply@mysite.com";
+
+            // there's no need to test the built-in view engines.
+            // this test just ensures that our Email() method actually
+            // populates the mail body properly.
+            var result = mailer.Email("WhiteSpaceView", trimBody: false);
+            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var body = reader.ReadToEnd();
+
+            Assert.True(body.StartsWith(Environment.NewLine));
+            Assert.True(body.EndsWith(Environment.NewLine));
+        }
     }
 }
