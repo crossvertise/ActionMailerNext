@@ -1,4 +1,19 @@
-[0.7.0] - TBD
+[0.7.1] - 8/5/2012
+  * The MVC MailerBase now inherits from Controller instead of ControllerBase. This
+      is an attempt to fix issue #46 that outlined problems with the SMTP client
+      being disposed of too early.  Now we'll just let MVC handle it for us.
+  * There is a new option for Email() methods in both the MVC and Standalone version
+      that allows you to specify whether we should trim the body of your message.
+      The default value for this param is "true", but you can override it like so:
+         return Email("MyView", trimBody: false);
+  * Inline attachments have been changed to always have the content-type of 
+      "multipart/related".  This is a fix for #38 where certain email clients could
+      not display inline images properly without this MIME type.
+  * Fixing issue #42 that occurred when developers placed Areas in a namespace that
+      was outside of the MVC standard "Areas" namespace.  We will fall back to the
+      old behavior if the route data lookup fails.
+
+[0.7.0] - 2/4/2012
   * Adding a new standard mail sender that supports sending messages through
       Postmark (www.postmarkapp.com).
 
