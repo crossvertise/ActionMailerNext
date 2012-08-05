@@ -61,7 +61,7 @@ namespace ActionMailer.Net.Tests {
             Assert.Equal("logo.png", attachment.ContentId);
             Assert.Equal("logo-inline.png", inlineAttachment.ContentId);
             Assert.Equal("image/png", attachment.ContentType.MediaType);
-            Assert.Equal("image/png", inlineAttachment.ContentType.MediaType);
+            Assert.Equal("multipart/related", inlineAttachment.ContentType.MediaType);
             Assert.True(inlineAttachment.ContentDisposition.Inline);
             Assert.True(attachmentBytes.SequenceEqual(logoBytes));
             Assert.True(inlineAttachmentBytes.SequenceEqual(logoBytes));

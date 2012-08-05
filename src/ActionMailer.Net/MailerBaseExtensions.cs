@@ -73,9 +73,14 @@ namespace ActionMailer.Net {
             // ideally we'd like to find the mime type for each attachment automatically
             // based on the file extension.
             string mimeType = null;
-            var extension = fileName.Substring(fileName.LastIndexOf("."));
-            if (!string.IsNullOrEmpty(extension))
-                mimeType = MimeTypes.ResolveByExtension(extension);
+
+            if (inline) {
+                mimeType = "multipart/related";
+            } else {
+                var extension = fileName.Substring(fileName.LastIndexOf("."));
+                if (!string.IsNullOrEmpty(extension))
+                    mimeType = MimeTypes.ResolveByExtension(extension);
+            }
 
             var stream = new MemoryStream(fileContents);
             var attachment = new Attachment(stream, fileName, mimeType);
