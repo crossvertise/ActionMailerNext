@@ -25,7 +25,7 @@
             The default encoding used to send a message.
             </summary>
         </member>
-        <member name="M:ActionMailer.Net.Mvc.EmailResult.#ctor(ActionMailer.Net.IMailInterceptor,ActionMailer.Net.IMailSender,System.Net.Mail.MailMessage,System.String,System.String,System.Text.Encoding)">
+        <member name="M:ActionMailer.Net.Mvc.EmailResult.#ctor(ActionMailer.Net.IMailInterceptor,ActionMailer.Net.IMailSender,System.Net.Mail.MailMessage,System.String,System.String,System.Text.Encoding,System.Boolean)">
             <summary>
             Creates a new EmailResult.  You must call ExecuteCore() before this result
             can be successfully delivered.
@@ -36,6 +36,7 @@
             <param name="viewName">The view to use when rendering the message body (can be null)</param>
             <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
             <param name="messageEncoding">The encoding to use when rendering a message.</param>
+            <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         </member>
         <member name="M:ActionMailer.Net.Mvc.EmailResult.ExecuteResult(System.Web.Mvc.ControllerContext)">
             <summary>
@@ -181,19 +182,26 @@
             <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
             <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
         </member>
-        <member name="M:ActionMailer.Net.Mvc.MailerBase.Email(System.String,System.Object,System.String)">
+        <member name="M:ActionMailer.Net.Mvc.MailerBase.Email(System.String,System.Object,System.String,System.Boolean)">
             <summary>
             Constructs your mail message ready for delivery.
             </summary>
             <param name="viewName">The view to use when rendering the message body.</param>
-            <param name="masterName">The master page to use when rendering the message body.</param>
             <param name="model">The model object used while rendering the message body.</param>
+            <param name="masterName">The master page to use when rendering the message body.</param>
+            <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
             <returns>An EmailResult that you can Deliver();</returns>
         </member>
         <member name="M:ActionMailer.Net.Mvc.MailerBase.ExecuteCore">
             <summary>
             Nothing to do here, left empty for now.
             </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Mvc.MailerBase.Dispose(System.Boolean)">
+            <summary>
+            Dispose of the underlying MailSender when this controller is destroyed.
+            </summary>
+            <param name="disposing">Whether we are disposing or not.</param>
         </member>
         <member name="P:ActionMailer.Net.Mvc.MailerBase.From">
             <summary>

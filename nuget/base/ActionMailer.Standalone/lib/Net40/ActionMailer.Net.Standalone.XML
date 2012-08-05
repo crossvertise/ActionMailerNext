@@ -48,7 +48,7 @@
             will not fire until the asyonchronous send operation is complete.
             </summary>
         </member>
-        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.Compile``1(``0)">
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.Compile``1(``0,System.Boolean)">
             <summary>
             Compiles the email body using the specified Razor view and model.
             </summary>
@@ -79,21 +79,23 @@
             <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
             <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
         </member>
-        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email(System.String,System.String)">
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email(System.String,System.String,System.Boolean)">
             <summary>
             Constructs your mail message ready for delivery.
             </summary>
             <param name="viewName">The view to use when rendering the message body.</param>
             <param name="masterName">The master page to use when rendering the message body.</param>
+            <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
             <returns>An EmailResult that you can Deliver();</returns>
         </member>
-        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email``1(System.String,``0,System.String)">
+        <member name="M:ActionMailer.Net.Standalone.RazorMailerBase.Email``1(System.String,``0,System.String,System.Boolean)">
             <summary>
             Constructs your mail message ready for delivery.
             </summary>
             <param name="viewName">The view to use when rendering the message body.</param>
-            <param name="masterName">The master page to use when rendering the message body.</param>
             <param name="model">The model object used while rendering the message body.</param>
+            <param name="masterName">The master page to use when rendering the message body.</param>
+            <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
             <returns>An EmailResult that you can Deliver();</returns>
         </member>
         <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.ViewPath">

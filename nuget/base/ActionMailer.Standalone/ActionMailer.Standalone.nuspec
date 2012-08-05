@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>ActionMailer.Standalone</id>
-    <version>0.7.0</version> 
+    <version>0.7.1</version> 
     <authors>Scott Anderson</authors>
 	<summary>A simple library to allow you to render emails using the Razor view engine.</summary>
     <description>ActionMailer.Net aims to be an easy, and relatively painless way to send email from your application. The concept is pretty simple. We can render HTML by utilizing some pretty snazzy view engines, so why can't we do the same thing for email?</description> 
