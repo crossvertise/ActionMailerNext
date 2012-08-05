@@ -34,7 +34,7 @@ namespace ActionMailer.Net.Mvc {
     /// The base class that your controller should inherit from if you wish
     /// to send emails through ActionMailer.Net.
     /// </summary>
-    public abstract class MailerBase : ControllerBase, IMailerBase {
+    public abstract class MailerBase : Controller, IMailerBase {
         /// <summary>
         /// A string representation of who this mail should be from.  Could be
         /// your name and email address or just an email address by itself.
@@ -134,17 +134,15 @@ namespace ActionMailer.Net.Mvc {
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
             MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
-            if (HttpContext.Current != null) {
-                HttpContextBase = new HttpContextWrapper(HttpContext.Current);
-            }
         }
 
         /// <summary>
         /// Constructs your mail message ready for delivery.
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
+        /// <param name="masterName">The master page to use when rendering the message body.</param>
+        /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
         public virtual EmailResult Email(string viewName, object model = null, string masterName = null, bool trimBody = true) {
             if (viewName == null)
@@ -182,5 +180,20 @@ namespace ActionMailer.Net.Mvc {
         /// Nothing to do here, left empty for now.
         /// </summary>
         protected override void ExecuteCore() { }
+
+        /// <summary>
+        /// Dispose of the underlying MailSender when this controller is destroyed.
+        /// </summary>
+        /// <param name="disposing">Whether we are disposing or not.</param>
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (MailSender != null) {
+                    MailSender.Dispose();
+                    MailSender = null;
+                }
+
+                base.Dispose();
+            }
+        }
     }
 }

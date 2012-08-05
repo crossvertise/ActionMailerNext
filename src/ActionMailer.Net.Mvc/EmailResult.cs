@@ -69,6 +69,7 @@ namespace ActionMailer.Net.Mvc {
         /// <param name="viewName">The view to use when rendering the message body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the message body (can be null)</param>
         /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
+        /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, string masterName, Encoding messageEncoding, bool trimBody) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
