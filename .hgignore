@@ -28,6 +28,7 @@ syntax: glob
 obj/
 [Rr]elease*/
 _ReSharper*/
+[Ss]rc/packages/
 [Tt]est[Rr]esult*
 [Bb]uild[Ll]og.*
 *.[Pp]ublish.xml
