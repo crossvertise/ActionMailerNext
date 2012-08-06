@@ -1,3 +1,7 @@
+[0.7.3] - 8/5/2012
+  * One of these days I'll learn how to do a release.  My build script had a bug,
+      and that caused the nuget packages to have the wrong DLL's.  Fixed now.
+
 [0.7.2] - 8/5/2012
   * Accidentally released a bugged 0.7.1, so it's now fixed and had to release
       this new version to fix it.  Oops!

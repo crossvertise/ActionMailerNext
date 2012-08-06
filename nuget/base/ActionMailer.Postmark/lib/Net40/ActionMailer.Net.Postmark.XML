@@ -4,21 +4,6 @@
         <name>ActionMailer.Net.Postmark</name>
     </assembly>
     <members>
-        <member name="T:ActionMailer.Net.Postmark.PostmarkHeader">
-            <summary>
-            Represents a header used for mail messages sent through Postmark
-            </summary>
-        </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkHeader.Name">
-            <summary>
-            The name of the header.
-            </summary>
-        </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkHeader.Value">
-            <summary>
-            The value for the header.
-            </summary>
-        </member>
         <member name="T:ActionMailer.Net.Postmark.MailMessageExtensions">
             <summary>
             Some Postmark-specific helper methods to use when sending messages.
@@ -31,34 +16,24 @@
             <param name="mail">The MailMessage to convert.</param>
             <returns>A PostmarkMessage that can be used to send the mail through Postmark.</returns>
         </member>
-        <member name="T:ActionMailer.Net.Postmark.PostmarkResponse">
+        <member name="T:ActionMailer.Net.Postmark.PostmarkAttachment">
             <summary>
-            Represents the response received back from Postmark.
+            Represents a mail attachment for messages sent via Postmark.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.ErrorCode">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.Name">
             <summary>
-            The error code.  0 indicates no error.  Any other number is an error.
+            The file name for the attachment.  This also serves as the content ID.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.Message">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.Content">
             <summary>
-            The message received from Postmark.  Can contain details for errors.
+            Base64-encoded string that represents the actual content of the attachment.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.MessageID">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.ContentType">
             <summary>
-            The Postmark-generated ID for the message that was sent.
-            </summary>
-        </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.SubmittedAt">
-            <summary>
-            The date and time when the message was submitted to Postmark.
-            </summary>
-        </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.To">
-            <summary>
-            The recepient of the message.
+            The MIME type for the attachment.
             </summary>
         </member>
         <member name="T:ActionMailer.Net.Postmark.PostmarkException">
@@ -75,6 +50,21 @@
         <member name="P:ActionMailer.Net.Postmark.PostmarkException.PostmarkResponse">
             <summary>
             The actual response received from the Postmark API.
+            </summary>
+        </member>
+        <member name="T:ActionMailer.Net.Postmark.PostmarkHeader">
+            <summary>
+            Represents a header used for mail messages sent through Postmark
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Postmark.PostmarkHeader.Name">
+            <summary>
+            The name of the header.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Postmark.PostmarkHeader.Value">
+            <summary>
+            The value for the header.
             </summary>
         </member>
         <member name="T:ActionMailer.Net.Postmark.PostmarkMailSender">
@@ -172,24 +162,34 @@
             A list of attachments for the message.
             </summary>
         </member>
-        <member name="T:ActionMailer.Net.Postmark.PostmarkAttachment">
+        <member name="T:ActionMailer.Net.Postmark.PostmarkResponse">
             <summary>
-            Represents a mail attachment for messages sent via Postmark.
+            Represents the response received back from Postmark.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.Name">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.ErrorCode">
             <summary>
-            The file name for the attachment.  This also serves as the content ID.
+            The error code.  0 indicates no error.  Any other number is an error.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.Content">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.Message">
             <summary>
-            Base64-encoded string that represents the actual content of the attachment.
+            The message received from Postmark.  Can contain details for errors.
             </summary>
         </member>
-        <member name="P:ActionMailer.Net.Postmark.PostmarkAttachment.ContentType">
+        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.MessageID">
             <summary>
-            The MIME type for the attachment.
+            The Postmark-generated ID for the message that was sent.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.SubmittedAt">
+            <summary>
+            The date and time when the message was submitted to Postmark.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Postmark.PostmarkResponse.To">
+            <summary>
+            The recepient of the message.
             </summary>
         </member>
     </members>
