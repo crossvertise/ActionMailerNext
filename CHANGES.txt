@@ -1,3 +1,7 @@
+[0.7.2] - 8/5/2012
+  * Accidentally released a bugged 0.7.1, so it's now fixed and had to release
+      this new version to fix it.  Oops!
+
 [0.7.1] - 8/5/2012
   * The MVC MailerBase now inherits from Controller instead of ControllerBase. This
       is an attempt to fix issue #46 that outlined problems with the SMTP client
