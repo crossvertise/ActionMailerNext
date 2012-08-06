@@ -60,19 +60,15 @@ namespace ActionMailer.Net {
             var mailContext = new MailSendingContext(mail);
             _interceptor.OnMailSending(mailContext);
 
-            if (mailContext.Cancel) {
+            if (mailContext.Cancel)
                 return;
-            }
 
             if (async) {
                 _sender.SendAsync(mail, AsyncSendCompleted);
                 return;
             }
 
-            using (_sender) {
-                _sender.Send(mail);
-            }
-
+            _sender.Send(mail);
             _interceptor.OnMailSent(mail);
         }
 
