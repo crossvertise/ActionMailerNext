@@ -23,9 +23,9 @@ CMD /c "%PROGRAMFILES%\7-Zip\7z.exe" a -tzip %StandaloneDir%\ActionMailer.Net.St
 
 ECHO Creating NuGet Packages...
 
-DEL /Y %NgMvcDir%\lib\Net40\*.*
-DEL /Y %NgPostmarkDir%\lib\Net40\*.*
-DEL /Y %NgStandaloneDir%\lib\Net40\*.*
+DEL /Q %NgMvcDir%\lib\Net40\*.*
+DEL /Q %NgPostmarkDir%\lib\Net40\*.*
+DEL /Q %NgStandaloneDir%\lib\Net40\*.*
 
 COPY %MvcDir%\ActionMailer*.dll %NgMvcDir%\lib\Net40\
 COPY %MvcDir%\ActionMailer*.pdb %NgMvcDir%\lib\Net40\
