@@ -206,10 +206,10 @@ namespace ActionMailer.Net.Mvc {
                 if (MailSender != null) {
                     MailSender.Dispose();
                     MailSender = null;
-                }
-
-                base.Dispose();
+                }                
             }
+
+            base.Dispose(disposing);
         }
     }
 }
