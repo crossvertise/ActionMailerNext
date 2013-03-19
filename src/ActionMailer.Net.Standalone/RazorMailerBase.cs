@@ -25,6 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text;
+using RazorEngine.Configuration;
+using RazorEngine.Templating;
 
 namespace ActionMailer.Net.Standalone {
     /// <summary>
@@ -93,6 +95,43 @@ namespace ActionMailer.Net.Standalone {
         public IMailSender MailSender { get; set; }
 
         /// <summary>
+        /// A template resolver that is used to find the appropriate templates
+        /// </summary>
+        public ITemplateResolver TemplateResolver { get; set; }
+
+        /// <summary>
+        /// A template base that can add more features to RazorEngine
+        /// </summary>
+        public Type TemplateBaseType { get; set; }
+
+        /// <summary>
+        /// The ViewBag that can be used to pass information to the views
+        /// </summary>
+        public DynamicViewBag ViewBag { get; set; }
+
+        private ITemplateService _templateService;
+
+        private ITemplateService TemplateService
+        {
+            get
+            {
+                if (_templateService == null)
+                {
+                    var config = new TemplateServiceConfiguration
+                    {
+                        BaseTemplateType = TemplateBaseType ?? typeof(TemplateBase<>),
+                        Resolver = TemplateResolver ?? new RazorTemplateResolver(ViewPath),
+                    };
+
+                    _templateService = new TemplateService(config);
+                }
+                return _templateService;
+            }
+        }
+
+
+
+        /// <summary>
         /// This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
@@ -130,6 +169,7 @@ namespace ActionMailer.Net.Standalone {
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
             MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
+            ViewBag = new DynamicViewBag();
         }
 
         /// <summary>
@@ -156,10 +196,12 @@ namespace ActionMailer.Net.Standalone {
                 throw new ArgumentNullException("viewName");
 
             var mail = this.GenerateMail();
-            var result = new RazorEmailResult(this, MailSender, mail, viewName, MessageEncoding, ViewPath);
+            var result = new RazorEmailResult(this, MailSender, mail, viewName, MessageEncoding, ViewPath, TemplateService, ViewBag);
             
             result.Compile(model, trimBody);
             return result;
         }
     }
+
+
 }
