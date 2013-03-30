@@ -148,11 +148,10 @@ namespace ActionMailer.Net.Standalone {
         /// Constructs your mail message ready for delivery.
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual RazorEmailResult Email(string viewName, string masterName = null, bool trimBody = true) {
-            return Email<object>(viewName, null, masterName, trimBody);
+        public virtual RazorEmailResult Email(string viewName, bool trimBody = true) {
+            return Email<object>(viewName, null, trimBody);
         }
 
         /// <summary>
@@ -160,10 +159,9 @@ namespace ActionMailer.Net.Standalone {
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
-        /// <param name="masterName">The master page to use when rendering the message body.</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual RazorEmailResult Email<T>(string viewName, T model = null, string masterName = null, bool trimBody = true) where T : class {
+        public virtual RazorEmailResult Email<T>(string viewName, T model = null, bool trimBody = true) where T : class {
             if (viewName == null)
                 throw new ArgumentNullException("viewName");
 
