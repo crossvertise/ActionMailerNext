@@ -24,7 +24,7 @@
             The default encoding used to send a message.
             </summary>
         </member>
-        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.#ctor(ActionMailer.Net.IMailInterceptor,ActionMailer.Net.IMailSender,System.Net.Mail.MailMessage,System.String,System.Text.Encoding,System.String)">
+        <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.#ctor(ActionMailer.Net.IMailInterceptor,ActionMailer.Net.IMailSender,System.Net.Mail.MailMessage,System.String,System.Text.Encoding,System.String,RazorEngine.Templating.ITemplateService,RazorEngine.Templating.DynamicViewBag)">
             <summary>
             Creates a new EmailResult.  You must call Compile() before this result
             can be successfully delivered.
@@ -35,6 +35,8 @@
             <param name="viewName">The view to use when rendering the message body.</param>
             <param name="messageEncoding">The encoding to use when rendering a message.</param>
             <param name="viewPath">The path where we should search for the view.</param>
+            <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
+            <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
         </member>
         <member name="M:ActionMailer.Net.Standalone.RazorEmailResult.Deliver">
             <summary>
@@ -157,6 +159,51 @@
         <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.MailSender">
             <summary>
             The underlying IMailSender to use for outgoing messages.
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.TemplateResolver">
+            <summary>
+            A template resolver that is used to find the appropriate templates
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.TemplateBaseType">
+            <summary>
+            A template base that can add more features to RazorEngine
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.RazorMailerBase.ViewBag">
+            <summary>
+            The ViewBag that can be used to pass information to the views
+            </summary>
+        </member>
+        <member name="T:ActionMailer.Net.Standalone.RazorTemplateResolver">
+            <summary>
+            The RazorTemplateResolver tries to locate the templates using the standard search pattern of MVC
+            and reads their content.
+            </summary>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorTemplateResolver.#ctor(System.String)">
+            <summary>
+            Creates a template resolver using the specified path.  If no path is given, this defaults to "Views"
+            </summary>
+            <param name="viewPath">The path containing your views</param>
+        </member>
+        <member name="M:ActionMailer.Net.Standalone.RazorTemplateResolver.Resolve(System.String)">
+            <summary>
+            Searches the view path for the given template and returns the contents of the view.
+            Throws a TemplateResolvingException if no views could be found.
+            </summary>
+            <param name="name">The name of the view to search for</param>
+            <returns>The contents of any views found.</returns>
+        </member>
+        <member name="T:ActionMailer.Net.Standalone.TemplateResolvingException">
+            <summary>
+            Exception thrown when a template could not be resolved
+            </summary>
+        </member>
+        <member name="P:ActionMailer.Net.Standalone.TemplateResolvingException.SearchPaths">
+            <summary>
+            A list of paths that were checked when searching for a template.
             </summary>
         </member>
     </members>
