@@ -111,8 +111,13 @@ namespace ActionMailer.Net.Mvc {
             Attachments = new AttachmentCollection();
             MailSender = mailSender ?? new SmtpMailSender();
             MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
-            if (System.Web.HttpContext.Current != null)
+
+            if (System.Web.HttpContext.Current != null) {
                 HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
+                var routeData = RouteTable.Routes.GetRouteData(HttpContextBase) ?? new RouteData();
+                var requestContext = new RequestContext(HttpContextBase, routeData);
+                base.Initialize(requestContext);
+            }
         }
 
         /// <summary>
