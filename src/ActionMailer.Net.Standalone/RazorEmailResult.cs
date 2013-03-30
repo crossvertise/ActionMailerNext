@@ -1,32 +1,7 @@
-﻿#region License
-/* Copyright (C) 2012 by Scott W. Anderson
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-#endregion
-
+﻿using RazorEngine.Templating;
 using System;
-using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
-using RazorEngine;
-using RazorEngine.Templating;
 using Encoding = System.Text.Encoding;
 
 namespace ActionMailer.Net.Standalone {
@@ -68,9 +43,9 @@ namespace ActionMailer.Net.Standalone {
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
-        /// <param name="templateService">THe template service defining a ITemplateResolver and a TemplateBase</param>
+        /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
-        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding, 
+        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding,
             string viewPath, ITemplateService templateService, DynamicViewBag viewBag) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
@@ -96,11 +71,11 @@ namespace ActionMailer.Net.Standalone {
             MessageEncoding = messageEncoding;
             _viewName = viewName;
             _viewPath = viewPath;
-            _deliveryHelper = new DeliveryHelper(sender, interceptor);
+            _deliveryHelper = new DeliveryHelper(sender, _interceptor);
 
             _templateService = templateService;
             _viewBag = viewBag;
-            }
+        }
 
         /// <summary>
         /// Sends your message.  This call will block while the message is being sent. (not recommended)
@@ -121,12 +96,9 @@ namespace ActionMailer.Net.Standalone {
         /// <summary>
         /// Compiles the email body using the specified Razor view and model.
         /// </summary>
-        public void Compile<T>(T model, bool trimBody)
-        {
-
+        public void Compile<T>(T model, bool trimBody) {
             var hasTxtView = false;
-            try
-            {
+            try {
                 var body = _templateService.Resolve(_viewName + ".txt", model).Run(new ExecuteContext(_viewBag));
                 if (trimBody)
                     body = body.Trim();
@@ -134,25 +106,19 @@ namespace ActionMailer.Net.Standalone {
                 var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Plain);
                 Mail.AlternateViews.Add(altView);
                 hasTxtView = true;
-            }
-            catch (TemplateResolvingException) {}
+            } catch (TemplateResolvingException) { }
 
-            try
-            {
+            try {
                 var body = _templateService.Resolve(_viewName + ".html", model).Run(new ExecuteContext(_viewBag));
                 if (trimBody)
                     body = body.Trim();
 
                 var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
-            }
-            catch (TemplateResolvingException)
-            {
-                if(!hasTxtView)
+            } catch (TemplateResolvingException) {
+                if (!hasTxtView)
                     throw new NoViewsFoundException(string.Format("Could not find any CSHTML or VBHTML views named [{0}] in the path [{1}].  Ensure that you specify the format in the file name (ie: {0}.txt.cshtml or {0}.html.cshtml)", _viewName, _viewPath));
             }
-                
         }
-
     }
 }

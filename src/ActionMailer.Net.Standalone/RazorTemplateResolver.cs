@@ -1,46 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RazorEngine.Templating;
+using System;
 using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using RazorEngine.Templating;
 
-namespace ActionMailer.Net.Standalone
-{
+namespace ActionMailer.Net.Standalone {
     /// <summary>
     /// The RazorTemplateResolver tries to locate the templates using the standard search pattern of MVC
     /// and reads their content.
     /// </summary>
-    public class RazorTemplateResolver : ITemplateResolver
-    {
-        private string _viewPath;
+    public class RazorTemplateResolver : ITemplateResolver {
+        private readonly string _viewPath;
 
-        public RazorTemplateResolver(string viewPath)
-        {
+        public RazorTemplateResolver(string viewPath) {
             _viewPath = viewPath ?? "Views";
         }
 
-        public string Resolve(string name)
-        {
-            if (!name.EndsWith(".cshtml"))
-                name += ".cshtml";
+        public string Resolve(string name) {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException("name");
+
+            var csViewName = name;
+            var vbViewName = name;
+
+            if (!csViewName.EndsWith(".cshtml"))
+                csViewName += ".cshtml";
+
+            if (!vbViewName.EndsWith(".vbhtml"))
+                vbViewName += ".vbhtml";
 
             var appRoot = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
-            var viewPath = Path.Combine(appRoot, _viewPath, name);
+            var csViewPath = Path.Combine(appRoot, _viewPath, csViewName);
+            var vbViewPath = Path.Combine(appRoot, _viewPath, vbViewName);
 
-            if (File.Exists(viewPath))
-                return File.ReadAllText(viewPath);
-            else 
-                throw new TemplateResolvingException();
+            if (File.Exists(csViewPath))
+                return File.ReadAllText(csViewPath);
+
+            if (File.Exists(vbViewPath))
+                return File.ReadAllText(vbViewPath);
+
+            throw new TemplateResolvingException();
         }
-    }
-
-    public class TemplateResolvingException : Exception
-    {
-        public List<string> SearchPaths { get; set; }
-
-
     }
 }
