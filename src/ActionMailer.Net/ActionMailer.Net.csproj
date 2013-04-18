@@ -48,6 +48,7 @@
     <Compile Include="AttachmentCollection.cs" />
     <Compile Include="DeliveryHelper.cs" />
     <Compile Include="IMailerBase.cs" />
+    <Compile Include="IEmailResult.cs" />
     <Compile Include="MailerBaseExtensions.cs" />
     <Compile Include="NoViewsFoundException.cs" />
     <Compile Include="IMailInterceptor.cs" />

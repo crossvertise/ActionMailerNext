@@ -10,7 +10,7 @@ namespace ActionMailer.Net.Mvc {
     /// A special result that should be returned from each eaction in your
     /// mail controller.  Your controller must inherit from MailerBase.
     /// </summary>
-    public class EmailResult : ViewResult {
+    public class EmailResult : ViewResult, IEmailResult {
         private readonly IMailInterceptor _interceptor;
         private readonly DeliveryHelper _deliveryHelper;
         private readonly bool _trimBody;

@@ -8,7 +8,7 @@ namespace ActionMailer.Net.Standalone {
     /// <summary>
     /// An container for MailMessage with the appropriate body rendered by Razor.
     /// </summary>
-    public class RazorEmailResult {
+    public class RazorEmailResult : IEmailResult {
         private readonly IMailInterceptor _interceptor;
         private readonly DeliveryHelper _deliveryHelper;
         private readonly ITemplateService _templateService;
