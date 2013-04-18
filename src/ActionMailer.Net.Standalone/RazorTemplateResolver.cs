@@ -40,8 +40,9 @@ namespace ActionMailer.Net.Standalone {
 
             var appRoot = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
-            var csViewPath = Path.Combine(appRoot, _viewPath, csViewName);
-            var vbViewPath = Path.Combine(appRoot, _viewPath, vbViewName);
+            //Works with forward and backward slashes in the path
+            var csViewPath = Path.GetFullPath(Path.Combine(appRoot, _viewPath, csViewName));
+            var vbViewPath = Path.GetFullPath(Path.Combine(appRoot, _viewPath, vbViewName));
 
             if (File.Exists(csViewPath))
                 return File.ReadAllText(csViewPath);
