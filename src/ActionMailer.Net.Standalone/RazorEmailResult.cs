@@ -17,20 +17,24 @@ namespace ActionMailer.Net.Standalone {
         private readonly string _viewName;
         private readonly string _viewPath;
 
+        
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public readonly MailMessage Mail;
+        public MailMessage Mail { get { return _mail; } }
+        private readonly MailMessage _mail;
 
         /// <summary>
         /// The IMailSender instance that is used to deliver mail.
         /// </summary>
-        public readonly IMailSender MailSender;
+        public  IMailSender MailSender {get { return _mailSender; } }
+        private readonly IMailSender _mailSender;
 
         /// <summary>
         /// The default encoding used to send a message.
         /// </summary>
-        public readonly Encoding MessageEncoding;
+        public Encoding MessageEncoding { get { return _messageEncoding; } }
+        private readonly Encoding _messageEncoding;
 
 
         /// <summary>
@@ -66,9 +70,9 @@ namespace ActionMailer.Net.Standalone {
                 throw new ArgumentNullException("templateService");
 
             _interceptor = interceptor;
-            MailSender = sender;
-            Mail = mail;
-            MessageEncoding = messageEncoding;
+            _mailSender= sender;
+            _mail = mail;
+            _messageEncoding = messageEncoding;
             _viewName = viewName;
             _viewPath = viewPath;
             _deliveryHelper = new DeliveryHelper(sender, _interceptor);

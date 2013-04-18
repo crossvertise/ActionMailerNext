@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 
 namespace ActionMailer.Net
@@ -21,5 +22,11 @@ namespace ActionMailer.Net
         /// will not fire until the asyonchronous send operation is complete.
         /// </summary>
         void DeliverAsync();
+
+        MailMessage Mail { get; }
+
+        IMailSender MailSender { get; }
+
+        Encoding MessageEncoding { get; }
     }
 }

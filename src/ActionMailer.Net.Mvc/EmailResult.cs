@@ -24,17 +24,20 @@ namespace ActionMailer.Net.Mvc {
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public readonly MailMessage Mail;
+        public MailMessage Mail { get { return _mail; } }
+        private readonly MailMessage _mail;
 
         /// <summary>
         /// The IMailSender instance that is used to deliver mail.
         /// </summary>
-        public readonly IMailSender MailSender;
+        public IMailSender MailSender { get { return _mailSender; } }
+        private readonly IMailSender _mailSender;
 
         /// <summary>
         /// The default encoding used to send a message.
         /// </summary>
-        public readonly Encoding MessageEncoding;
+        public Encoding MessageEncoding { get { return _messageEncoding; } }
+        private readonly Encoding _messageEncoding;
 
         /// <summary>
         /// Creates a new EmailResult.  You must call ExecuteCore() before this result
@@ -59,9 +62,9 @@ namespace ActionMailer.Net.Mvc {
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
-            MessageEncoding = messageEncoding;
-            Mail = mail;
-            MailSender = sender;
+            _messageEncoding = messageEncoding;
+            _mail = mail;
+            _mailSender = sender;
             _interceptor = interceptor;
             _deliveryHelper = new DeliveryHelper(sender, interceptor);
             _trimBody = trimBody;
