@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net", "ActionMailer.Net\ActionMailer.Net.csproj", "{85EC0023-CBBF-4C91-8681-D88DA6334305}"
 EndProject
@@ -12,13 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Standalone", "ActionMailer.Net.Standalone\ActionMailer.Net.Standalone.csproj", "{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Postmark", "ActionMailer.Net.Postmark\ActionMailer.Net.Postmark.csproj", "{CD9F2932-FBE2-4B80-8B88-D6F0A3830C02}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7A53C3BF-C075-4DA1-93DB-DEE6D3431B34}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\nuget.exe = .nuget\nuget.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc4", "ActionMailer.Net.Mvc4\ActionMailer.Net.Mvc4.csproj", "{72C63446-C4A6-48DD-A212-44FF566F906F}"
 EndProject
@@ -31,6 +24,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mandrill", "ActionMailer.Net.Mandrill\ActionMailer.Net.Mandrill.csproj", "{F39A87B8-2BF8-421F-B00D-A368DD4902B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc5-1", "ActionMailer.Net.Mvc5-1\ActionMailer.Net.Mvc5-1.csproj", "{A2A24342-B533-45CA-83EA-6636E847702D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4191E949-6E92-4A07-A5C0-5A14C4900CE6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
