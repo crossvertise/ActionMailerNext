@@ -4,17 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
+using System.Threading.Tasks;
 using Mandrill;
 
 namespace ActionMailer.Net.Mandrill
 {
+    /// <summary>
+    /// Implementation of IMailSender that allows sending to Mandrill via HTTP
+    /// </summary>
     public class MandrillMailSender : IMailSender
     {
         private MandrillApi _mandrillClient;
 
+        /// <summary>
+        /// Create a new instance of the MandrillMailSender using an API key provided in AppSettings as key MandrillApiKey.
+        /// </summary>
         public MandrillMailSender()
         {
             var apiKey = ConfigurationManager.AppSettings["MandrillApiKey"];
@@ -23,6 +28,11 @@ namespace ActionMailer.Net.Mandrill
 
             _mandrillClient = new MandrillApi(apiKey);
         }
+
+        /// <summary>
+        /// Create a new instance with the given API key
+        /// </summary>
+        /// <param name="apiKey">The Mandrill API key, e.g. "PmmzuovUZMPJsa73o3jjCw"</param>
         public MandrillMailSender(string apiKey)
         {
             _mandrillClient = new MandrillApi(apiKey);
@@ -32,18 +42,39 @@ namespace ActionMailer.Net.Mandrill
             _mandrillClient = null;
         }
 
+        /// <summary>
+        /// Sends the message synchonously through the API
+        /// </summary>
+        /// <param name="mail">The mail to be sent</param>
         public void Send(MailMessage mail)
         {
             var message = ToMandrillMessage(mail);
             _mandrillClient.SendMessage(message);
         }
 
+        /// <summary>
+        /// Sends the message asyncronously through the API and returns before the mail is delivered
+        /// </summary>
+        /// <param name="mail">The mail to be sent</param>
+        /// <param name="callback">a callback executed when the sending finished</param>
         public void SendAsync(MailMessage mail, Action<MailMessage> callback)
         {
             var message = ToMandrillMessage(mail);
             _mandrillClient.SendMessageAsync(message).ContinueWith( a => callback(mail) );
         }
 
+        //public async Task<List<EmailResult>> SendAsncTask(MailMessage mail)
+        //{
+        //      var message = ToMandrillMessage(mail);
+        //    return await _mandrillClient.SendMessageAsync(message);
+        //}
+
+
+        /// <summary>
+        /// Converts a .NET MailMessage to the required API proxy class 
+        /// </summary>
+        /// <param name="mail"></param>
+        /// <returns></returns>
         private static EmailMessage ToMandrillMessage(MailMessage mail)
         {
             if (mail.CC.Any())
