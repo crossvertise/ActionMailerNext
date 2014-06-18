@@ -27,12 +27,13 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using FakeItEasy;
-using Xunit;
+using NUnit.Framework;
 using System.Web.Routing;
 
 namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
+    [TestFixture]
     public class MailerBaseTests {
-        [Fact]
+        [Test]
         public void PassingAMailSenderShouldWork() {
             var mockSender = A.Fake<IMailSender>();
             ViewEngines.Engines.Clear();
@@ -43,11 +44,11 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             mailer.From = "no-reply@mysite.com";
             var result = mailer.Email("TestView");
 
-            Assert.Same(mockSender, mailer.MailSender);
-            Assert.Same(mockSender, result.MailSender);
+            Assert.AreSame(mockSender, mailer.MailSender);
+            Assert.AreSame(mockSender, result.MailSender);
         }
 
-        [Fact]
+        [Test]
         public void ViewBagDataShouldCopyToEmailResult() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -58,10 +59,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             mailer.ViewBag.Test = "12345";
             var result = mailer.Email("TestView");
 
-            Assert.Equal("12345", result.ViewBag.Test);
+            Assert.AreEqual("12345", result.ViewBag.Test);
         }
 
-        [Fact]
+        [Test]
         public void ModelObjectShouldCopyToEmailResult() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -72,10 +73,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             object model = "12345";
             var result = mailer.Email("TestView", model);
 
-            Assert.Same(model, result.ViewData.Model);
+            Assert.AreSame(model, result.ViewData.Model);
         }
 
-        [Fact]
+        [Test]
         public void ViewDataShouldCopyToEmailResult() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -87,10 +88,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             var result = mailer.Email("TestView");
 
             Assert.True(result.ViewData.ContainsKey("foo"));
-            Assert.Equal("bar", result.ViewData["foo"]);
+            Assert.AreEqual("bar", result.ViewData["foo"]);
         }
 
-        [Fact]
+        [Test]
         public void EmailMethodShouldRenderViewAsMessageBody() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -105,10 +106,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var body = reader.ReadToEnd().Trim();
 
-            Assert.Equal("TextView", body);
+            Assert.AreEqual("TextView", body);
         }
 
-        [Fact]
+        [Test]
         public void MessageEncodingOverrideShouldWork() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -121,11 +122,11 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var body = reader.ReadToEnd();
 
-            Assert.Equal(Encoding.UTF8, result.MessageEncoding);
-            Assert.Equal("Umlauts are Über!", body);
+            Assert.AreEqual(Encoding.UTF8, result.MessageEncoding);
+            Assert.AreEqual("Umlauts are Über!", body);
         }
 
-        [Fact]
+        [Test]
         public void EmailMethodShouldAllowMultipleViews() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -138,20 +139,20 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             // populates the mail body properly.
             var result = mailer.Email("TestView");
 
-            Assert.Equal(2, result.Mail.AlternateViews.Count());
+            Assert.AreEqual(2, result.Mail.AlternateViews.Count());
 
             var textReader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var textBody = textReader.ReadToEnd();
-            Assert.Contains("TextView", textBody);
-            Assert.Equal("text/plain", result.Mail.AlternateViews[0].ContentType.MediaType);
+            StringAssert.Contains("TextView", textBody);
+            Assert.AreEqual("text/plain", result.Mail.AlternateViews[0].ContentType.MediaType);
 
             var htmlReader = new StreamReader(result.Mail.AlternateViews[1].ContentStream);
             var htmlBody = htmlReader.ReadToEnd();
-            Assert.Contains("HtmlView", htmlBody);
-            Assert.Equal("text/html", result.Mail.AlternateViews[1].ContentType.MediaType);
+            StringAssert.Contains("HtmlView", htmlBody);
+            Assert.AreEqual("text/html", result.Mail.AlternateViews[1].ContentType.MediaType);
         }
 
-        [Fact]
+        [Test]
         public void ViewNameShouldBePassedProperly() {
             var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
@@ -160,10 +161,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
 
             var email = mailer.TestMail();
 
-            Assert.Equal("TestView", email.ViewName);
+            Assert.AreEqual("TestView", email.ViewName);
         }
 
-        [Fact]
+        [Test]
         public void MasterNameShouldBePassedProperly() {
             var mailer = new TestMailController();
             ViewEngines.Engines.Clear();
@@ -172,10 +173,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
 
             var email = mailer.TestMaster();
 
-            Assert.Equal("TestMaster", email.MasterName);
+            Assert.AreEqual("TestMaster", email.MasterName);
         }
 
-        [Fact]
+        [Test]
         public void ViewNameShouldBeRequiredWhenUsingCallingEmailMethod() {
             var mailer = new TestMailerBase();
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
@@ -185,7 +186,7 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             });
         }
 
-        [Fact]
+        [Test]
         public void AreasAreDetectedProperly() {
             var rd = new RouteData();
             rd.Values.Add("area", "TestArea");
@@ -197,10 +198,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             mailer.TestEmail();
 
             Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
-            Assert.Equal("TestArea", mailer.ControllerContext.RouteData.DataTokens["area"]);
+            Assert.AreEqual("TestArea", mailer.ControllerContext.RouteData.DataTokens["area"]);
         }
 
-        [Fact]
+        [Test]
         public void WhiteSpaceShouldBeTrimmedWhenRequired() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();
@@ -215,10 +216,10 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
             var body = reader.ReadToEnd();
 
-            Assert.Equal("This thing has leading and trailing whitespace.", body);
+            Assert.AreEqual("This thing has leading and trailing whitespace.", body);
         }
 
-        [Fact]
+        [Test]
         public void WhiteSpaceShouldBeIncludedWhenRequired() {
             var mailer = new TestMailerBase();
             ViewEngines.Engines.Clear();

@@ -26,11 +26,11 @@ using System.Net.Mail;
 using ActionMailer.Net.Standalone;
 using FakeItEasy;
 using RazorEngine.Templating;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Standalone {
     public class RazorEmailResultTests {
-        [Fact]
+        [Test]
         public void ConstructorWithNullInterceptorThrows() {
             var mockSender = A.Fake<IMailSender>();
             var mockTemplateService = A.Fake<ITemplateService>();
@@ -40,7 +40,7 @@ namespace ActionMailer.Net.Tests.Standalone {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullSenderThrows() {
             var mockInterceptor = A.Fake<IMailInterceptor>();
             var mockTemplateService = A.Fake<ITemplateService>();
@@ -50,7 +50,7 @@ namespace ActionMailer.Net.Tests.Standalone {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullMailMessageThrows() {
             var mockSender = A.Fake<IMailSender>();
             var mockInterceptor = A.Fake<IMailInterceptor>();
@@ -61,7 +61,7 @@ namespace ActionMailer.Net.Tests.Standalone {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullViewNameThrows() {
             var mockSender = A.Fake<IMailSender>();
             var mockInterceptor = A.Fake<IMailInterceptor>();
@@ -72,7 +72,7 @@ namespace ActionMailer.Net.Tests.Standalone {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullViewPathThrows() {
             var mockSender = A.Fake<IMailSender>();
             var mockInterceptor = A.Fake<IMailInterceptor>();
@@ -83,7 +83,7 @@ namespace ActionMailer.Net.Tests.Standalone {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullTemplateServiceThrows()
         {
             var mockSender = A.Fake<IMailSender>();

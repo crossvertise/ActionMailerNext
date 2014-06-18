@@ -24,11 +24,12 @@
 using System;
 using System.Net.Mail;
 using FakeItEasy;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
+    [TestFixture]
     public class EmailResultTests {
-        [Fact]
+        [Test]
         public void ConstructorWithNullInterceptorThrows() {
             var mockSender = A.Fake<IMailSender>();
 
@@ -37,7 +38,7 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullSenderThrows() {
             var mockInterceptor = A.Fake<IMailInterceptor>();
 
@@ -46,7 +47,7 @@ namespace ActionMailer.Net.Mvc4.Tests.Mvc4 {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullMailMessageThrows() {
             var mockSender = A.Fake<IMailSender>();
             var mockInterceptor = A.Fake<IMailInterceptor>();

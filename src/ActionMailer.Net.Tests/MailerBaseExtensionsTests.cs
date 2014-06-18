@@ -25,11 +25,12 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
+    [TestFixture]
     public class MailerBaseExtensionsTests {
-        [Fact]
+        [Test]
         public void GenerateMailShouldSetCorrectMessageProperties() {
             var mailer = new StubMailerBase();
             mailer.To.Add("test@test.com");
@@ -51,17 +52,17 @@ namespace ActionMailer.Net.Tests {
             attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
             inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0, Convert.ToInt32(inlineAttachment.ContentStream.Length));
 
-            Assert.Equal("test@test.com", result.To[0].Address);
-            Assert.Equal("no-reply@mysite.com", result.From.Address);
-            Assert.Equal("test subject", result.Subject);
-            Assert.Equal("test-cc@test.com", result.CC[0].Address);
-            Assert.Equal("test-bcc@test.com", result.Bcc[0].Address);
-            Assert.Equal("test-reply-to@test.com", result.ReplyToList[0].Address);
-            Assert.Equal("True", result.Headers["X-No-Spam"]);
-            Assert.Equal("logo.png", attachment.ContentId);
-            Assert.Equal("logo-inline.png", inlineAttachment.ContentId);
-            Assert.Equal("image/png", attachment.ContentType.MediaType);
-            Assert.Equal("multipart/related", inlineAttachment.ContentType.MediaType);
+            Assert.AreEqual("test@test.com", result.To[0].Address);
+            Assert.AreEqual("no-reply@mysite.com", result.From.Address);
+            Assert.AreEqual("test subject", result.Subject);
+            Assert.AreEqual("test-cc@test.com", result.CC[0].Address);
+            Assert.AreEqual("test-bcc@test.com", result.Bcc[0].Address);
+            Assert.AreEqual("test-reply-to@test.com", result.ReplyToList[0].Address);
+            Assert.AreEqual("True", result.Headers["X-No-Spam"]);
+            Assert.AreEqual("logo.png", attachment.ContentId);
+            Assert.AreEqual("logo-inline.png", inlineAttachment.ContentId);
+            Assert.AreEqual("image/png", attachment.ContentType.MediaType);
+            Assert.AreEqual("multipart/related", inlineAttachment.ContentType.MediaType);
             Assert.True(inlineAttachment.ContentDisposition.Inline);
             Assert.True(attachmentBytes.SequenceEqual(logoBytes));
             Assert.True(inlineAttachmentBytes.SequenceEqual(logoBytes));

@@ -25,7 +25,7 @@ using System.Web.Mvc;
 using ActionMailer.Net.Mvc;
 using FakeItEasy;
 using HtmlAgilityPack;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Mvc {
     public class HtmlHelperExtensionsTests {
@@ -38,175 +38,175 @@ namespace ActionMailer.Net.Tests.Mvc {
             _helper  = new HtmlHelper(context, container);
         }
 
-        [Fact]
+        [Test]
         public void InlineImageWithContentId() {
             var generatedImageTag = _helper.InlineImage("test.png").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineImageWithContentIdAndHtmlAttributes() {
             var generatedImageTag = _helper.InlineImage("test.png", new {@class = "test"}).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
 
             Assert.True(imgTag.Attributes["class"] != null);
-            Assert.Equal("test", imgTag.Attributes["class"].Value);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineImageWithContentIdAndAlt() {
             var generatedImageTag = _helper.InlineImage("test.png", "alt message").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
 
             Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineImageWithContentIdAndAltAndHtmlAttributes() {
             var generatedImageTag = _helper.InlineImage("test.png", "alt message", new { @class = "test" }).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
 
             Assert.True(imgTag.Attributes["class"] != null);
-            Assert.Equal("test", imgTag.Attributes["class"].Value);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
 
             Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineImageWithContentIdAndAltAndId() {
             var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
 
             Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
 
             Assert.True(imgTag.Attributes["id"] != null);
-            Assert.Equal("image-id", imgTag.Attributes["id"].Value);
+            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineImagewithContentIdAndAltAndIdAndHtmlAttributes() {
             var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id", new {@class = "test"}).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedImageTag);
             var imgTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("img", imgTag.Name);
+            Assert.AreEqual("img", imgTag.Name);
             Assert.True(imgTag.Attributes["src"] != null);
-            Assert.Equal("cid:test.png", imgTag.Attributes["src"].Value);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
 
             Assert.True(imgTag.Attributes["class"] != null);
-            Assert.Equal("test", imgTag.Attributes["class"].Value);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
 
             Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.Equal("alt message", imgTag.Attributes["alt"].Value);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
 
             Assert.True(imgTag.Attributes["id"] != null);
-            Assert.Equal("image-id", imgTag.Attributes["id"].Value);
+            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineCSSWithContentId() {
             var generatedLinkTag = _helper.InlineCSS("test.css").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
             var linkTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("link", linkTag.Name);
-            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
-            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+            Assert.AreEqual("link", linkTag.Name);
+            Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.AreEqual("text/css", linkTag.Attributes["type"].Value);
 
             Assert.True(linkTag.Attributes["href"] != null);
-            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+            Assert.AreEqual("cid:test.css", linkTag.Attributes["href"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineCSSWithContentIdAndHtmlAttributes() {
             var generatedLinkTag = _helper.InlineCSS("test.css", new {trunk = "junk"}).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
             var linkTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("link", linkTag.Name);
-            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
-            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+            Assert.AreEqual("link", linkTag.Name);
+            Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.AreEqual("text/css", linkTag.Attributes["type"].Value);
 
             Assert.True(linkTag.Attributes["href"] != null);
-            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+            Assert.AreEqual("cid:test.css", linkTag.Attributes["href"].Value);
 
             Assert.True(linkTag.Attributes["trunk"] != null);
-            Assert.Equal("junk", linkTag.Attributes["trunk"].Value);
+            Assert.AreEqual("junk", linkTag.Attributes["trunk"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineCSSWithContentIdAndMedia() {
             var generatedLinkTag = _helper.InlineCSS("test.css", "screen").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
             var linkTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("link", linkTag.Name);
-            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
-            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+            Assert.AreEqual("link", linkTag.Name);
+            Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.AreEqual("text/css", linkTag.Attributes["type"].Value);
 
             Assert.True(linkTag.Attributes["href"] != null);
-            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+            Assert.AreEqual("cid:test.css", linkTag.Attributes["href"].Value);
 
             Assert.True(linkTag.Attributes["media"] != null);
-            Assert.Equal("screen", linkTag.Attributes["media"].Value);
+            Assert.AreEqual("screen", linkTag.Attributes["media"].Value);
         }
 
-        [Fact]
+        [Test]
         public void InlineCSSWithContentIdAndMediaAndHtmlAttributes() {
             var generatedLinkTag = _helper.InlineCSS("test.css", "screen", new { trunk = "junk" }).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
             var linkTag = doc.DocumentNode.FirstChild;
 
-            Assert.Equal("link", linkTag.Name);
-            Assert.Equal("stylesheet", linkTag.Attributes["rel"].Value);
-            Assert.Equal("text/css", linkTag.Attributes["type"].Value);
+            Assert.AreEqual("link", linkTag.Name);
+            Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
+            Assert.AreEqual("text/css", linkTag.Attributes["type"].Value);
 
             Assert.True(linkTag.Attributes["href"] != null);
-            Assert.Equal("cid:test.css", linkTag.Attributes["href"].Value);
+            Assert.AreEqual("cid:test.css", linkTag.Attributes["href"].Value);
 
             Assert.True(linkTag.Attributes["media"] != null);
-            Assert.Equal("screen", linkTag.Attributes["media"].Value);
+            Assert.AreEqual("screen", linkTag.Attributes["media"].Value);
 
             Assert.True(linkTag.Attributes["trunk"] != null);
-            Assert.Equal("junk", linkTag.Attributes["trunk"].Value);
+            Assert.AreEqual("junk", linkTag.Attributes["trunk"].Value);
         }
     }
 }

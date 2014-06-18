@@ -24,9 +24,10 @@
 using System;
 using System.Web.Mvc;
 using System.Web.Routing;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
+    [TestFixture]
     public class UrlHelperExtensionsTests {
         private readonly UrlHelper _helper;
 
@@ -34,72 +35,72 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             _helper = GetUrlHelper();
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithAction() {
             var expectedUrl = String.Format("http://localhost{0}/app/home/test", MvcHelper.AppPathModifier);
             
             var generatedUrl = _helper.AbsoluteAction("test");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndRouteData() {
             var expectedUrl = String.Format("http://localhost{0}/app/admin/test", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteAction("test", new {controller = "admin"});
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndRouteDictionary() {
             var values = new RouteValueDictionary(new {controller = "admin", id = "12345"});
             var expectedUrl = String.Format("http://localhost{0}/app/admin/test/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteAction("test", values);
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndControllerName() {
             var expectedUrl = String.Format("http://localhost{0}/app/admin/test", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteAction("test", "admin");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndControllerAndRouteValues() {
             var expectedUrl = String.Format("http://localhost{0}/app/admin/test/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteAction("test", "admin", new {id = "12345"});
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndControllerAndRouteDictionary() {
             var expectedUrl = String.Format("http://localhost{0}/app/admin/test/12345", MvcHelper.AppPathModifier);
             var values = new RouteValueDictionary(new {id = "12345"});
 
             var generatedUrl = _helper.AbsoluteAction("test", "admin", values);
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndControllerAndRouteValuesAndProtocol() {
             var expectedUrl = String.Format("https://localhost{0}/app/admin/test/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteAction("test", "admin", new { id = "12345" }, "https");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteActionWithActionAndControllerAndRouteDictionaryAndProtocolAndHostname() {
             var expectedUrl = String.Format("https://google.com{0}/app/admin/test/12345", MvcHelper.AppPathModifier);
             var values = new RouteValueDictionary(new {id = "12345"});
@@ -107,82 +108,82 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             var generatedUrl = _helper.AbsoluteAction("test", "admin", values, "https", "google.com");
             
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteName() {
             var expectedUrl = String.Format("http://localhost{0}/app/named/home/oldaction", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteRouteUrl("namedroute");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteValues() {
             var expectedUrl = String.Format("http://localhost{0}/app/home/oldaction/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteRouteUrl(new {id = "12345"});
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteDictionary() {
             var expectedUrl = String.Format("http://localhost{0}/app/home/oldaction/12345", MvcHelper.AppPathModifier);
             var values = new RouteValueDictionary(new {id = "12345"});
 
             var generatedUrl = _helper.AbsoluteRouteUrl(values);
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteNameAndRouteValues() {
             var expectedUrl = String.Format("http://localhost{0}/app/named/home/oldaction/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteRouteUrl("namedroute", new {id = "12345"});
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteNameAndRouteDictionary() {
             var expectedUrl = String.Format("http://localhost{0}/app/named/home/oldaction/12345", MvcHelper.AppPathModifier);
             var values = new RouteValueDictionary(new { id = "12345" });
 
             var generatedUrl = _helper.AbsoluteRouteUrl("namedroute", values);
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteNameAndRouteValuesAndProtocol() {
             var expectedUrl = String.Format("https://localhost{0}/app/named/home/oldaction/12345", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteRouteUrl("namedroute", new {id = "12345"}, "https");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteRouteUrlWithRouteNameAndRouteDictionaryAndProtocolAndHostname() {
             var expectedUrl = String.Format("https://google.com{0}/app/named/home/oldaction/12345", MvcHelper.AppPathModifier);
             var values = new RouteValueDictionary(new { id = "12345" });
 
             var generatedUrl = _helper.AbsoluteRouteUrl("namedroute", values, "https", "google.com");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
-        [Fact]
+        [Test]
         public void AbsoluteContent() {
             var expectedUrl = String.Format("http://localhost{0}/app/content/abc.txt", MvcHelper.AppPathModifier);
 
             var generatedUrl = _helper.AbsoluteContent("~/content/abc.txt");
 
-            Assert.Equal(expectedUrl, generatedUrl);
+            Assert.AreEqual(expectedUrl, generatedUrl);
         }
 
         #region Helpers taken from MVC 3 source.

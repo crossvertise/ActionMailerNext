@@ -25,11 +25,12 @@ using System;
 using System.IO;
 using System.Text;
 using FakeItEasy;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Standalone {
+    [TestFixture]
     public class RazorMailerBaseTests {
-        [Fact]
+        [Test]
         public void EmailWithNoViewNameShouldThrow() {
             var mockSender = A.Fake<IMailSender>();
             var mailer = new TestMailerBase(mockSender);
@@ -37,18 +38,18 @@ namespace ActionMailer.Net.Tests.Standalone {
             Assert.Throws<ArgumentNullException>(() => mailer.Email(null));
         }
 
-        [Fact]
+        [Test]
         public void PassingAMailSenderShouldWork() {
             var mockSender = A.Fake<IMailSender>();
 
             var mailer = new TestMailerBase(mockSender);
             var email = mailer.Email("TextViewNoModel");
 
-            Assert.Same(mockSender, mailer.MailSender);
-            Assert.Same(mockSender, email.MailSender);
+            Assert.AreSame(mockSender, mailer.MailSender);
+            Assert.AreSame(mockSender, email.MailSender);
         }
 
-        [Fact]
+        [Test]
         public void PassingAnEncodingShouldWork() {
             var mockSender = A.Fake<IMailSender>();
 
@@ -56,11 +57,11 @@ namespace ActionMailer.Net.Tests.Standalone {
             var email = mailer.Email("UTF8TextView");
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
-            Assert.Equal(Encoding.UTF8, email.MessageEncoding);
-            Assert.Equal("Umlauts are Über!", body);
+            Assert.AreEqual(Encoding.UTF8, email.MessageEncoding);
+            Assert.AreEqual("Umlauts are Über!", body);
         }
 
-        [Fact]
+        [Test]
         public void RazorViewWithNoModelShouldRenderProperly() {
             var mockSender = A.Fake<IMailSender>();
             var mailer = new TestMailerBase(mockSender);
@@ -68,10 +69,10 @@ namespace ActionMailer.Net.Tests.Standalone {
             var email = mailer.Email("TextViewNoModel");
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
-            Assert.Equal("This is a test", body);
+            Assert.AreEqual("This is a test", body);
         }
 
-        [Fact]
+        [Test]
         public void PassingAModelShouldWork() {
             var mockSender = A.Fake<IMailSender>();
             var mailer = new TestMailerBase(mockSender);
@@ -82,10 +83,10 @@ namespace ActionMailer.Net.Tests.Standalone {
             var email = mailer.Email("TextViewWithModel", model);
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
-            Assert.Equal("Your name is:  Foo", body);
+            Assert.AreEqual("Your name is:  Foo", body);
         }
 
-        [Fact]
+        [Test]
         public void MultipartMessagesShouldRenderBothViews() {
             var mockSender = A.Fake<IMailSender>();
             var mailer = new TestMailerBase(mockSender);
@@ -94,11 +95,11 @@ namespace ActionMailer.Net.Tests.Standalone {
             var textBody = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
             var htmlBody = new StreamReader(email.Mail.AlternateViews[1].ContentStream).ReadToEnd().Trim();
 
-            Assert.Equal("Testing multipart.", textBody);
-            Assert.Equal("<p>Testing multipart.</p>", htmlBody);
+            Assert.AreEqual("Testing multipart.", textBody);
+            Assert.AreEqual("<p>Testing multipart.</p>", htmlBody);
         }
 
-        [Fact]
+        [Test]
         public void WhiteSpaceShouldBeTrimmedWhenRequired() {
             var mockSender = A.Fake<IMailSender>();
 
@@ -106,10 +107,10 @@ namespace ActionMailer.Net.Tests.Standalone {
             var email = mailer.Email("WhitespaceTrimTest", trimBody: true);
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
 
-            Assert.Equal("This thing has leading and trailing whitespace.", body);
+            Assert.AreEqual("This thing has leading and trailing whitespace.", body);
         }
 
-        [Fact]
+        [Test]
         public void WhiteSpaceShouldBeIncludedWhenRequired() {
             var mockSender = A.Fake<IMailSender>();
 
