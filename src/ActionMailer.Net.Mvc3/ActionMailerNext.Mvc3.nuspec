@@ -3,7 +3,6 @@
   <metadata>
     <id>ActionMailerNext.Standalone</id>
     <version>$version$</version>
-    <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
     <licenseUrl>https://github.com/crossvertise/ActionMailerNext/blob/master/LICENSE.txt</licenseUrl>
