@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ActionMailer.Net.Postmark")]
 [assembly: AssemblyDescription("ActionMailer integration with the Postmark mail sending service.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Scott W. Anderson")]
+[assembly: AssemblyCompany("Scott W. Anderson, crossvertise GmbH")]
 [assembly: AssemblyProduct("ActionMailer.Net.Postmark")]
 [assembly: AssemblyCopyright("Copyright © 2011-2013 by Scott W. Anderson")]
 [assembly: AssemblyTrademark("")]

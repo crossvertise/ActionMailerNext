@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ActionMailer.Net.Mvc5-1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("ActionMailerNext is a painless way of using razor view to render emails. This version runs with ASP.MVC 5.1. ActionMailerNext is a continuation of the ActionMailer.Net project.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Scott W. Anderson, crossvertise GmbH")]
 [assembly: AssemblyProduct("ActionMailer.Net.Mvc5-1")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
