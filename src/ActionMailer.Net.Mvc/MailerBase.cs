@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
+﻿namespace ActionMailer.Net.Mvc3 {
+    using System;
+    using System.Collections.Generic;
+    using System.Net.Mail;
+    using System.Text;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Routing;
 
-namespace ActionMailer.Net.Mvc {
+    using AttachmentCollection = ActionMailer.Net.AttachmentCollection;
+
     /// <summary>
     /// The base class that your controller should inherit from if you wish
     /// to send emails through ActionMailer.Net.
@@ -88,11 +90,11 @@ namespace ActionMailer.Net.Mvc {
         protected virtual void OnMailSending(MailSendingContext context) { }
 
         void IMailInterceptor.OnMailSending(MailSendingContext context) {
-            OnMailSending(context);
+            this.OnMailSending(context);
         }
 
         void IMailInterceptor.OnMailSent(MailMessage mail) {
-            OnMailSent(mail);
+            this.OnMailSent(mail);
         }
 
         /// <summary>
@@ -101,21 +103,21 @@ namespace ActionMailer.Net.Mvc {
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         /// <param name="defaultMessageEncoding">The default encoding to use when generating a mail message.</param>
         protected MailerBase(IMailSender mailSender = null, Encoding defaultMessageEncoding = null) {
-            From = null;
-            Subject = null;
-            To = new List<string>();
-            CC = new List<string>();
-            BCC = new List<string>();
-            ReplyTo = new List<string>();
-            Headers = new Dictionary<string, string>();
-            Attachments = new AttachmentCollection();
-            MailSender = mailSender ?? new SmtpMailSender();
-            MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
+            this.From = null;
+            this.Subject = null;
+            this.To = new List<string>();
+            this.CC = new List<string>();
+            this.BCC = new List<string>();
+            this.ReplyTo = new List<string>();
+            this.Headers = new Dictionary<string, string>();
+            this.Attachments = new AttachmentCollection();
+            this.MailSender = mailSender ?? new SmtpMailSender();
+            this.MessageEncoding = defaultMessageEncoding ?? Encoding.UTF8;
 
             if (System.Web.HttpContext.Current != null) {
-                HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
-                var routeData = RouteTable.Routes.GetRouteData(HttpContextBase) ?? new RouteData();
-                var requestContext = new RequestContext(HttpContextBase, routeData);
+                this.HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
+                var routeData = RouteTable.Routes.GetRouteData(this.HttpContextBase) ?? new RouteData();
+                var requestContext = new RequestContext(this.HttpContextBase, routeData);
                 base.Initialize(requestContext);
             }
         }
@@ -133,37 +135,37 @@ namespace ActionMailer.Net.Mvc {
                 throw new ArgumentNullException("viewName");
 
             var mail = this.GenerateMail();
-            var result = new EmailResult(this, MailSender, mail, viewName, masterName, MessageEncoding, trimBody);
-            ViewData.Model = model;
-            result.ViewData = ViewData;
+            var result = new EmailResult(this, this.MailSender, mail, viewName, masterName, this.MessageEncoding, trimBody);
+            this.ViewData.Model = model;
+            result.ViewData = this.ViewData;
 
             var routeData = new RouteData();
-            routeData.DataTokens["area"] = FindAreaName();
-            routeData.Values["controller"] = GetType().Name.Replace("Controller", string.Empty);
+            routeData.DataTokens["area"] = this.FindAreaName();
+            routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
             routeData.Values["action"] = viewName;
 
-            var requestContext = new RequestContext(HttpContextBase, routeData);
-            ControllerContext = new ControllerContext(requestContext, this);
+            var requestContext = new RequestContext(this.HttpContextBase, routeData);
+            this.ControllerContext = new ControllerContext(requestContext, this);
 
-            result.ExecuteResult(ControllerContext);
+            result.ExecuteResult(this.ControllerContext);
             return result;
         }
 
         private string FindAreaName() {
             string area = null;
 
-            if (HttpContextBase != null &&
-                HttpContextBase.Request != null &&
-                HttpContextBase.Request.RequestContext != null &&
-                HttpContextBase.Request.RequestContext.RouteData != null) {
+            if (this.HttpContextBase != null &&
+                this.HttpContextBase.Request != null &&
+                this.HttpContextBase.Request.RequestContext != null &&
+                this.HttpContextBase.Request.RequestContext.RouteData != null) {
 
-                    if (HttpContextBase.Request.RequestContext.RouteData.DataTokens.ContainsKey("area")) {
-                        area = HttpContextBase.Request.RequestContext.RouteData.DataTokens["area"].ToString();
+                    if (this.HttpContextBase.Request.RequestContext.RouteData.DataTokens.ContainsKey("area")) {
+                        area = this.HttpContextBase.Request.RequestContext.RouteData.DataTokens["area"].ToString();
                     }
             }
 
             if (area == null) {
-                var name = GetType().Namespace;
+                var name = this.GetType().Namespace;
                 if (name != null && name.Contains(".Areas.")) {
                     var startIndex = name.IndexOf(".Areas.", StringComparison.Ordinal) + 7;
                     var length = name.LastIndexOf(".", StringComparison.Ordinal) - startIndex;
@@ -185,9 +187,9 @@ namespace ActionMailer.Net.Mvc {
         /// <param name="disposing">Whether we are disposing or not.</param>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (MailSender != null) {
-                    MailSender.Dispose();
-                    MailSender = null;
+                if (this.MailSender != null) {
+                    this.MailSender.Dispose();
+                    this.MailSender = null;
                 }                
             }
 

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net", "ActionM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Tests", "ActionMailer.Net.Tests\ActionMailer.Net.Tests.csproj", "{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc", "ActionMailer.Net.Mvc\ActionMailer.Net.Mvc.csproj", "{F6389DEF-0B5C-46CA-BAAF-241E210C8744}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc3", "ActionMailer.Net.Mvc\ActionMailer.Net.Mvc3.csproj", "{F6389DEF-0B5C-46CA-BAAF-241E210C8744}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Standalone", "ActionMailer.Net.Standalone\ActionMailer.Net.Standalone.csproj", "{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}"
 EndProject

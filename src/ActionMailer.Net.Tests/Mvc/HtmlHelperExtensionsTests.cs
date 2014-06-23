@@ -22,7 +22,7 @@
 #endregion
 
 using System.Web.Mvc;
-using ActionMailer.Net.Mvc;
+using ActionMailer.Net.Mvc3;
 using FakeItEasy;
 using HtmlAgilityPack;
 using NUnit.Framework;

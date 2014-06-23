@@ -24,10 +24,11 @@
 using System;
 using System.Web.Mvc;
 using System.Web.Routing;
-using ActionMailer.Net.Mvc;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Mvc {
+    using ActionMailer.Net.Mvc3;
+
     [TestFixture]
     public class UrlHelperExtensionsTests {
         private readonly UrlHelper _helper;

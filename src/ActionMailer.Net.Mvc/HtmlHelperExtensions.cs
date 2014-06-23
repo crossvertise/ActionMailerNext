@@ -1,9 +1,9 @@
-﻿using System;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
+﻿namespace ActionMailer.Net.Mvc3 {
+    using System;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Routing;
 
-namespace ActionMailer.Net.Mvc {
     /// <summary>
     /// This class contains some handy extension methods that make it easier
     /// to consume inline attachments in your message body.

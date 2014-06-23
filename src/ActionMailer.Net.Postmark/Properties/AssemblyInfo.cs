@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ActionMailer.Net.Postmark")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("ActionMailer integration with the Postmark mail sending service.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Scott W. Anderson")]
 [assembly: AssemblyProduct("ActionMailer.Net.Postmark")]
 [assembly: AssemblyCopyright("Copyright © 2011-2013 by Scott W. Anderson")]
 [assembly: AssemblyTrademark("")]

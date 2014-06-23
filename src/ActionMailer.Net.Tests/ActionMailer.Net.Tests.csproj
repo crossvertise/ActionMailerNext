@@ -76,9 +76,9 @@
     <None Include="Standalone\TestViews\WhitespaceTrimTest.txt.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActionMailer.Net.Mvc\ActionMailer.Net.Mvc.csproj">
+    <ProjectReference Include="..\ActionMailer.Net.Mvc\ActionMailer.Net.Mvc3.csproj">
       <Project>{F6389DEF-0B5C-46CA-BAAF-241E210C8744}</Project>
-      <Name>ActionMailer.Net.Mvc</Name>
+      <Name>ActionMailer.Net.Mvc3</Name>
     </ProjectReference>
     <ProjectReference Include="..\ActionMailer.Net.Standalone\ActionMailer.Net.Standalone.csproj">
       <Project>{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}</Project>

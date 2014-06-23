@@ -23,11 +23,12 @@
 
 using System;
 using System.Net.Mail;
-using ActionMailer.Net.Mvc;
 using FakeItEasy;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Mvc {
+    using ActionMailer.Net.Mvc3;
+
     public class EmailResultTests {
         [Test]
         public void ConstructorWithNullInterceptorThrows() {

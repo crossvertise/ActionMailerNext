@@ -8,8 +8,8 @@
     <ProjectGuid>{F6389DEF-0B5C-46CA-BAAF-241E210C8744}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActionMailer.Net.Mvc</RootNamespace>
-    <AssemblyName>ActionMailer.Net.Mvc</AssemblyName>
+    <RootNamespace>ActionMailer.Net.Mvc3</RootNamespace>
+    <AssemblyName>ActionMailer.Net.Mvc3</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\ActionMailer.Net.Mvc.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\ActionMailer.Net.Mvc3.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\ActionMailer.Net.Mvc.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ActionMailer.Net.Mvc3.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
