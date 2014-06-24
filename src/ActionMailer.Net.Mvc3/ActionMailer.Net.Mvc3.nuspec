@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>ActionMailerNext.Standalone</id>
+    <id>ActionMailerNext.Mvc3</id>
     <version>$version$</version>
     <authors>$author$</authors>
     <owners>$author$</owners>
