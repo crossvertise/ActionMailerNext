@@ -1,4 +1,6 @@
-﻿namespace ActionMailer.Net.Mvc5_1 {
+﻿using System.Diagnostics;
+
+namespace ActionMailer.Net.Mvc5_1 {
     using System;
     using System.Web;
     using System.Web.Mvc;
@@ -14,8 +16,20 @@
         /// <param name="helper">The UrlHelper instance to use for generation.</param>
         /// <param name="actionName">The name of the action.</param>
         /// <returns>An absolute url.</returns>
-        public static string AbsoluteAction(this UrlHelper helper, string actionName) {
-            var url = helper.Action(actionName);
+        public static string AbsoluteAction(this UrlHelper helper, string actionName)
+        {
+            var url = String.Empty;
+            //try
+            //{
+                url = helper.Action(actionName);
+
+            //}
+            //catch (ArgumentNullException e)
+            //{
+                
+            //    Debug.WriteLine(e.Source);
+            //}
+
             return GetAbsoluteUrl(helper.RequestContext.HttpContext.Request, url).ToString();
         }
 

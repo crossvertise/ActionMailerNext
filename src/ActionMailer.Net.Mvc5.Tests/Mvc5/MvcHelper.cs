@@ -23,60 +23,75 @@
 
 using System;
 using System.Collections;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Net;
 using System.Web;
 using System.Web.Routing;
 using FakeItEasy;
+using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
+namespace ActionMailer.Net.Mvc5.Tests.Mvc5
+{
     // Some helpers yanked from the MVC 4 source.
-    public static class MvcHelper {
+    public static class MvcHelper
+    {
         public const string AppPathModifier = "/$(SESSION)";
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port, RouteData routeData) {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port)
+        {
             var httpContext = A.Fake<HttpContextBase>();
-            var requestContext = A.Fake<RequestContext>();
+            var request = A.Fake<HttpRequestBase>();
+            var response = A.Fake<HttpResponseBase>();
+
             var httpWorkerRequest = A.Fake<HttpWorkerRequest>();
 
-            // required because FakeItEasy will initialize this, and then MVC will use
-            // it to determine if the Url was rewritten (which returns true, which
-            // then causes an exception).
-            A.CallTo(() => httpContext.Request.ServerVariables).Returns(null);
+            var uri = port >= 0 ? new Uri(protocol + "://localhost" + ":" + Convert.ToString(port)) : new Uri(protocol + "://localhost");
+
+
+            #region Request
+
+            if (!String.IsNullOrEmpty(appPath))
+            {
+                A.CallTo(() => request.ApplicationPath).Returns(appPath);
+                A.CallTo(() => request.RawUrl).Returns("/");
+            }
+
+            if (!String.IsNullOrEmpty(httpMethod))
+            {
+                A.CallTo(() => request.HttpMethod).Returns(httpMethod);
+            }
+            if (!String.IsNullOrEmpty(requestPath))
+            {
+                A.CallTo(() => request.AppRelativeCurrentExecutionFilePath).Returns(requestPath);
+
+            }
+            A.CallTo(() => request.Url).Returns(uri);
+            A.CallTo(() => request.PathInfo).Returns(String.Empty);
+
+            #endregion
+
+            #region Response
+
+            A.CallTo(() => response.ApplyAppPathModifier((A<string>.Ignored))).ReturnsLazily(x => AppPathModifier + x.Arguments[0]);
+
+            #endregion
+
+            #region Context
+
+            A.CallTo(() => httpContext.Request).Returns(request);
+            A.CallTo(() => httpContext.Response).Returns(response);
+            A.CallTo(() => httpContext.Session).Returns((HttpSessionStateBase)null);
             A.CallTo(() => httpContext.GetService(typeof(HttpWorkerRequest))).Returns(httpWorkerRequest);
-
-            if (!String.IsNullOrEmpty(appPath)) {
-                A.CallTo(() => httpContext.Request.ApplicationPath).Returns(appPath);
-            }
-            if (!String.IsNullOrEmpty(requestPath)) {
-                A.CallTo(() => httpContext.Request.AppRelativeCurrentExecutionFilePath).Returns(requestPath);
-            }
-
-            Uri uri;
-
-            if (port >= 0)
-                uri = new Uri(protocol + "://localhost" + ":" + Convert.ToString(port));
-            else
-                uri = new Uri(protocol + "://localhost");
-
-            A.CallTo(() => requestContext.RouteData).Returns(routeData);
-            
-            A.CallTo(() => httpContext.Request.Url).Returns(uri);
-            A.CallTo(() => httpContext.Request.RequestContext).Returns(requestContext);
-            A.CallTo(() => httpContext.Request.PathInfo).Returns(string.Empty);
-
-            if (!String.IsNullOrEmpty(httpMethod)) {
-                A.CallTo(() => httpContext.Request.HttpMethod).Returns(httpMethod);
-            }
-
-            A.CallTo(() => httpContext.Session).Returns(null);
-            A.CallTo(() => httpContext.Response.ApplyAppPathModifier((A<string>.Ignored)))
-                .ReturnsLazily(x => AppPathModifier + x.Arguments[0]);
-
             A.CallTo(() => httpContext.Items).Returns(new Hashtable());
+
+            #endregion
             return httpContext;
         }
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod) {
-            return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1, null);
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod)
+        {
+            return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1);
         }
     }
 }
