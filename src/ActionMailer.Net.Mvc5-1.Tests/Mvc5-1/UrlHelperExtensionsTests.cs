@@ -30,7 +30,6 @@ using NUnit.Framework;
 namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
 {
     [TestFixture]
-    //[Ignore("UrlHelper has changed in MVC5 - app works but tests need refactoring")]
     public class UrlHelperExtensionsTests {
         private readonly UrlHelper _helper;
 

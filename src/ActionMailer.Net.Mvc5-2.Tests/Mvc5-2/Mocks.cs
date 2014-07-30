@@ -25,6 +25,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using ActionMailer.Net.Mvc5_2;
+using ActionMailer.Net.Mvc5_2.Tests.Mvc5_2;
 
 namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
 {
@@ -185,7 +186,10 @@ namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
             return email.ViewName;
         }
     }
+}
 
+namespace ActionMailer.Net.Mvc5_2.Tests.Areas.TestArea.Controllers
+{
     public class MailController : TestMailerBase
     {
         public EmailResult TestEmail()

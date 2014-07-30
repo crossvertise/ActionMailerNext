@@ -187,12 +187,11 @@ namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
             });
         }
 
-        [Ignore("MVC5 issue... test needs refactoring")]
         [Test]
         public void AreasAreDetectedProperly() {
             var rd = new RouteData();
             rd.Values.Add("area", "TestArea");
-            var mailer = new MailController();
+            var mailer = new Areas.TestArea.Controllers.MailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);

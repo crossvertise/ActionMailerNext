@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ActionMailer.Net.Mvc5.Tests.Areas.TestArea.Controllers;
 using FakeItEasy;
 using NUnit.Framework;
 
@@ -186,16 +187,15 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             });
         }
 
-        [Ignore("MVC5 issue... test needs refactoring")]
         [Test]
         public void AreasAreDetectedProperly() {
             var rd = new RouteData();
             rd.Values.Add("area", "TestArea");
-            var mailer = new MailController();
+            var mailer = new Areas.TestArea.Controllers.MailController();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-
+            
             mailer.TestEmail();
 
             Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
