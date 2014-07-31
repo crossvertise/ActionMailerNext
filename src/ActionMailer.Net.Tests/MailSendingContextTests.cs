@@ -22,17 +22,18 @@
 #endregion
 
 using System.Net.Mail;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
+    [TestFixture]
     public class MailSendingContextTests {
-        [Fact]
+        [Test]
         public void MailContextConstructorSetsUpObjectProperly() {
             var mail = new MailMessage("no-reply@test.com", "test@test.com");
             
             var context = new MailSendingContext(mail);
 
-            Assert.Equal(mail, context.Mail);
+            Assert.AreEqual(mail, context.Mail);
             Assert.False(context.Cancel);
         }
     }

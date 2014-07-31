@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ActionMailer.Net.Standalone")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("ActionMailerNext is a painless way of using razor view to render emails. This version runs outside of an ASP.NET MVC application, e.g. in a console app or a azure worker role. It uses RazorEngine to render the views. ActionMailerNext is a continuation of the ActionMailer.Net project.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Scott W. Anderson, crossvertise GmbH")]
 [assembly: AssemblyProduct("ActionMailer.Net.Standalone")]
-[assembly: AssemblyCopyright("Copyright © 2011-2013 by Scott W. Anderson")]
+[assembly: AssemblyCopyright("Copyright © 2014 by Scott W. Anderson, Maximilian Balbach")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.8.0.0")]
-[assembly: AssemblyFileVersion("0.8.0.0")]
+[assembly: AssemblyVersion("0.8.1.0")]
+[assembly: AssemblyFileVersion("0.8.1.0")]

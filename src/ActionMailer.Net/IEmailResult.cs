@@ -23,10 +23,19 @@ namespace ActionMailer.Net
         /// </summary>
         void DeliverAsync();
 
+        /// <summary>
+        /// The underlying MailMessage object that was passed to this object's constructor.
+        /// </summary>
         MailMessage Mail { get; }
 
+        /// <summary>
+        /// The IMailSender instance that is used to deliver mail.
+        /// </summary>
         IMailSender MailSender { get; }
 
+        /// <summary>
+        /// The default encoding used to send a message.
+        /// </summary>
         Encoding MessageEncoding { get; }
     }
 }

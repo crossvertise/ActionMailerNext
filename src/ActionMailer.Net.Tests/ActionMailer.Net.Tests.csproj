@@ -33,13 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=1.10.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+    <Reference Include="FakeItEasy, Version=1.22.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FakeItEasy.1.10.0\lib\net40\FakeItEasy.dll</HintPath>
+      <HintPath>..\packages\FakeItEasy.1.22.0\lib\net40\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RazorEngine, Version=3.2.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -48,26 +47,14 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
-    <Reference Include="xunit, Version=1.9.1.1600, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\xunit.1.9.1\lib\net20\xunit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeliveryHelperTests.cs" />
     <Compile Include="MailerBaseExtensionsTests.cs" />
     <Compile Include="Mocks.cs" />
-    <Compile Include="Mvc\EmailResultTests.cs" />
-    <Compile Include="Mvc\HtmlHelperExtensionsTests.cs" />
-    <Compile Include="Mvc\MailerBaseTests.cs" />
     <Compile Include="MailSendingContextTests.cs" />
-    <Compile Include="Mvc\Mocks.cs" />
-    <Compile Include="Mvc\MvcHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Mvc\UrlHelperExtensionsTests.cs" />
     <Compile Include="Standalone\Mocks.cs" />
     <Compile Include="Standalone\RazorEmailResultTests.cs" />
     <Compile Include="Standalone\RazorMailerBaseTests.cs" />
@@ -77,10 +64,6 @@
     <None Include="Standalone\TestViews\WhitespaceTrimTest.txt.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActionMailer.Net.Mvc\ActionMailer.Net.Mvc.csproj">
-      <Project>{F6389DEF-0B5C-46CA-BAAF-241E210C8744}</Project>
-      <Name>ActionMailer.Net.Mvc</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ActionMailer.Net.Standalone\ActionMailer.Net.Standalone.csproj">
       <Project>{D167A4F3-7EAF-4FCB-A42F-D4389A45BFF2}</Project>
       <Name>ActionMailer.Net.Standalone</Name>
@@ -96,7 +79,9 @@
     <None Include="Standalone\TestViews\MultipartNoModel.txt.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

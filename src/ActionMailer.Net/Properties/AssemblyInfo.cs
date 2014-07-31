@@ -2,15 +2,15 @@
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("ActionMailer.Net")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("ActionMailerNext is a painless way of using razor view to render emails. This is the shared base library used in all versions of ActionMailer. ActionMailerNext is a continuation of the ActionMailer.Net project")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Scott W. Anderson, crossvertise GmbH")]
 [assembly: AssemblyProduct("ActionMailer.Net")]
-[assembly: AssemblyCopyright("Copyright © 2011-2013 by Scott W. Anderson")]
+[assembly: AssemblyCopyright("Copyright © 2014 by Scott W. Anderson, Maximilian Balbach")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("6125d9cc-3dec-454c-82ed-c57bf6f0d482")]
 
-[assembly: AssemblyVersion("0.8.0.0")]
-[assembly: AssemblyFileVersion("0.8.0.0")]
+[assembly: AssemblyVersion("0.8.1.0")]
+[assembly: AssemblyFileVersion("0.8.1.0")]

@@ -25,11 +25,12 @@ using System;
 using System.Net.Mail;
 using System.Threading;
 using FakeItEasy;
-using Xunit;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
+    [TestFixture]
     public class DeliveryHelperTests {
-        [Fact]
+        [Test]
         public void ConstructorWithNullSenderThrows() {
             var interceptor = A.Fake<IMailInterceptor>();
 
@@ -38,7 +39,7 @@ namespace ActionMailer.Net.Tests {
             });
         }
 
-        [Fact]
+        [Test]
         public void ConstructorWithNullInterceptorThrows() {
             var sender = A.Fake<IMailSender>();
 
@@ -47,7 +48,7 @@ namespace ActionMailer.Net.Tests {
             });
         }
 
-        [Fact]
+        [Test]
         public void DeliverWithNullMailMessageThrows() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -56,7 +57,7 @@ namespace ActionMailer.Net.Tests {
             Assert.Throws<ArgumentNullException>(() => helper.Deliver(false, null));
         }
 
-        [Fact]
+        [Test]
         public void DeliverSynchronouslySendsMessage() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -68,7 +69,7 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => sender.Send(mail)).MustHaveHappened();
         }
 
-        [Fact]
+        [Test]
         public void DeliveryAsynchronouslySendsMessage() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -80,7 +81,7 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => sender.SendAsync(mail, A<Action<MailMessage>>.Ignored)).MustHaveHappened();
         }
 
-        [Fact]
+        [Test]
         public void DeliverNotifiesWhenMailIsBeingSent() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -91,7 +92,7 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => interceptor.OnMailSending(A<MailSendingContext>.Ignored)).MustHaveHappened();
         }
 
-        [Fact]
+        [Test]
         public void DeliverSynchronouslyNotifiesWhenMailWasSent() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -103,7 +104,7 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => interceptor.OnMailSent(mail)).MustHaveHappened();
         }
 
-        [Fact]
+        [Test]
         public void DeliverAsynchronouslyNotifiesWhenMailWasSent() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
@@ -118,7 +119,7 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => interceptor.OnMailSent(mail)).MustHaveHappened();
         }
 
-        [Fact]
+        [Test]
         public void DeliverShouldAllowSendingToBeCancelled() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
