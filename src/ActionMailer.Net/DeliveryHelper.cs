@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace ActionMailer.Net {
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace ActionMailer.Net {
     /// <summary>
@@ -7,7 +8,6 @@ namespace ActionMailer.Net {
     /// </summary>
     public class SmtpMailSender : IMailSender {
         private readonly SmtpClient _client;
-        private Action<MailMessage> _callback;
 
         /// <summary>
         /// Creates a new mail sender based on System.Net.Mail.SmtpClient
@@ -32,21 +32,17 @@ namespace ActionMailer.Net {
         }
 
         /// <summary>
-        /// Sends mail asynchronously.
+        /// Sends mail asynchronously using tasks.
         /// </summary>
-        /// <param name="mail">The mail you wish to send.</param>
-        /// <param name="callback">The callback method to invoke when the send operation is complete.</param>
-        public void SendAsync(MailMessage mail, Action<MailMessage> callback) {
-            _callback = callback;
-            _client.SendCompleted += new SendCompletedEventHandler(AsyncSendCompleted);
-            _client.SendAsync(mail, mail);
+        /// <param name="mail">The mail message you wish to send.</param>
+        /// <param name="callbackTask">The callback task that will be fired when sending is complete.</param>
+        public async void SendAsync(MailMessage mail,  Action<MailMessage> callbackTask)
+        {
+
+            var sendTask = _client.SendMailAsync(mail);
+            await sendTask.ContinueWith(t => callbackTask(mail));
         }
 
-        private void AsyncSendCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e) {
-            // unsubscribe from the event so _client can be GC'ed if necessary
-            _client.SendCompleted -= AsyncSendCompleted;
-            _callback(e.UserState as MailMessage);
-        }
 
         /// <summary>
         /// Destroys the underlying SmtpClient.
