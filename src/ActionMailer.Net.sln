@@ -38,11 +38,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc3.Tests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc5-1.Tests", "ActionMailer.Net.Mvc5-1.Tests\ActionMailer.Net.Mvc5-1.Tests.csproj", "{B84A14D1-0A09-49AE-9B3C-B3893CCA137D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E7D3B22C-CC8D-4144-9EDD-C691E2D725D8}"
-	ProjectSection(SolutionItems) = preProject
-		Remarks.txt = Remarks.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc5-2", "ActionMailer.Net.Mvc5-2\ActionMailer.Net.Mvc5-2.csproj", "{03709179-4C70-4739-9854-CB2670D39489}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailer.Net.Mvc5-2.Tests", "ActionMailer.Net.Mvc5-2.Tests\ActionMailer.Net.Mvc5-2.Tests.csproj", "{7B20D875-D13A-4EAC-BF4E-E2C99C000F6E}"

@@ -25,7 +25,7 @@ namespace ActionMailer.Net.Interfaces
         string Subject { get; set; }
 
         /// <summary>
-        /// 
+        ///     The Priority of the email.
         /// </summary>
         MailPriority Priority { get; set; }
         /// <summary>
@@ -60,15 +60,16 @@ namespace ActionMailer.Net.Interfaces
 
         /// <summary>
         ///     Any attachments you wish to add.  The key of this collection is what
-        ///     the file should be named.  The value is should represent the binary bytes
+        ///     the file should be named.  The value is should represent the actual content
         ///     of the file.
         /// </summary>
         /// <example>
         ///     Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
         /// </example>
         AttachmentCollection Attachments { get; }
-
         /// <summary>
+        ///     Any view you wish to add.  The key of this collection is what
+        ///     the view should be named.
         /// </summary>
         AlternateViewCollection AlternateViews { get; }
     }

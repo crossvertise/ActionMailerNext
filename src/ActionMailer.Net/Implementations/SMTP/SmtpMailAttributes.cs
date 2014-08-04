@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Utils;
-
 using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
-using AlternateViewCollection = ActionMailer.Net.Utils.AlternativeViewCollection;
 
-namespace ActionMailer.Net
+namespace ActionMailer.Net.Implementations.SMTP
 {
     /// <summary>
+    ///     Mailer for SMTP
     /// </summary>
     public class SmtpMailAttributes : IMailAttributes
     {
@@ -54,7 +52,7 @@ namespace ActionMailer.Net
 
             // From is optional because it could be set in <mailSettings>
             if (!String.IsNullOrWhiteSpace(mail.From.Address))
-                message.From = new MailAddress(mail.From.Address);
+                message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
 
             message.Subject = mail.Subject;
 
@@ -70,16 +68,66 @@ namespace ActionMailer.Net
             return message;
         }
 
+        /// <summary>
+        ///     A string representation of who this mail should be from.  Could be
+        ///     your name and email address or just an email address by itself.
+        /// </summary>
         public MailAddress From { get; set; }
+
+        /// <summary>
+        ///     The subject line of the email.
+        /// </summary>
         public string Subject { get; set; }
+
+        /// <summary>
+        ///     The Priority of the email.
+        /// </summary>
         public MailPriority Priority { get; set; }
+
+        /// <summary>
+        ///     A collection of addresses this email should be sent to.
+        /// </summary>
         public IList<MailAddress> To { get; private set; }
+
+        /// <summary>
+        ///     A collection of addresses that should be CC'ed.
+        /// </summary>
         public IList<MailAddress> Cc { get; private set; }
+
+        /// <summary>
+        ///     A collection of addresses that should be BCC'ed.
+        /// </summary>
         public IList<MailAddress> Bcc { get; private set; }
+
+        /// <summary>
+        ///     A collection of addresses that should be listed in Reply-To header.
+        /// </summary>
         public IList<MailAddress> ReplyTo { get; private set; }
+
+        /// <summary>
+        ///     Any custom headers (name and value) that should be placed on the message.
+        /// </summary>
         public IDictionary<string, string> Headers { get; private set; }
+
+        /// <summary>
+        ///     Gets or sets the default message encoding when delivering mail.
+        /// </summary>
         public Encoding MessageEncoding { get; set; }
+
+        /// <summary>
+        ///     Any attachments you wish to add.  The key of this collection is what
+        ///     the file should be named.  The value is should represent the binary bytes
+        ///     of the file.
+        /// </summary>
+        /// <example>
+        ///     Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
+        /// </example>
         public AttachmentCollection Attachments { get; private set; }
+
+        /// <summary>
+        ///     Any view you wish to add.  The key of this collection is what
+        ///     the view should be named.
+        /// </summary>
         public AlternativeViewCollection AlternateViews { get; private set; }
     }
 }
