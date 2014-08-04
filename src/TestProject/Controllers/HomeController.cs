@@ -14,9 +14,12 @@ namespace TestProject.Controllers
     {
         public EmailResult TestEmail()
         {
+            SetMailMethod(MailSenderMethod.SMTP);
+            MailAttributes.FromName = "Mr. Kamel";
             MailAttributes.FromAddress = new MailAddress("dodohani@gmail.com");
             MailAttributes.To.Add(new MailAddress("a.kamel@crossvertise.com"));
-            MailAttributes.Subject = "It might work";
+            MailAttributes.Subject = "That should work";
+            MailAttributes.Priority = MailPriority.High;
 
             return Email("View");
         }
@@ -25,7 +28,6 @@ namespace TestProject.Controllers
         {
             await this.TestEmail().DeliverAsync();
             return null;
-
         }
 
         public ActionResult TestSync()

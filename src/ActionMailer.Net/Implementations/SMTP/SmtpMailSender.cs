@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ActionMailer.Net.Interfaces;
 
-namespace ActionMailer.Net
+namespace ActionMailer.Net.Implementations.SMTP
 {
     /// <summary>
     ///     Implements IMailSender by using System.Net.Mail.SmtpClient.

@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Utils;
-
 using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
-using AlternateViewCollection = ActionMailer.Net.Utils.AlternativeViewCollection;
 
-namespace ActionMailer.Net
+namespace ActionMailer.Net.Implementations.SMTP
 {
     /// <summary>
     /// </summary>
@@ -73,6 +70,7 @@ namespace ActionMailer.Net
         public string FromName { get; set; }
         public MailAddress FromAddress { get; set; }
         public string Subject { get; set; }
+        public MailPriority Priority { get; set; }
         public IList<MailAddress> To { get; private set; }
         public IList<MailAddress> Cc { get; private set; }
         public IList<MailAddress> Bcc { get; private set; }

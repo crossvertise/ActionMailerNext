@@ -30,6 +30,10 @@ namespace ActionMailer.Net.Interfaces
         string Subject { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        MailPriority Priority { get; set; }
+        /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
         IList<MailAddress> To { get; }

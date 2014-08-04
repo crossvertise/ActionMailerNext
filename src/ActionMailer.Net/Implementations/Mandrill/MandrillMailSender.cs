@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Configuration;
-using System.Net.Mail;
 using System.Threading.Tasks;
 using ActionMailer.Net.Interfaces;
 using Mandrill;
 
-namespace ActionMailer.Net
+namespace ActionMailer.Net.Implementations.Mandrill
 {
     /// <summary>
     ///     Implements IMailSender by using Mandrill.MandrillApi

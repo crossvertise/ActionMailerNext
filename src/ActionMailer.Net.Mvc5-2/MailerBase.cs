@@ -1,4 +1,7 @@
-﻿namespace ActionMailer.Net.Mvc5_2 {
+﻿using ActionMailer.Net.Implementations;
+using ActionMailer.Net.Implementations.Mandrill;
+
+namespace ActionMailer.Net.Mvc5_2 {
     using System;
     using ActionMailer.Net.Interfaces;
     using System.Text;
@@ -47,15 +50,21 @@
             this.OnMailSent(mail);
         }
 
+        public void SetMailMethod(MailSenderMethod method)
+        {
+            this.MailAttributes = EmailMethodUtil.GetAttributes(method);
+            this.MailSender = EmailMethodUtil.GetSender();
+        }
+
         /// <summary>
-        /// Initializes MailerBase using the default MandrillMailSender and system Encoding.
+        /// Initializes MailerBase using the defaultMailSender and system Encoding.
         /// </summary>
         /// <param name="mailAttributes"> the mail attributes</param>
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         protected MailerBase(IMailAttributes mailAttributes = null , IMailSender mailSender = null)
         {
-            this.MailAttributes = mailAttributes ?? new MandrillMailAttributes();
-            this.MailSender = mailSender ?? new MandrillMailSender();
+            this.MailAttributes = mailAttributes ?? EmailMethodUtil.GetAttributes();
+            this.MailSender = mailSender ?? EmailMethodUtil.GetSender();
 
             if (System.Web.HttpContext.Current == null) return;
             this.HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
