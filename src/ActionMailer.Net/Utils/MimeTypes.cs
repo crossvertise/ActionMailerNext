@@ -1,32 +1,39 @@
 ﻿using System;
 
-namespace ActionMailer.Net {
+namespace ActionMailer.Net.Utils
+{
     /// <summary>
-    /// Just a handy class for finding mime types.
+    ///     Just a handy class for finding mime types.
     /// </summary>
-    public static class MimeTypes {
+    public static class MimeTypes
+    {
         /// <summary>
-        /// Resolves a mime type based on the given file extension.  The extension is case-insensitive.
-        /// Shamelessly stolen from: http://stackoverflow.com/questions/1029740/get-a-mime-from-an-extention/3393525#3393525
+        ///     Resolves a mime type based on the given file extension.  The extension is case-insensitive.
+        ///     Shamelessly stolen from: http://stackoverflow.com/questions/1029740/get-a-mime-from-an-extention/3393525#3393525
         /// </summary>
         /// <param name="extension">The file extension to search for.</param>
         /// <returns>The proper mime type for the supplied extension.</returns>
-        public static string ResolveByExtension(string extension) {
-            if (extension == null) {
+        public static string ResolveByExtension(string extension)
+        {
+            if (extension == null)
+            {
                 throw new ArgumentNullException("extension");
             }
 
-            if (!extension.StartsWith(".")) {
+            if (!extension.StartsWith("."))
+            {
                 extension = "." + extension;
             }
 
             extension = extension.ToLowerInvariant();
 
-            switch (extension) {
-                #region Big freaking list of mime types
-                // combination of values from Windows 7 Registry and 
-                // from C:\Windows\System32\inetsrv\config\applicationHost.config
-                // some added, including .7z and .dat
+            switch (extension)
+            {
+                    #region Big freaking list of mime types
+
+                    // combination of values from Windows 7 Registry and 
+                    // from C:\Windows\System32\inetsrv\config\applicationHost.config
+                    // some added, including .7z and .dat
 
                 case ".323":
                     return "text/h323";
@@ -1149,7 +1156,7 @@ namespace ActionMailer.Net {
                 case ".zip":
                     return "application/x-zip-compressed";
 
-                #endregion
+                    #endregion
 
                 default:
                     return "application/octet-stream";

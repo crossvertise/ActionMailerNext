@@ -1,21 +1,24 @@
 ﻿using System;
-using System.Net.Mail;
 using System.Threading.Tasks;
+using ActionMailer.Net.Interfaces;
 
-namespace ActionMailer.Net {
+namespace ActionMailer.Net
+{
     /// <summary>
-    /// Some helpers used to dilver mail.  Reduces the need to repeat code.
+    ///     Some helpers used to dilver mail.  Reduces the need to repeat code.
     /// </summary>
-    public class DeliveryHelper {
-        private IMailSender _sender;
-        private IMailInterceptor _interceptor;
+    public class DeliveryHelper
+    {
+        private readonly IMailInterceptor _interceptor;
+        private readonly IMailSender _sender;
 
         /// <summary>
-        /// Creates a new dilvery helper to be used for sending messages.
+        ///     Creates a new delivery helper to be used for sending messages.
         /// </summary>
         /// <param name="sender">The sender to use when delivering mail.</param>
         /// <param name="interceptor">The interceptor to report with while delivering mail.</param>
-        public DeliveryHelper(IMailSender sender, IMailInterceptor interceptor) {
+        public DeliveryHelper(IMailSender sender, IMailInterceptor interceptor)
+        {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
 
@@ -27,11 +30,12 @@ namespace ActionMailer.Net {
         }
 
         /// <summary>
-        /// Sends the given email using the given
+        ///     Sends the given email using the given
         /// </summary>
         /// <param name="async">Whether or not to use asynchronous delivery.</param>
         /// <param name="mail">The mail message to send.</param>
-        public void Deliver(bool async, MailMessage mail) {
+        public async Task<IMailAttributes> Deliver(bool async, IMailAttributes mail)
+        {
             if (mail == null)
                 throw new ArgumentNullException("mail");
 
@@ -39,18 +43,21 @@ namespace ActionMailer.Net {
             _interceptor.OnMailSending(mailContext);
 
             if (mailContext.Cancel)
-                return;
+                return null;
 
-            if (async) {
-                _sender.SendAsync(mail, AsyncSendCompleted);
-                return;
+            if (async)
+            {
+                Task<IMailAttributes> sendtask = _sender.SendAsync(mail);
+                await sendtask.ContinueWith(t => AsyncSendCompleted(t.Result));
+                return mail;
             }
 
             _sender.Send(mail);
-            _interceptor.OnMailSent(mail);
+            return mail;
         }
 
-        private void AsyncSendCompleted(MailMessage mail) {
+        private void AsyncSendCompleted(IMailAttributes mail)
+        {
             _interceptor.OnMailSent(mail);
         }
     }

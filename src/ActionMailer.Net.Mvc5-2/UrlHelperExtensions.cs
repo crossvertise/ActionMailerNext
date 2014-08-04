@@ -1,11 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
 
-namespace ActionMailer.Net.Mvc5_1 {
-    using System;
-    using System.Web;
-    using System.Web.Mvc;
-    using System.Web.Routing;
-
+namespace ActionMailer.Net.Mvc5_2 {
     /// <summary>
     /// Simple extension methods for UrlHelper to always generate absolute urls.
     /// </summary>
@@ -18,18 +16,8 @@ namespace ActionMailer.Net.Mvc5_1 {
         /// <returns>An absolute url.</returns>
         public static string AbsoluteAction(this UrlHelper helper, string actionName)
         {
-            var url = String.Empty;
-            //try
-            //{
-                url = helper.Action(actionName);
 
-            //}
-            //catch (ArgumentNullException e)
-            //{
-                
-            //    Debug.WriteLine(e.Source);
-            //}
-
+            var url = helper.Action(actionName);
             return GetAbsoluteUrl(helper.RequestContext.HttpContext.Request, url).ToString();
         }
 
