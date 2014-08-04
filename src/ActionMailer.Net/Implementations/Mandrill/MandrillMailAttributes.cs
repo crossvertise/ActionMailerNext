@@ -49,8 +49,8 @@ namespace ActionMailer.Net.Implementations.Mandrill
             //create base message
             var message = new EmailMessage
             {
-                from_name = mail.FromName,
-                from_email = mail.FromAddress.Address,
+                from_name = mail.From.DisplayName,
+                from_email = mail.From.Address,
                 to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
                 subject = mail.Subject,
@@ -97,8 +97,7 @@ namespace ActionMailer.Net.Implementations.Mandrill
             return message;
         }
 
-        public string FromName { get; set; }
-        public MailAddress FromAddress { get; set; }
+        public MailAddress From { get; set; }
         public string Subject { get; set; }
         public MailPriority Priority { get; set; }
         public IList<MailAddress> To { get; private set; }

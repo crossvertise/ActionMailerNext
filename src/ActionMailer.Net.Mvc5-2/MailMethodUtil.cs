@@ -4,18 +4,18 @@ using ActionMailer.Net.Interfaces;
 
 namespace ActionMailer.Net.Mvc5_2
 {
-    internal static class EmailMethodUtil
+    internal static class MailMethodUtil
     {
         
-        public static IMailSender GetSender(MailSenderMethod method = MailSenderMethod.SMTP)
+        public static IMailSender GetSender(MailMethod method = MailMethod.SMTP)
         {
             switch (method)
             {
-                case MailSenderMethod.SMTP :
+                case MailMethod.SMTP :
                 {
                     return new SmtpMailSender();
                 }
-                case MailSenderMethod.Mandrill :
+                case MailMethod.Mandrill :
                 {
                     return new MandrillMailSender();
                 }
@@ -26,15 +26,15 @@ namespace ActionMailer.Net.Mvc5_2
             }
         }
 
-        public static IMailAttributes GetAttributes(MailSenderMethod method = MailSenderMethod.SMTP)
+        public static IMailAttributes GetAttributes(MailMethod method = MailMethod.SMTP)
         {
             switch (method)
             {
-                case MailSenderMethod.SMTP:
+                case MailMethod.SMTP:
                     {
                         return new SmtpMailAttributes();
                     }
-                case MailSenderMethod.Mandrill:
+                case MailMethod.Mandrill:
                     {
                         return new MandrillMailAttributes();
                     }
@@ -46,7 +46,7 @@ namespace ActionMailer.Net.Mvc5_2
         }
     }
 
-    public enum MailSenderMethod
+    public enum MailMethod
     {
         SMTP,
         Mandrill

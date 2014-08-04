@@ -12,17 +12,12 @@ namespace ActionMailer.Net.Interfaces
     /// </summary>
     public interface IMailAttributes
     {
-        /// <summary>
-        ///     A string representation of who this mail should be from.  Could be
-        ///     your name and email address or just an email address by itself.
-        /// </summary>
-        string FromName { get; set; }
 
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
         ///     your name and email address or just an email address by itself.
         /// </summary>
-        MailAddress FromAddress { get; set; }
+        MailAddress From { get; set; }
 
         /// <summary>
         ///     The subject line of the email.

@@ -14,9 +14,9 @@ namespace TestProject.Controllers
     {
         public EmailResult TestEmail()
         {
-            SetMailMethod(MailSenderMethod.SMTP);
-            MailAttributes.FromName = "Mr. Kamel";
-            MailAttributes.FromAddress = new MailAddress("dodohani@gmail.com");
+            SetMailMethod(MailMethod.SMTP);
+
+            MailAttributes.From = new MailAddress("dodohani@gmail.com","Mr. Kamel");
             MailAttributes.To.Add(new MailAddress("a.kamel@crossvertise.com"));
             MailAttributes.Subject = "That should work";
             MailAttributes.Priority = MailPriority.High;

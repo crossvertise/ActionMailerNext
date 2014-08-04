@@ -108,7 +108,6 @@ namespace ActionMailer.Net.Mvc5_2
                 ViewName = context.RouteData.GetRequiredString("action");
             
             this._htmlViewName = String.Format("{0}.html", ViewName);
-            this._htmlViewName = ViewName;
             this._textViewName = String.Format("{0}.txt", ViewName);
 
             var htmlViewResult = ViewEngines.Engines.FindView(context, this._htmlViewName, MasterName);

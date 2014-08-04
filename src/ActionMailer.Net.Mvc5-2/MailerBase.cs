@@ -50,10 +50,10 @@ namespace ActionMailer.Net.Mvc5_2 {
             this.OnMailSent(mail);
         }
 
-        public void SetMailMethod(MailSenderMethod method)
+        public void SetMailMethod(MailMethod method)
         {
-            this.MailAttributes = EmailMethodUtil.GetAttributes(method);
-            this.MailSender = EmailMethodUtil.GetSender();
+            this.MailAttributes = MailMethodUtil.GetAttributes(method);
+            this.MailSender = MailMethodUtil.GetSender();
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace ActionMailer.Net.Mvc5_2 {
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         protected MailerBase(IMailAttributes mailAttributes = null , IMailSender mailSender = null)
         {
-            this.MailAttributes = mailAttributes ?? EmailMethodUtil.GetAttributes();
-            this.MailSender = mailSender ?? EmailMethodUtil.GetSender();
+            this.MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
+            this.MailSender = mailSender ?? MailMethodUtil.GetSender();
 
             if (System.Web.HttpContext.Current == null) return;
             this.HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);

@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Utils;
-using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
 
-namespace ActionMailer.Net.Implementations.SMTP
+using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
+using AlternateViewCollection = ActionMailer.Net.Utils.AlternativeViewCollection;
+
+namespace ActionMailer.Net
 {
     /// <summary>
     /// </summary>
@@ -50,8 +53,8 @@ namespace ActionMailer.Net.Implementations.SMTP
                 message.ReplyToList.Add(mail.ReplyTo[i]);
 
             // From is optional because it could be set in <mailSettings>
-            if (!String.IsNullOrWhiteSpace(mail.FromAddress.Address))
-                message.From = new MailAddress(mail.FromAddress.Address);
+            if (!String.IsNullOrWhiteSpace(mail.From.Address))
+                message.From = new MailAddress(mail.From.Address);
 
             message.Subject = mail.Subject;
 
@@ -67,8 +70,7 @@ namespace ActionMailer.Net.Implementations.SMTP
             return message;
         }
 
-        public string FromName { get; set; }
-        public MailAddress FromAddress { get; set; }
+        public MailAddress From { get; set; }
         public string Subject { get; set; }
         public MailPriority Priority { get; set; }
         public IList<MailAddress> To { get; private set; }
