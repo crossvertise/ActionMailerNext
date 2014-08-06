@@ -62,7 +62,7 @@ namespace ActionMailer.Net.Standalone {
 
         
         /// <summary>
-        /// 
+        /// This method is called when onMailsent is fired.
         /// </summary>
         /// <param name="mail"></param>
         public void OnMailSent(IMailAttributes mail) { }
