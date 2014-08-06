@@ -91,7 +91,7 @@ namespace ActionMailer.Net.Mvc5_1
         /// </summary>
         public void Deliver()
         {
-            this._deliveryHelper.Deliver(false, this.Mail);
+            this._deliveryHelper.Deliver(this.Mail);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace ActionMailer.Net.Mvc5_1
         /// </summary>
         public async Task<IMailAttributes> DeliverAsync()
         {
-            var deliverTask = this._deliveryHelper.Deliver(true, this.Mail);
+            var deliverTask = this._deliveryHelper.DeliverAsync(this.Mail);
             return await deliverTask;
         }
 
@@ -161,14 +161,14 @@ namespace ActionMailer.Net.Mvc5_1
             {
                 var body = this.RenderViewAsString(context, this._textView);
                 var altView = AlternateView.CreateAlternateViewFromString(body, this.MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
-                this.Mail.AlternateViews.Add(altView.ContentId, altView);
+                this.Mail.AlternateViews.Add(altView);
             }
 
             if (this._htmlView != null)
             {
                 var body = this.RenderViewAsString(context, this._htmlView);
                 var altView = AlternateView.CreateAlternateViewFromString(body, this.MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                this.Mail.AlternateViews.Add(altView.ContentId, altView);
+                this.Mail.AlternateViews.Add(altView);
             }
         }
     }

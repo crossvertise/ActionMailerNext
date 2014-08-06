@@ -39,7 +39,10 @@ namespace ActionMailer.Net.Standalone {
         /// </summary>
         public Type TemplateBaseType { get; set; }
 
-        public new DynamicViewBag ViewBag { get; set; }
+        /// <summary>
+        /// Used to add needed variable
+        /// </summary>
+        public DynamicViewBag ViewBag { get; set; }
 
 
         private ITemplateService _templateService;

@@ -26,54 +26,40 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
-using ActionMailer.Net.Implementations.SMTP;
+using ActionMailer.Net.Implementations.Mandrill;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
     [TestFixture]
-    public class SMTPMailAttributeTests {
+    public class MandrillMailAttributeTests {
         [Test]
         public void GeneratePropsectiveEmailMessageShouldSetCorrectMessageProperties()
         {
-            var mailer = new SmtpMailAttributes();
+            var mailer = new MandrillMailAttributes();
             mailer.To.Add(new MailAddress("test@test.com"));
             mailer.From = new MailAddress("no-reply@mysite.com");
             mailer.Subject = "test subject";
-            mailer.Cc.Add(new MailAddress("test-cc@test.com"));
             mailer.Bcc.Add(new MailAddress("test-bcc@test.com"));
-            mailer.ReplyTo.Add(new MailAddress("test-reply-to@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
 
             var logoAttachmentBytes = File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
                     "logo.png"));
             mailer.Attachments["logo.png"] = logoAttachmentBytes;
 
-            mailer.Attachments.Inline["logo-inline.png"] = logoAttachmentBytes;
-
             var result = mailer.GenerateProspectiveMailMessage();
-            var attachment = result.Attachments[0];
-            var inlineAttachment = result.Attachments[1];
-            var attachmentBytes = new byte[attachment.ContentStream.Length];
-            var inlineAttachmentBytes = new byte[inlineAttachment.ContentStream.Length];
-            attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
-            inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0, Convert.ToInt32(inlineAttachment.ContentStream.Length));
+            var attachment = result.attachments.First();
+            var attachmentBytes = Convert.FromBase64String(attachment.content);
 
-            Assert.AreEqual("test@test.com", result.To[0].Address);
-            Assert.AreEqual("no-reply@mysite.com", result.From.Address);
-            Assert.AreEqual("test subject", result.Subject);
-            Assert.AreEqual("test-cc@test.com", result.CC[0].Address);
-            Assert.AreEqual("test-bcc@test.com", result.Bcc[0].Address);
-            Assert.AreEqual("test-reply-to@test.com", result.ReplyToList[0].Address);
-            Assert.AreEqual("True", result.Headers["X-No-Spam"]);
-            Assert.AreEqual("logo.png", attachment.ContentId);
-            Assert.AreEqual("logo-inline.png", inlineAttachment.ContentId);
-            Assert.AreEqual("image/png", attachment.ContentType.MediaType);
-            Assert.AreEqual("multipart/related", inlineAttachment.ContentType.MediaType);
-            Assert.True(inlineAttachment.ContentDisposition.Inline);
+            Assert.AreEqual("test@test.com", result.to.First().email);
+            Assert.AreEqual("no-reply@mysite.com", result.from_email);
+            Assert.AreEqual("test-bcc@test.com", result.bcc_address);
+            Assert.AreEqual("test subject", result.subject);
+            Assert.AreEqual("True", result.headers["X-No-Spam"]);
+            Assert.AreEqual("logo.png", attachment.name);
+            Assert.AreEqual("image/png", attachment.type);
 
 
             Assert.True(attachmentBytes.SequenceEqual(logoAttachmentBytes));
-            Assert.True(inlineAttachmentBytes.SequenceEqual(logoAttachmentBytes));
         }
     }
 }

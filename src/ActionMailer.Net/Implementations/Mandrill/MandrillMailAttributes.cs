@@ -9,6 +9,7 @@ using System.Text;
 using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Utils;
 using Mandrill;
+using RestSharp;
 using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
 
 namespace ActionMailer.Net.Implementations.Mandrill
@@ -55,12 +56,12 @@ namespace ActionMailer.Net.Implementations.Mandrill
                 from_email = mail.From.Address,
                 to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
-                subject = mail.Subject,
+                subject = mail.Subject
             };
 
             //add headers
             foreach (var kvp in mail.Headers)
-                message.headers[kvp.Key] = kvp.Value;
+                message.AddHeader(kvp.Key, kvp.Value);
 
             //add content
             foreach (var view in mail.AlternateViews)
@@ -81,16 +82,17 @@ namespace ActionMailer.Net.Implementations.Mandrill
             var atts = new List<attachment>();
             foreach (var attachment in mail.Attachments)
             {
+                var mailAttachment = AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value,
+                    false);
                 using (var stream = new MemoryStream())
                 {
-                    attachment.Value.ContentStream.CopyTo(stream);
+                    mailAttachment.ContentStream.CopyTo(stream);
                     var base64Data = Convert.ToBase64String(stream.ToArray());
-
                     atts.Add(new attachment
                     {
                         content = base64Data,
-                        name = attachment.Value.Name,
-                        type = attachment.Value.ContentType.MediaType,
+                        name = mailAttachment.Name,
+                        type = mailAttachment.ContentType.MediaType,
                     });
                 }
             }
