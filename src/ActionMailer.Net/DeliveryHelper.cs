@@ -5,7 +5,7 @@ using ActionMailer.Net.Interfaces;
 namespace ActionMailer.Net
 {
     /// <summary>
-    ///     Some helpers used to dilver mail.  Reduces the need to repeat code.
+    ///     Some helpers used to deliver mail.  Reduces the need to repeat code.
     /// </summary>
     public class DeliveryHelper
     {
@@ -30,11 +30,10 @@ namespace ActionMailer.Net
         }
 
         /// <summary>
-        ///     Sends the given email using the given
+        ///     Sends the given email
         /// </summary>
-        /// <param name="async">Whether or not to use asynchronous delivery.</param>
         /// <param name="mail">The mail message to send.</param>
-        public async Task<IMailAttributes> Deliver(bool async, IMailAttributes mail)
+        public IMailAttributes Deliver(IMailAttributes mail)
         {
             if (mail == null)
                 throw new ArgumentNullException("mail");
@@ -45,15 +44,30 @@ namespace ActionMailer.Net
             if (mailContext.Cancel)
                 return null;
 
-            if (async)
-            {
-                Task<IMailAttributes> sendtask = _sender.SendAsync(mail);
-                await sendtask.ContinueWith(t => AsyncSendCompleted(t.Result));
-                return mail;
-            }
-
             _sender.Send(mail);
+            _interceptor.OnMailSent(mail);
+
             return mail;
+        }
+        /// <summary>
+        ///     Sends async the given email
+        /// </summary>
+        /// <param name="mail">The mail message to send.</param>
+        public async Task<IMailAttributes> DeliverAsync(IMailAttributes mail)
+        {
+            if (mail == null)
+                throw new ArgumentNullException("mail");
+
+            var mailContext = new MailSendingContext(mail);
+            _interceptor.OnMailSending(mailContext);
+
+            if (mailContext.Cancel)
+                return null;
+
+            var sendtask = _sender.SendAsync(mail);
+            await sendtask.ContinueWith(t => AsyncSendCompleted(t.Result));
+            return mail;
+
         }
 
         private void AsyncSendCompleted(IMailAttributes mail)

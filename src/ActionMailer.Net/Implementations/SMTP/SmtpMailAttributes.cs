@@ -25,7 +25,7 @@ namespace ActionMailer.Net.Implementations.SMTP
             Bcc = new List<MailAddress>();
             ReplyTo = new List<MailAddress>();
             Attachments = new AttachmentCollection();
-            AlternateViews = new AlternativeViewCollection();
+            AlternateViews = new List<AlternateView>();
             Headers = new Dictionary<string, string>();
         }
 
@@ -55,15 +55,20 @@ namespace ActionMailer.Net.Implementations.SMTP
                 message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
 
             message.Subject = mail.Subject;
+            message.BodyEncoding = mail.MessageEncoding;
+            message.Priority = mail.Priority;
 
             foreach (var kvp in mail.Headers)
                 message.Headers[kvp.Key] = kvp.Value;
 
             foreach (var kvp in mail.Attachments)
-                message.Attachments.Add(kvp.Value);
-
+                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, false));
+            
             foreach (var kvp in mail.Attachments.Inline)
-                message.Attachments.Add(kvp.Value);
+                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, true));
+
+            foreach (var view in AlternateViews)
+                message.AlternateViews.Add(view);
 
             return message;
         }
@@ -87,7 +92,7 @@ namespace ActionMailer.Net.Implementations.SMTP
         /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
-        public IList<MailAddress> To { get; private set; }
+        public List<MailAddress> To { get; private set; }
 
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
@@ -102,7 +107,7 @@ namespace ActionMailer.Net.Implementations.SMTP
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
         /// </summary>
-        public IList<MailAddress> ReplyTo { get; private set; }
+        public List<MailAddress> ReplyTo { get; private set; }
 
         /// <summary>
         ///     Any custom headers (name and value) that should be placed on the message.
@@ -125,9 +130,8 @@ namespace ActionMailer.Net.Implementations.SMTP
         public AttachmentCollection Attachments { get; private set; }
 
         /// <summary>
-        ///     Any view you wish to add.  The key of this collection is what
-        ///     the view should be named.
+        ///     Any view you wish to add.
         /// </summary>
-        public AlternativeViewCollection AlternateViews { get; private set; }
+        public IList<AlternateView> AlternateViews { get; private set; }
     }
 }

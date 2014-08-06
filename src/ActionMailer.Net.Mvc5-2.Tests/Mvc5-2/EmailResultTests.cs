@@ -22,7 +22,8 @@
 #endregion
 
 using System;
-using System.Net.Mail;
+using ActionMailer.Net.Implementations.SMTP;
+using ActionMailer.Net.Interfaces;
 using FakeItEasy;
 using NUnit.Framework;
 
@@ -35,7 +36,7 @@ namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
             var mockSender = A.Fake<IMailSender>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(null, mockSender, new MailMessage(), "View", "Master", null, true);
+                new EmailResult(null, mockSender, new SmtpMailAttributes(), "View", "Master", null, true);
             });
         }
 
@@ -44,7 +45,7 @@ namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
             var mockInterceptor = A.Fake<IMailInterceptor>();
 
             Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor, null, new MailMessage(), "View", "Master", null, true);
+                new EmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", "Master", null, true);
             });
         }
 

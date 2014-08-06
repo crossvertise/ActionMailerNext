@@ -1,20 +1,23 @@
-﻿using System;
-using System.Web.Mvc;
-using System.Web.Routing;
+﻿namespace ActionMailer.Net.Mvc5
+{
+    using System;
+    using System.Web.Mvc;
+    using System.Web.Routing;
 
-namespace ActionMailer.Net.Mvc5 {
     /// <summary>
     /// This class contains some handy extension methods that make it easier
-    /// to consume inline attachments in your message body.
+    /// to consume inline attachments in your messageBase body.
     /// </summary>
-    public static class HtmlHelperExtensions {
+    public static class HtmlHelperExtensions
+    {
         /// <summary>
         /// Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
         /// <returns>An HTML image tag linked against the specified inline image attachment.</returns>
-        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId) {
+        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId)
+        {
             return helper.InlineImage(contentId, null, null, null);
         }
 

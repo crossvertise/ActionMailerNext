@@ -24,12 +24,14 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Standalone;
+using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests.Standalone {
     public class TestMailerBase : RazorMailerBase {
-        public TestMailerBase(IMailSender sender = null, Encoding defaultMessageEncoding = null)
-            : base(sender, defaultMessageEncoding) { }
+        public TestMailerBase(IMailAttributes attributes = null, IMailSender sender = null)
+            : base(attributes, sender) { }
 
         public override string ViewPath {
             get { return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone", "TestViews"); }

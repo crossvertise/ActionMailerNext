@@ -21,15 +21,19 @@
  */
 #endregion
 
+using System.Collections.Generic;
 using System.Net.Mail;
+using ActionMailer.Net.Implementations.SMTP;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
     [TestFixture]
     public class MailSendingContextTests {
         [Test]
-        public void MailContextConstructorSetsUpObjectProperly() {
-            var mail = new MailMessage("no-reply@test.com", "test@test.com");
+        public void MailContextConstructorSetsUpObjectProperly()
+        {
+            var mail = new SmtpMailAttributes {From = new MailAddress("no-reply@test.com")};
+            mail.To.Add(new MailAddress("test@test.com"));
             
             var context = new MailSendingContext(mail);
 

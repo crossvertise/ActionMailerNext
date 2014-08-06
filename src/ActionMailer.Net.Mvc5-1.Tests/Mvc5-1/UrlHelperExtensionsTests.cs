@@ -24,7 +24,6 @@
 using System;
 using System.Web.Mvc;
 using System.Web.Routing;
-using FakeItEasy;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1

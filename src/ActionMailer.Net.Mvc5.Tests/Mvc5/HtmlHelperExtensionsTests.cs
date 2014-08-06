@@ -26,7 +26,8 @@ using FakeItEasy;
 using HtmlAgilityPack;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
+namespace ActionMailer.Net.Mvc5.Tests.Mvc5
+{
     [TestFixture]
     public class HtmlHelperExtensionsTests {
         private readonly HtmlHelper _helper;

@@ -23,23 +23,16 @@
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Net;
 using System.Web;
-using System.Web.Routing;
 using FakeItEasy;
-using NUnit.Framework;
 
 namespace ActionMailer.Net.Mvc5.Tests.Mvc5
 {
     // Some helpers yanked from the MVC 4 source.
-    public static class MvcHelper
-    {
+    public static class MvcHelper {
         public const string AppPathModifier = "/$(SESSION)";
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port)
-        {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port) {
             var httpContext = A.Fake<HttpContextBase>();
             var request = A.Fake<HttpRequestBase>();
             var response = A.Fake<HttpResponseBase>();
@@ -56,7 +49,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5
                 A.CallTo(() => request.ApplicationPath).Returns(appPath);
                 A.CallTo(() => request.RawUrl).Returns("/");
             }
-
+            
             if (!String.IsNullOrEmpty(httpMethod))
             {
                 A.CallTo(() => request.HttpMethod).Returns(httpMethod);
@@ -70,12 +63,12 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5
             A.CallTo(() => request.PathInfo).Returns(String.Empty);
 
             #endregion
-
+            
             #region Response
 
             A.CallTo(() => response.ApplyAppPathModifier((A<string>.Ignored))).ReturnsLazily(x => AppPathModifier + x.Arguments[0]);
 
-            #endregion
+             #endregion
 
             #region Context
 
@@ -89,8 +82,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5
             return httpContext;
         }
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod)
-        {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod) {
             return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1);
         }
     }

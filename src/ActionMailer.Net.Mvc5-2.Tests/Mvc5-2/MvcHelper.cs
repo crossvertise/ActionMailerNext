@@ -23,13 +23,8 @@
 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Net;
 using System.Web;
-using System.Web.Routing;
 using FakeItEasy;
-using NUnit.Framework;
 
 namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
 {

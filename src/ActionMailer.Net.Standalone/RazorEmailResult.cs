@@ -1,4 +1,7 @@
-﻿using RazorEngine.Templating;
+﻿using System.Threading.Tasks;
+using ActionMailer.Net.Interfaces;
+using ActionMailer.Net.Utils;
+using RazorEngine.Templating;
 using System;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -8,6 +11,7 @@ namespace ActionMailer.Net.Standalone {
     /// <summary>
     /// An container for MailMessage with the appropriate body rendered by Razor.
     /// </summary>
+
     public class RazorEmailResult : IEmailResult {
         private readonly IMailInterceptor _interceptor;
         private readonly DeliveryHelper _deliveryHelper;
@@ -21,8 +25,8 @@ namespace ActionMailer.Net.Standalone {
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public MailMessage Mail { get { return _mail; } }
-        private readonly MailMessage _mail;
+        public IMailAttributes Mail { get { return _mail; } }
+        private readonly IMailAttributes _mail;
 
         /// <summary>
         /// The IMailSender instance that is used to deliver mail.
@@ -31,11 +35,10 @@ namespace ActionMailer.Net.Standalone {
         private readonly IMailSender _mailSender;
 
         /// <summary>
-        /// The default encoding used to send a message.
+        /// The default encoding used to send a messageBase.
         /// </summary>
         public Encoding MessageEncoding { get { return _messageEncoding; } }
         private readonly Encoding _messageEncoding;
-
 
         /// <summary>
         /// Creates a new EmailResult.  You must call Compile() before this result
@@ -45,11 +48,11 @@ namespace ActionMailer.Net.Standalone {
         /// <param name="sender">The IMailSender that we will use to send mail.</param>
         /// <param name="mail">The mail message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body.</param>
-        /// <param name="messageEncoding">The encoding to use when rendering a message.</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
         /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
-        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailMessage mail, string viewName, Encoding messageEncoding,
+        /// <param name="messageEncoding"></param>
+        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mail, string viewName,Encoding messageEncoding,
             string viewPath, ITemplateService templateService, DynamicViewBag viewBag) {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
@@ -72,20 +75,20 @@ namespace ActionMailer.Net.Standalone {
             _interceptor = interceptor;
             _mailSender= sender;
             _mail = mail;
-            _messageEncoding = messageEncoding;
             _viewName = viewName;
             _viewPath = viewPath;
-            _deliveryHelper = new DeliveryHelper(sender, _interceptor);
+            _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
 
             _templateService = templateService;
             _viewBag = viewBag;
-        }
+            _messageEncoding = messageEncoding;
+            }
 
         /// <summary>
         /// Sends your message.  This call will block while the message is being sent. (not recommended)
         /// </summary>
         public void Deliver() {
-            _deliveryHelper.Deliver(false, Mail);
+            _deliveryHelper.Deliver(Mail);
         }
 
         /// <summary>
@@ -93,8 +96,10 @@ namespace ActionMailer.Net.Standalone {
         /// when the message has been sent, then override the OnMailSent method in MailerBase which
         /// will not fire until the asyonchronous send operation is complete.
         /// </summary>
-        public void DeliverAsync() {
-            _deliveryHelper.Deliver(true, Mail);
+        public async Task<IMailAttributes> DeliverAsync()
+        {
+            var deliverTask = _deliveryHelper.DeliverAsync(Mail);
+            return await deliverTask;
         }
 
         /// <summary>
@@ -107,7 +112,7 @@ namespace ActionMailer.Net.Standalone {
                 if (trimBody)
                     body = body.Trim();
 
-                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Plain);
+                var altView = AlternateView.CreateAlternateViewFromString(body,MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
                 Mail.AlternateViews.Add(altView);
                 hasTxtView = true;
             } catch (TemplateResolvingException) { }
@@ -117,7 +122,7 @@ namespace ActionMailer.Net.Standalone {
                 if (trimBody)
                     body = body.Trim();
 
-                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding, MediaTypeNames.Text.Html);
+                var altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
                 Mail.AlternateViews.Add(altView);
             } catch (TemplateResolvingException) {
                 if (!hasTxtView)

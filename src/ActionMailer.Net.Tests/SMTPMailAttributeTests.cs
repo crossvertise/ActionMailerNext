@@ -24,27 +24,33 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Reflection;
+using ActionMailer.Net.Implementations.SMTP;
 using NUnit.Framework;
 
 namespace ActionMailer.Net.Tests {
     [TestFixture]
-    public class MailerBaseExtensionsTests {
+    public class SMTPMailAttributeTests {
         [Test]
-        public void GenerateMailShouldSetCorrectMessageProperties() {
-            var mailer = new StubMailerBase();
-            mailer.To.Add("test@test.com");
-            mailer.From = "no-reply@mysite.com";
+        public void GeneratePropsectiveEmailMessageShouldSetCorrectMessageProperties()
+        {
+            var mailer = new SmtpMailAttributes();
+            mailer.To.Add(new MailAddress("test@test.com"));
+            mailer.From = new MailAddress("no-reply@mysite.com");
             mailer.Subject = "test subject";
-            mailer.CC.Add("test-cc@test.com");
-            mailer.BCC.Add("test-bcc@test.com");
-            mailer.ReplyTo.Add("test-reply-to@test.com");
+            mailer.Cc.Add(new MailAddress("test-cc@test.com"));
+            mailer.Bcc.Add(new MailAddress("test-bcc@test.com"));
+            mailer.ReplyTo.Add(new MailAddress("test-reply-to@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
-            var logoBytes = File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData", "logo.png"));
-            mailer.Attachments.Add("logo.png", logoBytes);
-            mailer.Attachments.Inline.Add("logo-inline.png", logoBytes);
 
-            var result = mailer.GenerateMail();
+            var logoAttachmentBytes = File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
+                    "logo.png"));
+            mailer.Attachments.Add("logo.png", new Attachment(new MemoryStream(logoAttachmentBytes), "logo.png"));
+
+            mailer.Attachments.Inline.Add("logo-inline.png", new Attachment(new MemoryStream(logoAttachmentBytes), "logo-inline.png"));
+
+            var result = mailer.GenerateProspectiveMailMessage();
             var attachment = result.Attachments[0];
             var inlineAttachment = result.Attachments[1];
             var attachmentBytes = new byte[attachment.ContentStream.Length];
@@ -64,8 +70,10 @@ namespace ActionMailer.Net.Tests {
             Assert.AreEqual("image/png", attachment.ContentType.MediaType);
             Assert.AreEqual("multipart/related", inlineAttachment.ContentType.MediaType);
             Assert.True(inlineAttachment.ContentDisposition.Inline);
-            Assert.True(attachmentBytes.SequenceEqual(logoBytes));
-            Assert.True(inlineAttachmentBytes.SequenceEqual(logoBytes));
+
+
+            Assert.True(attachmentBytes.SequenceEqual(logoAttachmentBytes));
+            Assert.True(inlineAttachmentBytes.SequenceEqual(logoAttachmentBytes));
         }
     }
 }

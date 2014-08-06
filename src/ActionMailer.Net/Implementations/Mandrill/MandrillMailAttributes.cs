@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace ActionMailer.Net.Implementations.Mandrill
             Bcc = new List<MailAddress>();
             ReplyTo = new List<MailAddress>();
             Attachments = new AttachmentCollection();
-            AlternateViews = new AlternativeViewCollection();
+            AlternateViews = new List<AlternateView>();
             Headers = new Dictionary<string, string>();
         }
 
@@ -64,14 +65,14 @@ namespace ActionMailer.Net.Implementations.Mandrill
             //add content
             foreach (var view in mail.AlternateViews)
             {
-                using (var reader = new StreamReader(view.Value.ContentStream))
+                using (var reader = new StreamReader(view.ContentStream))
                 {
                     var body = reader.ReadToEnd();
 
-                    if (view.Value.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
                         message.text = body;
 
-                    if (view.Value.ContentType.MediaType == MediaTypeNames.Text.Html)
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                         message.html = body;
                 }
             }
@@ -88,7 +89,7 @@ namespace ActionMailer.Net.Implementations.Mandrill
                     atts.Add(new attachment
                     {
                         content = base64Data,
-                        name = attachment.Value.ContentId,
+                        name = attachment.Value.Name,
                         type = attachment.Value.ContentType.MediaType,
                     });
                 }
@@ -117,7 +118,7 @@ namespace ActionMailer.Net.Implementations.Mandrill
         /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
-        public IList<MailAddress> To { get; private set; }
+        public List<MailAddress> To { get; private set; }
 
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
@@ -132,7 +133,7 @@ namespace ActionMailer.Net.Implementations.Mandrill
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
         /// </summary>
-        public IList<MailAddress> ReplyTo { get; private set; }
+        public List<MailAddress> ReplyTo { get; private set; }
 
         /// <summary>
         ///     Any custom headers (name and value) that should be placed on the message.
@@ -158,6 +159,6 @@ namespace ActionMailer.Net.Implementations.Mandrill
         ///     Any view you wish to add.  The key of this collection is what
         ///     the view should be named.
         /// </summary>
-        public AlternativeViewCollection AlternateViews { get; private set; }
+        public IList<AlternateView> AlternateViews { get; private set; }
     }
 }

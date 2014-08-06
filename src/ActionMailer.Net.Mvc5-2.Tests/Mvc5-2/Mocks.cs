@@ -21,18 +21,17 @@
  */
 #endregion
 
-using System.Text;
-using System.Web;
+using System.Net.Mail;
 using System.Web.Mvc;
-using ActionMailer.Net.Mvc5_2;
+using ActionMailer.Net.Interfaces;
 using ActionMailer.Net.Mvc5_2.Tests.Mvc5_2;
 
 namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
 {
     public class TestMailerBase : MailerBase
     {
-        public TestMailerBase(IMailSender sender = null, Encoding defaultMessageEncoding = null)
-            : base(sender, defaultMessageEncoding)
+        public TestMailerBase(IMailAttributes attributes = null, IMailSender sender = null)
+            : base(attributes, sender)
         {
         }
     }
@@ -162,8 +161,8 @@ namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
     {
         public TestMailController()
         {
-            From = "test@test.com";
-            Subject = "test subject";
+            MailAttributes.From = new MailAddress("test@test.com");
+            MailAttributes.Subject = "test subject";
         }
 
         public EmailResult TestMail()
@@ -194,8 +193,8 @@ namespace ActionMailer.Net.Mvc5_2.Tests.Areas.TestArea.Controllers
     {
         public EmailResult TestEmail()
         {
-            From = "test@test.com";
-            Subject = "test subject";
+            MailAttributes.From = new MailAddress("test@test.com");
+            MailAttributes.Subject = "test subject";
             return Email("TestView");
         }
     }

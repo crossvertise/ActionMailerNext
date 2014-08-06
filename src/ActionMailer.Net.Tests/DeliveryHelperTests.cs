@@ -24,6 +24,8 @@
 using System;
 using System.Net.Mail;
 using System.Threading;
+using ActionMailer.Net.Implementations.SMTP;
+using ActionMailer.Net.Interfaces;
 using FakeItEasy;
 using NUnit.Framework;
 
@@ -54,7 +56,7 @@ namespace ActionMailer.Net.Tests {
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
 
-            Assert.Throws<ArgumentNullException>(() => helper.Deliver(false, null));
+            Assert.Throws<ArgumentNullException>(() => helper.Deliver(null));
         }
 
         [Test]
@@ -62,23 +64,23 @@ namespace ActionMailer.Net.Tests {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new MailMessage();
+            var mail = new SmtpMailAttributes();
 
-            helper.Deliver(false, mail);
+            helper.Deliver(mail);
 
             A.CallTo(() => sender.Send(mail)).MustHaveHappened();
         }
 
         [Test]
-        public void DeliveryAsynchronouslySendsMessage() {
+        public async void DeliveryAsynchronouslySendsMessage() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new MailMessage();
+            var mail = new SmtpMailAttributes();
 
-            helper.Deliver(true, mail);
+            await helper.DeliverAsync(mail);
 
-            A.CallTo(() => sender.SendAsync(mail, A<Action<MailMessage>>.Ignored)).MustHaveHappened();
+            A.CallTo(() => sender.SendAsync(mail)).MustHaveHappened();
         }
 
         [Test]
@@ -86,8 +88,9 @@ namespace ActionMailer.Net.Tests {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-
-            helper.Deliver(false, new MailMessage());
+            var mail = new SmtpMailAttributes();
+            
+            helper.Deliver(mail);
 
             A.CallTo(() => interceptor.OnMailSending(A<MailSendingContext>.Ignored)).MustHaveHappened();
         }
@@ -97,26 +100,23 @@ namespace ActionMailer.Net.Tests {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new MailMessage();
+            var mail = new SmtpMailAttributes();
 
-            helper.Deliver(false, mail);
+            helper.Deliver(mail);
 
             A.CallTo(() => interceptor.OnMailSent(mail)).MustHaveHappened();
         }
 
         [Test]
-        public void DeliverAsynchronouslyNotifiesWhenMailWasSent() {
+        public async void DeliverAsynchronouslyNotifiesWhenMailWasSent() {
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new MailMessage();
-            A.CallTo(() => sender.SendAsync(A<MailMessage>.Ignored, A<Action<MailMessage>>.Ignored))
-                .Invokes(x => x.GetArgument<Action<MailMessage>>(1).Invoke(x.GetArgument<MailMessage>(0)));
+            var mail = new SmtpMailAttributes();
+            
+            await helper.DeliverAsync(mail);
 
-            helper.Deliver(true, mail);
-            Thread.Sleep(100); // give a small buffer for the callback to happen
-
-            A.CallTo(() => interceptor.OnMailSent(mail)).MustHaveHappened();
+            A.CallTo(() => interceptor.OnMailSent(A<IMailAttributes>.Ignored)).MustHaveHappened();
         }
 
         [Test]
@@ -127,9 +127,9 @@ namespace ActionMailer.Net.Tests {
             A.CallTo(() => interceptor.OnMailSending(A<MailSendingContext>.Ignored))
                 .Invokes(x => x.GetArgument<MailSendingContext>(0).Cancel = true);
 
-            helper.Deliver(false, new MailMessage());
+            helper.Deliver(new SmtpMailAttributes());
 
-            A.CallTo(() => sender.Send(A<MailMessage>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => sender.Send(A<IMailAttributes>.Ignored)).MustNotHaveHappened();
         }
     }
 }

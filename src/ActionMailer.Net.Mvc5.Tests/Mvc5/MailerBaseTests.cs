@@ -24,25 +24,29 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
-using ActionMailer.Net.Mvc5.Tests.Areas.TestArea.Controllers;
+using ActionMailer.Net.Implementations.SMTP;
+using ActionMailer.Net.Interfaces;
 using FakeItEasy;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
+namespace ActionMailer.Net.Mvc5.Tests.Mvc5
+{
     [TestFixture]
     public class MailerBaseTests {
         [Test]
         public void PassingAMailSenderShouldWork() {
             var mockSender = A.Fake<IMailSender>();
+            var attributes = new SmtpMailAttributes();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
-            
-            var mailer = new TestMailerBase(mockSender);
+
+            var mailer = new TestMailerBase(attributes,mockSender);
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
             var result = mailer.Email("TestView");
 
             Assert.AreSame(mockSender, mailer.MailSender);
@@ -55,7 +59,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             mailer.ViewBag.Test = "12345";
             var result = mailer.Email("TestView");
@@ -69,7 +73,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             object model = "12345";
             var result = mailer.Email("TestView", model);
@@ -83,7 +87,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             mailer.ViewData["foo"] = "bar";
             var result = mailer.Email("TestView");
@@ -98,7 +102,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually
@@ -116,8 +120,8 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new UTF8ViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
-            mailer.MessageEncoding = Encoding.UTF8;
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
+            mailer.MailAttributes.MessageEncoding = Encoding.UTF8;
 
             var result = mailer.Email("TestView");
             var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
@@ -133,7 +137,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new MultipartViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually
@@ -182,9 +186,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             var mailer = new TestMailerBase();
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
 
-            Assert.Throws<ArgumentNullException>(() => {
-                mailer.Email(null);
-            });
+            Assert.Throws<ArgumentNullException>(() => mailer.Email(null));
         }
 
         [Test]
@@ -195,7 +197,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            
+
             mailer.TestEmail();
 
             Assert.NotNull(mailer.ControllerContext.RouteData.DataTokens["area"]);
@@ -208,7 +210,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually
@@ -226,7 +228,7 @@ namespace ActionMailer.Net.Mvc5.Tests.Mvc5 {
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new WhiteSpaceViewEngine());
             mailer.HttpContextBase = MvcHelper.GetHttpContext("/app/", null, null);
-            mailer.From = "no-reply@mysite.com";
+            mailer.MailAttributes.From = new MailAddress("no-reply@mysite.com");
 
             // there's no need to test the built-in view engines.
             // this test just ensures that our Email() method actually

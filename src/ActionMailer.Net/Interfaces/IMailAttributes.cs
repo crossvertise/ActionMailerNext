@@ -4,7 +4,7 @@ using System.Text;
 
 
 using AttachmentCollection = ActionMailer.Net.Utils.AttachmentCollection;
-using AlternateViewCollection = ActionMailer.Net.Utils.AlternativeViewCollection;
+
 namespace ActionMailer.Net.Interfaces
 {
     /// <summary>
@@ -31,7 +31,7 @@ namespace ActionMailer.Net.Interfaces
         /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
-        IList<MailAddress> To { get; }
+        List<MailAddress> To { get; }
 
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
@@ -46,7 +46,7 @@ namespace ActionMailer.Net.Interfaces
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
         /// </summary>
-        IList<MailAddress> ReplyTo { get; }
+        List<MailAddress> ReplyTo { get; }
 
         /// <summary>
         ///     Any custom headers (name and value) that should be placed on the message.
@@ -71,6 +71,6 @@ namespace ActionMailer.Net.Interfaces
         ///     Any view you wish to add.  The key of this collection is what
         ///     the view should be named.
         /// </summary>
-        AlternateViewCollection AlternateViews { get; }
+        IList<AlternateView> AlternateViews { get; }
     }
 }

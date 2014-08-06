@@ -1,13 +1,10 @@
-﻿using ActionMailer.Net.Implementations;
-using ActionMailer.Net.Implementations.Mandrill;
-
+﻿
 namespace ActionMailer.Net.Mvc5_2 {
     using System;
-    using ActionMailer.Net.Interfaces;
-    using System.Text;
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Routing;
+    using Interfaces;
 
 
     /// <summary>
@@ -43,17 +40,17 @@ namespace ActionMailer.Net.Mvc5_2 {
         protected virtual void OnMailSending(MailSendingContext context) { }
 
         void IMailInterceptor.OnMailSending(MailSendingContext context) {
-            this.OnMailSending(context);
+            OnMailSending(context);
         }
 
         void IMailInterceptor.OnMailSent(IMailAttributes mail) {
-            this.OnMailSent(mail);
+            OnMailSent(mail);
         }
 
         public void SetMailMethod(MailMethod method)
         {
-            this.MailAttributes = MailMethodUtil.GetAttributes(method);
-            this.MailSender = MailMethodUtil.GetSender();
+            MailAttributes = MailMethodUtil.GetAttributes(method);
+            MailSender = MailMethodUtil.GetSender(method);
         }
 
         /// <summary>
@@ -63,13 +60,13 @@ namespace ActionMailer.Net.Mvc5_2 {
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         protected MailerBase(IMailAttributes mailAttributes = null , IMailSender mailSender = null)
         {
-            this.MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
-            this.MailSender = mailSender ?? MailMethodUtil.GetSender();
+            MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
+            MailSender = mailSender ?? MailMethodUtil.GetSender();
 
             if (System.Web.HttpContext.Current == null) return;
-            this.HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
-            var routeData = RouteTable.Routes.GetRouteData(this.HttpContextBase) ?? new RouteData();
-            var requestContext = new RequestContext(this.HttpContextBase, routeData);
+            HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
+            var routeData = RouteTable.Routes.GetRouteData(HttpContextBase) ?? new RouteData();
+            var requestContext = new RequestContext(HttpContextBase, routeData);
             base.Initialize(requestContext);
         }
 
@@ -77,16 +74,16 @@ namespace ActionMailer.Net.Mvc5_2 {
             if (viewName == null)
                 throw new ArgumentNullException("viewName");
 
-            var result = new EmailResult(this, this.MailSender, this.MailAttributes, viewName, masterName, this.MailAttributes.MessageEncoding, trimBody);
+            var result = new EmailResult(this, MailSender, MailAttributes, viewName, masterName, MailAttributes.MessageEncoding, trimBody);
             ViewData.Model = model;
             result.ViewData = ViewData;
 
             var routeData = new RouteData();
-            routeData.DataTokens["area"] = this.FindAreaName();
-            routeData.Values["controller"] = this.GetType().Name.Replace("Controller", string.Empty);
+            routeData.DataTokens["area"] = FindAreaName();
+            routeData.Values["controller"] = GetType().Name.Replace("Controller", string.Empty);
             routeData.Values["action"] = viewName;
 
-            var requestContext = new RequestContext(this.HttpContextBase, routeData);
+            var requestContext = new RequestContext(HttpContextBase, routeData);
             ControllerContext = new ControllerContext(requestContext, this);
 
             result.ExecuteResult(ControllerContext);
@@ -96,18 +93,18 @@ namespace ActionMailer.Net.Mvc5_2 {
         private string FindAreaName() {
             string area = null;
 
-            if (this.HttpContextBase != null &&
-                this.HttpContextBase.Request != null &&
-                this.HttpContextBase.Request.RequestContext != null &&
-                this.HttpContextBase.Request.RequestContext.RouteData != null) {
+            if (HttpContextBase != null &&
+                HttpContextBase.Request != null &&
+                HttpContextBase.Request.RequestContext != null &&
+                HttpContextBase.Request.RequestContext.RouteData != null) {
 
-                    if (this.HttpContextBase.Request.RequestContext.RouteData.DataTokens.ContainsKey("area")) {
-                        area = this.HttpContextBase.Request.RequestContext.RouteData.DataTokens["area"].ToString();
+                    if (HttpContextBase.Request.RequestContext.RouteData.DataTokens.ContainsKey("area")) {
+                        area = HttpContextBase.Request.RequestContext.RouteData.DataTokens["area"].ToString();
                     }
             }
 
             if (area == null) {
-                var name = this.GetType().Namespace;
+                var name = GetType().Namespace;
                 if (name != null && name.Contains(".Areas.")) {
                     var startIndex = name.IndexOf(".Areas.", StringComparison.Ordinal) + 7;
                     var length = name.LastIndexOf(".", StringComparison.Ordinal) - startIndex;
@@ -129,9 +126,9 @@ namespace ActionMailer.Net.Mvc5_2 {
         /// <param name="disposing">Whether we are disposing or not.</param>
         protected override void Dispose(bool disposing) {
             if (disposing) {
-                if (this.MailSender != null) {
-                    this.MailSender.Dispose();
-                    this.MailSender = null;
+                if (MailSender != null) {
+                    MailSender.Dispose();
+                    MailSender = null;
                 }                
             }
 

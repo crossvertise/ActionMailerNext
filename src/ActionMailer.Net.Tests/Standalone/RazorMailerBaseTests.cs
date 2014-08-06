@@ -24,6 +24,8 @@
 using System;
 using System.IO;
 using System.Text;
+using ActionMailer.Net.Implementations.SMTP;
+using ActionMailer.Net.Interfaces;
 using FakeItEasy;
 using NUnit.Framework;
 
@@ -33,7 +35,8 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void EmailWithNoViewNameShouldThrow() {
             var mockSender = A.Fake<IMailSender>();
-            var mailer = new TestMailerBase(mockSender);
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
 
             Assert.Throws<ArgumentNullException>(() => mailer.Email(null));
         }
@@ -41,8 +44,8 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void PassingAMailSenderShouldWork() {
             var mockSender = A.Fake<IMailSender>();
-
-            var mailer = new TestMailerBase(mockSender);
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
             var email = mailer.Email("TextViewNoModel");
 
             Assert.AreSame(mockSender, mailer.MailSender);
@@ -50,21 +53,10 @@ namespace ActionMailer.Net.Tests.Standalone {
         }
 
         [Test]
-        public void PassingAnEncodingShouldWork() {
-            var mockSender = A.Fake<IMailSender>();
-
-            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
-            var email = mailer.Email("UTF8TextView");
-            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
-
-            Assert.AreEqual(Encoding.UTF8, email.MessageEncoding);
-            Assert.AreEqual("Umlauts are Über!", body);
-        }
-
-        [Test]
         public void RazorViewWithNoModelShouldRenderProperly() {
             var mockSender = A.Fake<IMailSender>();
-            var mailer = new TestMailerBase(mockSender);
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("TextViewNoModel");
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
@@ -75,7 +67,8 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void PassingAModelShouldWork() {
             var mockSender = A.Fake<IMailSender>();
-            var mailer = new TestMailerBase(mockSender);
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
             var model = new TestModel {
                 Name = "Foo"
             };
@@ -89,7 +82,8 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void MultipartMessagesShouldRenderBothViews() {
             var mockSender = A.Fake<IMailSender>();
-            var mailer = new TestMailerBase(mockSender);
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("MultipartNoModel");
             var textBody = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
@@ -102,8 +96,9 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void WhiteSpaceShouldBeTrimmedWhenRequired() {
             var mockSender = A.Fake<IMailSender>();
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
 
-            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
             var email = mailer.Email("WhitespaceTrimTest", trimBody: true);
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
 
@@ -113,8 +108,9 @@ namespace ActionMailer.Net.Tests.Standalone {
         [Test]
         public void WhiteSpaceShouldBeIncludedWhenRequired() {
             var mockSender = A.Fake<IMailSender>();
+            var attribute = new SmtpMailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
 
-            var mailer = new TestMailerBase(mockSender, Encoding.UTF8);
             var email = mailer.Email("WhitespaceTrimTest", trimBody: false);
             var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
 
