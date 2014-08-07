@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System.Web.Mvc;
@@ -29,121 +31,25 @@ using NUnit.Framework;
 namespace ActionMailerNext.Mvc5.Tests.Mvc5
 {
     [TestFixture]
-    public class HtmlHelperExtensionsTests {
+    public class HtmlHelperExtensionsTests
+    {
         private readonly HtmlHelper _helper;
 
-        public HtmlHelperExtensionsTests() {
+        public HtmlHelperExtensionsTests()
+        {
             var context = A.Fake<ViewContext>();
             var container = A.Fake<IViewDataContainer>();
 
-            _helper  = new HtmlHelper(context, container);
+            _helper = new HtmlHelper(context, container);
         }
 
         [Test]
-        public void InlineImageWithContentId() {
-            var generatedImageTag = _helper.InlineImage("test.png").ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-        }
-
-        [Test]
-        public void InlineImageWithContentIdAndHtmlAttributes() {
-            var generatedImageTag = _helper.InlineImage("test.png", new {@class = "test"}).ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-
-            Assert.True(imgTag.Attributes["class"] != null);
-            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
-        }
-
-        [Test]
-        public void InlineImageWithContentIdAndAlt() {
-            var generatedImageTag = _helper.InlineImage("test.png", "alt message").ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-
-            Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
-        }
-
-        [Test]
-        public void InlineImageWithContentIdAndAltAndHtmlAttributes() {
-            var generatedImageTag = _helper.InlineImage("test.png", "alt message", new { @class = "test" }).ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-
-            Assert.True(imgTag.Attributes["class"] != null);
-            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
-
-            Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
-        }
-
-        [Test]
-        public void InlineImageWithContentIdAndAltAndId() {
-            var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id").ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-
-            Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
-
-            Assert.True(imgTag.Attributes["id"] != null);
-            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
-        }
-
-        [Test]
-        public void InlineImagewithContentIdAndAltAndIdAndHtmlAttributes() {
-            var generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id", new {@class = "test"}).ToString();
-            var doc = new HtmlDocument();
-            doc.LoadHtml(generatedImageTag);
-            var imgTag = doc.DocumentNode.FirstChild;
-
-            Assert.AreEqual("img", imgTag.Name);
-            Assert.True(imgTag.Attributes["src"] != null);
-            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
-
-            Assert.True(imgTag.Attributes["class"] != null);
-            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
-
-            Assert.True(imgTag.Attributes["alt"] != null);
-            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
-
-            Assert.True(imgTag.Attributes["id"] != null);
-            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
-        }
-
-        [Test]
-        public void InlineCSSWithContentId() {
-            var generatedLinkTag = _helper.InlineCSS("test.css").ToString();
+        public void InlineCSSWithContentId()
+        {
+            string generatedLinkTag = _helper.InlineCSS("test.css").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
-            var linkTag = doc.DocumentNode.FirstChild;
+            HtmlNode linkTag = doc.DocumentNode.FirstChild;
 
             Assert.AreEqual("link", linkTag.Name);
             Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
@@ -154,11 +60,12 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
         }
 
         [Test]
-        public void InlineCSSWithContentIdAndHtmlAttributes() {
-            var generatedLinkTag = _helper.InlineCSS("test.css", new {trunk = "junk"}).ToString();
+        public void InlineCSSWithContentIdAndHtmlAttributes()
+        {
+            string generatedLinkTag = _helper.InlineCSS("test.css", new {trunk = "junk"}).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
-            var linkTag = doc.DocumentNode.FirstChild;
+            HtmlNode linkTag = doc.DocumentNode.FirstChild;
 
             Assert.AreEqual("link", linkTag.Name);
             Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
@@ -172,11 +79,12 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
         }
 
         [Test]
-        public void InlineCSSWithContentIdAndMedia() {
-            var generatedLinkTag = _helper.InlineCSS("test.css", "screen").ToString();
+        public void InlineCSSWithContentIdAndMedia()
+        {
+            string generatedLinkTag = _helper.InlineCSS("test.css", "screen").ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
-            var linkTag = doc.DocumentNode.FirstChild;
+            HtmlNode linkTag = doc.DocumentNode.FirstChild;
 
             Assert.AreEqual("link", linkTag.Name);
             Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
@@ -190,11 +98,12 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
         }
 
         [Test]
-        public void InlineCSSWithContentIdAndMediaAndHtmlAttributes() {
-            var generatedLinkTag = _helper.InlineCSS("test.css", "screen", new { trunk = "junk" }).ToString();
+        public void InlineCSSWithContentIdAndMediaAndHtmlAttributes()
+        {
+            string generatedLinkTag = _helper.InlineCSS("test.css", "screen", new {trunk = "junk"}).ToString();
             var doc = new HtmlDocument();
             doc.LoadHtml(generatedLinkTag);
-            var linkTag = doc.DocumentNode.FirstChild;
+            HtmlNode linkTag = doc.DocumentNode.FirstChild;
 
             Assert.AreEqual("link", linkTag.Name);
             Assert.AreEqual("stylesheet", linkTag.Attributes["rel"].Value);
@@ -208,6 +117,112 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
 
             Assert.True(linkTag.Attributes["trunk"] != null);
             Assert.AreEqual("junk", linkTag.Attributes["trunk"].Value);
+        }
+
+        [Test]
+        public void InlineImageWithContentId()
+        {
+            string generatedImageTag = _helper.InlineImage("test.png").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+        }
+
+        [Test]
+        public void InlineImageWithContentIdAndAlt()
+        {
+            string generatedImageTag = _helper.InlineImage("test.png", "alt message").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
+        }
+
+        [Test]
+        public void InlineImageWithContentIdAndAltAndHtmlAttributes()
+        {
+            string generatedImageTag = _helper.InlineImage("test.png", "alt message", new {@class = "test"}).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["class"] != null);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
+        }
+
+        [Test]
+        public void InlineImageWithContentIdAndAltAndId()
+        {
+            string generatedImageTag = _helper.InlineImage("test.png", "alt message", "image-id").ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
+
+            Assert.True(imgTag.Attributes["id"] != null);
+            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
+        }
+
+        [Test]
+        public void InlineImageWithContentIdAndHtmlAttributes()
+        {
+            string generatedImageTag = _helper.InlineImage("test.png", new {@class = "test"}).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["class"] != null);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
+        }
+
+        [Test]
+        public void InlineImagewithContentIdAndAltAndIdAndHtmlAttributes()
+        {
+            string generatedImageTag =
+                _helper.InlineImage("test.png", "alt message", "image-id", new {@class = "test"}).ToString();
+            var doc = new HtmlDocument();
+            doc.LoadHtml(generatedImageTag);
+            HtmlNode imgTag = doc.DocumentNode.FirstChild;
+
+            Assert.AreEqual("img", imgTag.Name);
+            Assert.True(imgTag.Attributes["src"] != null);
+            Assert.AreEqual("cid:test.png", imgTag.Attributes["src"].Value);
+
+            Assert.True(imgTag.Attributes["class"] != null);
+            Assert.AreEqual("test", imgTag.Attributes["class"].Value);
+
+            Assert.True(imgTag.Attributes["alt"] != null);
+            Assert.AreEqual("alt message", imgTag.Attributes["alt"].Value);
+
+            Assert.True(imgTag.Attributes["id"] != null);
+            Assert.AreEqual("image-id", imgTag.Attributes["id"].Value);
         }
     }
 }

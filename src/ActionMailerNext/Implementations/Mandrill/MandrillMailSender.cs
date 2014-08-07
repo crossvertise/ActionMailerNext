@@ -18,9 +18,10 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// </summary>
         public MandrillMailSender()
         {
-            var apiKey = ConfigurationManager.AppSettings["MandrillApiKey"];
+            string apiKey = ConfigurationManager.AppSettings["MandrillApiKey"];
             if (string.IsNullOrWhiteSpace(apiKey))
-                throw new InvalidOperationException("The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
+                throw new InvalidOperationException(
+                    "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
             _client = new MandrillApi(apiKey);
         }
@@ -41,7 +42,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <param name="mailAttributes">The IMailAttributes you wish to send.</param>
         public void Send(IMailAttributes mailAttributes)
         {
-            var mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            EmailMessage mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
             _client.SendMessage(mail);
         }
 
@@ -51,7 +52,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
         public async Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes)
         {
-            var mail = ((MandrillMailAttributes)mailAttributes).GenerateProspectiveMailMessage();
+            EmailMessage mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
 
             await _client.SendMessageAsync(mail);
             return mailAttributes;

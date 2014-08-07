@@ -11,13 +11,16 @@ using ActionMailerNext.Utils;
 namespace ActionMailerNext.Mvc5
 {
     /// <summary>
-    /// A special result that should be returned from each eaction in your
-    /// mail controller.  Your controller must inherit from MailerBase.
+    ///     A special result that should be returned from each eaction in your
+    ///     mail controller.  Your controller must inherit from MailerBase.
     /// </summary>
     public class EmailResult : ViewResult, IEmailResult
     {
-        private readonly IMailInterceptor _interceptor;
         private readonly DeliveryHelper _deliveryHelper;
+        private readonly IMailInterceptor _interceptor;
+        private readonly IMailAttributes _mail;
+        private readonly IMailSender _mailSender;
+        private readonly Encoding _messageEncoding;
         private readonly bool _trimBody;
 
         private IView _htmlView;
@@ -27,26 +30,8 @@ namespace ActionMailerNext.Mvc5
         private string _textViewName;
 
         /// <summary>
-        /// The underlying MailMessage object that was passed to this object's constructor.
-        /// </summary>
-        public IMailAttributes Mail { get { return this._mail; } }
-        private readonly IMailAttributes _mail;
-
-        /// <summary>
-        /// The IMailSender instance that is used to deliver mail.
-        /// </summary>
-        public IMailSender MailSender { get { return this._mailSender; } }
-        private readonly IMailSender _mailSender;
-
-        /// <summary>
-        /// The default encoding used to send a messageBase.
-        /// </summary>
-        public Encoding MessageEncoding { get { return this._messageEncoding; } }
-        private readonly Encoding _messageEncoding;
-
-        /// <summary>
-        /// Creates a new EmailResult.  You must call ExecuteCore() before this result
-        /// can be successfully delivered.
+        ///     Creates a new EmailResult.  You must call ExecuteCore() before this result
+        ///     can be successfully delivered.
         /// </summary>
         /// <param name="interceptor">The IMailInterceptor that we will call when delivering mail.</param>
         /// <param name="sender">The IMailSender that we will use to send mail.</param>
@@ -55,7 +40,8 @@ namespace ActionMailerNext.Mvc5
         /// <param name="masterName">The maste rpage to use when rendering the messageBase body (can be null)</param>
         /// <param name="messageEncoding">The encoding to use when rendering a messageBase.</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the messageBase body.</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mail, string viewName, string masterName, Encoding messageEncoding, bool trimBody)
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mail, string viewName,
+            string masterName, Encoding messageEncoding, bool trimBody)
         {
             if (interceptor == null)
                 throw new ArgumentNullException("interceptor");
@@ -68,40 +54,64 @@ namespace ActionMailerNext.Mvc5
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
-            this._messageEncoding = messageEncoding;
-            this._mail = mail;
-            this._mailSender = sender;
-            this._interceptor = interceptor;
-            this._deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
-            this._trimBody = trimBody;
+            _messageEncoding = messageEncoding;
+            _mail = mail;
+            _mailSender = sender;
+            _interceptor = interceptor;
+            _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
+            _trimBody = trimBody;
         }
 
         /// <summary>
-        /// Causes the body of the mail messageBase to be generated.
+        ///     The underlying MailMessage object that was passed to this object's constructor.
+        /// </summary>
+        public IMailAttributes Mail
+        {
+            get { return _mail; }
+        }
+
+        /// <summary>
+        ///     The IMailSender instance that is used to deliver mail.
+        /// </summary>
+        public IMailSender MailSender
+        {
+            get { return _mailSender; }
+        }
+
+        /// <summary>
+        ///     The default encoding used to send a messageBase.
+        /// </summary>
+        public Encoding MessageEncoding
+        {
+            get { return _messageEncoding; }
+        }
+
+        /// <summary>
+        ///     Sends your messageBase.  This call will block while the messageBase is being sent. (not recommended)
+        /// </summary>
+        public void Deliver()
+        {
+            _deliveryHelper.Deliver(Mail);
+        }
+
+        /// <summary>
+        ///     Sends your messageBase asynchronously.  This method does not block.  If you need to know
+        ///     when the messageBase has been sent, then override the OnMailSent method in MailerBase which
+        ///     will not fire until the asyonchronous send operation is complete.
+        /// </summary>
+        public async Task<IMailAttributes> DeliverAsync()
+        {
+            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(Mail);
+            return await deliverTask;
+        }
+
+        /// <summary>
+        ///     Causes the body of the mail messageBase to be generated.
         /// </summary>
         /// <param name="context">The controller context to use while rendering the body.</param>
         public override void ExecuteResult(ControllerContext context)
         {
-            this.AddMessageViews(context);
-        }
-
-        /// <summary>
-        /// Sends your messageBase.  This call will block while the messageBase is being sent. (not recommended)
-        /// </summary>
-        public void Deliver()
-        {
-            this._deliveryHelper.Deliver(this.Mail);
-        }
-
-        /// <summary>
-        /// Sends your messageBase asynchronously.  This method does not block.  If you need to know
-        /// when the messageBase has been sent, then override the OnMailSent method in MailerBase which
-        /// will not fire until the asyonchronous send operation is complete.
-        /// </summary>
-        public async Task<IMailAttributes> DeliverAsync()
-        {
-            var deliverTask = this._deliveryHelper.DeliverAsync(this.Mail);
-            return await deliverTask;
+            AddMessageViews(context);
         }
 
         private void LocateViews(ControllerContext context)
@@ -112,19 +122,19 @@ namespace ActionMailerNext.Mvc5
             if (string.IsNullOrEmpty(ViewName))
                 ViewName = context.RouteData.GetRequiredString("action");
 
-            this._htmlViewName = String.Format("{0}.html", ViewName);
-            this._textViewName = String.Format("{0}.txt", ViewName);
+            _htmlViewName = String.Format("{0}.html", ViewName);
+            _textViewName = String.Format("{0}.txt", ViewName);
 
-            var htmlViewResult = ViewEngines.Engines.FindView(context, this._htmlViewName, MasterName);
+            ViewEngineResult htmlViewResult = ViewEngines.Engines.FindView(context, _htmlViewName, MasterName);
             if (htmlViewResult.View != null)
             {
-                this._htmlView = htmlViewResult.View;
+                _htmlView = htmlViewResult.View;
             }
 
-            var textViewResult = ViewEngines.Engines.FindView(context, this._textViewName, MasterName);
+            ViewEngineResult textViewResult = ViewEngines.Engines.FindView(context, _textViewName, MasterName);
             if (textViewResult.View != null)
             {
-                this._textView = textViewResult.View;
+                _textView = textViewResult.View;
             }
         }
 
@@ -136,7 +146,7 @@ namespace ActionMailerNext.Mvc5
                 view.Render(viewContext, writer);
 
                 string output = writer.GetStringBuilder().ToString();
-                if (this._trimBody)
+                if (_trimBody)
                     output = output.Trim();
 
                 return output;
@@ -148,26 +158,31 @@ namespace ActionMailerNext.Mvc5
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            this.LocateViews(context);
+            LocateViews(context);
 
-            if (this._textView == null && this._htmlView == null)
+            if (_textView == null && _htmlView == null)
             {
-                var message = String.Format("You must provide a view for this email.  Views should be named {0}.txt.cshtml or {1}.html.cshtml (or aspx for WebFormsViewEngine) depending on the format you wish to render.", ViewName, ViewName);
+                string message =
+                    String.Format(
+                        "You must provide a view for this email.  Views should be named {0}.txt.cshtml or {1}.html.cshtml (or aspx for WebFormsViewEngine) depending on the format you wish to render.",
+                        ViewName, ViewName);
                 throw new NoViewsFoundException(message);
             }
 
-            if (this._textView != null)
+            if (_textView != null)
             {
-                var body = this.RenderViewAsString(context, this._textView);
-                var altView = AlternateView.CreateAlternateViewFromString(body, this.MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
-                this.Mail.AlternateViews.Add(altView);
+                string body = RenderViewAsString(context, _textView);
+                AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
+                    MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
+                Mail.AlternateViews.Add(altView);
             }
 
-            if (this._htmlView != null)
+            if (_htmlView != null)
             {
-                var body = this.RenderViewAsString(context, this._htmlView);
-                var altView = AlternateView.CreateAlternateViewFromString(body, this.MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                this.Mail.AlternateViews.Add(altView);
+                string body = RenderViewAsString(context, _htmlView);
+                AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
+                    MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
+                Mail.AlternateViews.Add(altView);
             }
         }
     }

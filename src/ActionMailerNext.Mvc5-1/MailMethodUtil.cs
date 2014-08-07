@@ -6,16 +6,15 @@ namespace ActionMailerNext.Mvc5_1
 {
     internal static class MailMethodUtil
     {
-        
         public static IMailSender GetSender(MailMethod method = MailMethod.SMTP)
         {
             switch (method)
             {
-                case MailMethod.SMTP :
+                case MailMethod.SMTP:
                 {
                     return new SmtpMailSender();
                 }
-                case MailMethod.Mandrill :
+                case MailMethod.Mandrill:
                 {
                     return new MandrillMailSender();
                 }
@@ -31,27 +30,18 @@ namespace ActionMailerNext.Mvc5_1
             switch (method)
             {
                 case MailMethod.SMTP:
-                    {
-                        return new SmtpMailAttributes();
-                    }
+                {
+                    return new SmtpMailAttributes();
+                }
                 case MailMethod.Mandrill:
-                    {
-                        return new MandrillMailAttributes();
-                    }
+                {
+                    return new MandrillMailAttributes();
+                }
                 default:
-                    {
-                        return null;
-                    }
+                {
+                    return null;
+                }
             }
         }
     }
-
-    public enum MailMethod
-    {
-        SMTP,
-        Mandrill
-    }
-
-
-   
 }

@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System;
@@ -27,11 +29,14 @@ using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
 using ActionMailerNext.Implementations.Mandrill;
+using Mandrill;
 using NUnit.Framework;
 
-namespace ActionMailerNext.Tests {
+namespace ActionMailerNext.Tests
+{
     [TestFixture]
-    public class MandrillMailAttributeTests {
+    public class MandrillMailAttributeTests
+    {
         [Test]
         public void GeneratePropsectiveEmailMessageShouldSetCorrectMessageProperties()
         {
@@ -42,13 +47,14 @@ namespace ActionMailerNext.Tests {
             mailer.Bcc.Add(new MailAddress("test-bcc@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
 
-            var logoAttachmentBytes = File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
+            byte[] logoAttachmentBytes =
+                File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
                     "logo.png"));
             mailer.Attachments["logo.png"] = logoAttachmentBytes;
 
-            var result = mailer.GenerateProspectiveMailMessage();
-            var attachment = result.attachments.First();
-            var attachmentBytes = Convert.FromBase64String(attachment.content);
+            EmailMessage result = mailer.GenerateProspectiveMailMessage();
+            attachment attachment = result.attachments.First();
+            byte[] attachmentBytes = Convert.FromBase64String(attachment.content);
 
             Assert.AreEqual("test@test.com", result.to.First().email);
             Assert.AreEqual("no-reply@mysite.com", result.from_email);

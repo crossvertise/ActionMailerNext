@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4191E9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5AE0534E-6DFD-4511-978F-5D4CAF13AF41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.Tests", "ActionMailerNext.Tests\ActionMailerNext.Tests.csproj", "{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext", "ActionMailerNext\ActionMailerNext.csproj", "{85EC0023-CBBF-4C91-8681-D88DA6334305}"
@@ -42,16 +40,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E5BC938C-580E-4D43-8A66-554C8D4C1B7B}.Release|x86.ActiveCfg = Release|Any CPU
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2AEC1FD-C6C3-4950-BFEC-183971E7A8DC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

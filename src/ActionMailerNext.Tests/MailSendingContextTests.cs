@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,21 +20,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System.Net.Mail;
 using ActionMailerNext.Implementations.SMTP;
 using NUnit.Framework;
 
-namespace ActionMailerNext.Tests {
+namespace ActionMailerNext.Tests
+{
     [TestFixture]
-    public class MailSendingContextTests {
+    public class MailSendingContextTests
+    {
         [Test]
         public void MailContextConstructorSetsUpObjectProperly()
         {
             var mail = new SmtpMailAttributes {From = new MailAddress("no-reply@test.com")};
             mail.To.Add(new MailAddress("test@test.com"));
-            
+
             var context = new MailSendingContext(mail);
 
             Assert.AreEqual(mail, context.Mail);

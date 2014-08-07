@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,24 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
-using System.IO;
-using System.Reflection;
 using ActionMailerNext.Interfaces;
-using ActionMailerNext.Standalone;
+using ActionMailerNext.Mvc5_2;
 
-namespace ActionMailerNext.Tests.Standalone {
-    public class TestMailerBase : RazorMailerBase {
+namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
+{
+    public class TestMailerBase : MailerBase
+    {
         public TestMailerBase(IMailAttributes attributes = null, IMailSender sender = null)
-            : base(attributes, sender) { }
-
-        public override string ViewPath {
-            get { return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone", "TestViews"); }
+            : base(attributes, sender)
+        {
         }
-    }
-
-    public class TestModel {
-        public string Name { get; set; }
     }
 }

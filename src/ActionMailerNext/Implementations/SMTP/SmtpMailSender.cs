@@ -34,7 +34,7 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <param name="mailAttributes">The SmtpMailAttributes you wish to send.</param>
         public void Send(IMailAttributes mailAttributes)
         {
-            var mail = ((SmtpMailAttributes)mailAttributes).GenerateProspectiveMailMessage();
+            MailMessage mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
             _client.Send(mail);
         }
 
@@ -44,7 +44,7 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
         public async Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes)
         {
-            var mail = ((SmtpMailAttributes)mailAttributes).GenerateProspectiveMailMessage();
+            MailMessage mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
             await _client.SendMailAsync(mail);
             return mailAttributes;
         }

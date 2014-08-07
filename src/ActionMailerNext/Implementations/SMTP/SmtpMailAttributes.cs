@@ -13,9 +13,7 @@ namespace ActionMailerNext.Implementations.SMTP
     /// </summary>
     public class SmtpMailAttributes : IMailAttributes
     {
-
         /// <summary>
-        /// 
         /// </summary>
         public SmtpMailAttributes()
         {
@@ -28,49 +26,6 @@ namespace ActionMailerNext.Implementations.SMTP
             Headers = new Dictionary<string, string>();
         }
 
- 
-        /// <summary>
-        ///     Creates a MailMessage for the current SmtpMailAttribute instance.
-        /// </summary>
-        public MailMessage GenerateProspectiveMailMessage()
-        {
-            var mail = this;
-            var message = new MailMessage();
-            
-            for (var i = 0; i < mail.To.Count(); i++)
-                message.To.Add(mail.To[i]);
-
-            for (var i = 0; i < mail.Cc.Count(); i++)
-                message.CC.Add(mail.Cc[i]);
-
-            for (var i = 0; i < mail.Bcc.Count(); i++)
-                message.Bcc.Add(mail.Bcc[i]);
-
-            for (var i = 0; i < mail.ReplyTo.Count(); i++)
-                message.ReplyToList.Add(mail.ReplyTo[i]);
-
-            // From is optional because it could be set in <mailSettings>
-            if (!String.IsNullOrWhiteSpace(mail.From.Address))
-                message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
-
-            message.Subject = mail.Subject;
-            message.BodyEncoding = mail.MessageEncoding;
-            message.Priority = mail.Priority;
-
-            foreach (var kvp in mail.Headers)
-                message.Headers[kvp.Key] = kvp.Value;
-
-            foreach (var kvp in mail.Attachments)
-                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, false));
-            
-            foreach (var kvp in mail.Attachments.Inline)
-                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, true));
-
-            foreach (var view in AlternateViews)
-                message.AlternateViews.Add(view);
-
-            return message;
-        }
 
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
@@ -132,5 +87,48 @@ namespace ActionMailerNext.Implementations.SMTP
         ///     Any view you wish to add.
         /// </summary>
         public IList<AlternateView> AlternateViews { get; private set; }
+
+        /// <summary>
+        ///     Creates a MailMessage for the current SmtpMailAttribute instance.
+        /// </summary>
+        public MailMessage GenerateProspectiveMailMessage()
+        {
+            SmtpMailAttributes mail = this;
+            var message = new MailMessage();
+
+            for (int i = 0; i < mail.To.Count(); i++)
+                message.To.Add(mail.To[i]);
+
+            for (int i = 0; i < mail.Cc.Count(); i++)
+                message.CC.Add(mail.Cc[i]);
+
+            for (int i = 0; i < mail.Bcc.Count(); i++)
+                message.Bcc.Add(mail.Bcc[i]);
+
+            for (int i = 0; i < mail.ReplyTo.Count(); i++)
+                message.ReplyToList.Add(mail.ReplyTo[i]);
+
+            // From is optional because it could be set in <mailSettings>
+            if (!String.IsNullOrWhiteSpace(mail.From.Address))
+                message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
+
+            message.Subject = mail.Subject;
+            message.BodyEncoding = mail.MessageEncoding;
+            message.Priority = mail.Priority;
+
+            foreach (var kvp in mail.Headers)
+                message.Headers[kvp.Key] = kvp.Value;
+
+            foreach (var kvp in mail.Attachments)
+                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, false));
+
+            foreach (var kvp in mail.Attachments.Inline)
+                message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, true));
+
+            foreach (AlternateView view in AlternateViews)
+                message.AlternateViews.Add(view);
+
+            return message;
+        }
     }
 }

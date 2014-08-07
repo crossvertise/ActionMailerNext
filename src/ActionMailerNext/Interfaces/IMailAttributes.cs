@@ -10,7 +10,6 @@ namespace ActionMailerNext.Interfaces
     /// </summary>
     public interface IMailAttributes
     {
-
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
         ///     your name and email address or just an email address by itself.
@@ -26,6 +25,7 @@ namespace ActionMailerNext.Interfaces
         ///     The Priority of the email.
         /// </summary>
         MailPriority Priority { get; set; }
+
         /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
@@ -65,6 +65,7 @@ namespace ActionMailerNext.Interfaces
         ///     Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
         /// </example>
         AttachmentCollection Attachments { get; }
+
         /// <summary>
         ///     Any view you wish to add.  The key of this collection is what
         ///     the view should be named.

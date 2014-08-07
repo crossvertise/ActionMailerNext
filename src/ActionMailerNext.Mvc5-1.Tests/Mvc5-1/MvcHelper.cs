@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System;
@@ -29,18 +31,22 @@ using FakeItEasy;
 namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
 {
     // Some helpers yanked from the MVC 4 source.
-    public static class MvcHelper {
+    public static class MvcHelper
+    {
         public const string AppPathModifier = "/$(SESSION)";
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod, string protocol, int port) {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod,
+            string protocol, int port)
+        {
             var httpContext = A.Fake<HttpContextBase>();
             var request = A.Fake<HttpRequestBase>();
             var response = A.Fake<HttpResponseBase>();
 
             var httpWorkerRequest = A.Fake<HttpWorkerRequest>();
 
-            var uri = port >= 0 ? new Uri(protocol + "://localhost" + ":" + Convert.ToString(port)) : new Uri(protocol + "://localhost");
-
+            Uri uri = port >= 0
+                ? new Uri(protocol + "://localhost" + ":" + Convert.ToString(port))
+                : new Uri(protocol + "://localhost");
 
             #region Request
 
@@ -49,7 +55,7 @@ namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
                 A.CallTo(() => request.ApplicationPath).Returns(appPath);
                 A.CallTo(() => request.RawUrl).Returns("/");
             }
-            
+
             if (!String.IsNullOrEmpty(httpMethod))
             {
                 A.CallTo(() => request.HttpMethod).Returns(httpMethod);
@@ -57,32 +63,34 @@ namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
             if (!String.IsNullOrEmpty(requestPath))
             {
                 A.CallTo(() => request.AppRelativeCurrentExecutionFilePath).Returns(requestPath);
-
             }
             A.CallTo(() => request.Url).Returns(uri);
             A.CallTo(() => request.PathInfo).Returns(String.Empty);
 
             #endregion
-            
+
             #region Response
 
-            A.CallTo(() => response.ApplyAppPathModifier((A<string>.Ignored))).ReturnsLazily(x => AppPathModifier + x.Arguments[0]);
+            A.CallTo(() => response.ApplyAppPathModifier((A<string>.Ignored)))
+                .ReturnsLazily(x => AppPathModifier + x.Arguments[0]);
 
-             #endregion
+            #endregion
 
             #region Context
 
             A.CallTo(() => httpContext.Request).Returns(request);
             A.CallTo(() => httpContext.Response).Returns(response);
-            A.CallTo(() => httpContext.Session).Returns((HttpSessionStateBase)null);
-            A.CallTo(() => httpContext.GetService(typeof(HttpWorkerRequest))).Returns(httpWorkerRequest);
+            A.CallTo(() => httpContext.Session).Returns(null);
+            A.CallTo(() => httpContext.GetService(typeof (HttpWorkerRequest))).Returns(httpWorkerRequest);
             A.CallTo(() => httpContext.Items).Returns(new Hashtable());
 
             #endregion
+
             return httpContext;
         }
 
-        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod) {
+        public static HttpContextBase GetHttpContext(string appPath, string requestPath, string httpMethod)
+        {
             return GetHttpContext(appPath, requestPath, httpMethod, Uri.UriSchemeHttp, -1);
         }
     }

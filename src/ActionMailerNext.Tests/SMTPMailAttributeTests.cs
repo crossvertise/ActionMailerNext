@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System;
@@ -29,9 +31,11 @@ using System.Reflection;
 using ActionMailerNext.Implementations.SMTP;
 using NUnit.Framework;
 
-namespace ActionMailerNext.Tests {
+namespace ActionMailerNext.Tests
+{
     [TestFixture]
-    public class SMTPMailAttributeTests {
+    public class SMTPMailAttributeTests
+    {
         [Test]
         public void GeneratePropsectiveEmailMessageShouldSetCorrectMessageProperties()
         {
@@ -44,19 +48,21 @@ namespace ActionMailerNext.Tests {
             mailer.ReplyTo.Add(new MailAddress("test-reply-to@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
 
-            var logoAttachmentBytes = File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
+            byte[] logoAttachmentBytes =
+                File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
                     "logo.png"));
             mailer.Attachments["logo.png"] = logoAttachmentBytes;
 
             mailer.Attachments.Inline["logo-inline.png"] = logoAttachmentBytes;
 
-            var result = mailer.GenerateProspectiveMailMessage();
-            var attachment = result.Attachments[0];
-            var inlineAttachment = result.Attachments[1];
+            MailMessage result = mailer.GenerateProspectiveMailMessage();
+            Attachment attachment = result.Attachments[0];
+            Attachment inlineAttachment = result.Attachments[1];
             var attachmentBytes = new byte[attachment.ContentStream.Length];
             var inlineAttachmentBytes = new byte[inlineAttachment.ContentStream.Length];
             attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));
-            inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0, Convert.ToInt32(inlineAttachment.ContentStream.Length));
+            inlineAttachment.ContentStream.Read(inlineAttachmentBytes, 0,
+                Convert.ToInt32(inlineAttachment.ContentStream.Length));
 
             Assert.AreEqual("test@test.com", result.To[0].Address);
             Assert.AreEqual("no-reply@mysite.com", result.From.Address);

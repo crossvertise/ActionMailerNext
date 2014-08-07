@@ -49,6 +49,7 @@ namespace ActionMailerNext
 
             return mail;
         }
+
         /// <summary>
         ///     Sends async the given email
         /// </summary>
@@ -64,10 +65,9 @@ namespace ActionMailerNext
             if (mailContext.Cancel)
                 return null;
 
-            var sendtask = _sender.SendAsync(mail);
+            Task<IMailAttributes> sendtask = _sender.SendAsync(mail);
             await sendtask.ContinueWith(t => AsyncSendCompleted(t.Result));
             return mail;
-
         }
 
         private void AsyncSendCompleted(IMailAttributes mail)

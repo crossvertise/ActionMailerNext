@@ -5,13 +5,13 @@ using System.Web.Routing;
 namespace ActionMailerNext.Mvc5
 {
     /// <summary>
-    /// This class contains some handy extension methods that make it easier
-    /// to consume inline attachments in your messageBase body.
+    ///     This class contains some handy extension methods that make it easier
+    ///     to consume inline attachments in your messageBase body.
     /// </summary>
     public static class HtmlHelperExtensions
     {
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -22,7 +22,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -34,7 +34,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -46,20 +46,21 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
         /// <param name="alt">The tooltip text to display when hovering over the image</param>
         /// <param name="htmlAttributes">An anonymous object with extra html attributes you wish to add to this tag.</param>
         /// <returns>An HTML image tag linked against the specified inline image attachment.</returns>
-        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId, string alt, object htmlAttributes)
+        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId, string alt,
+            object htmlAttributes)
         {
             return helper.InlineImage(contentId, alt, null, htmlAttributes);
         }
 
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -72,7 +73,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates an image tag linked against the specified inline image attachment.
+        ///     Creates an image tag linked against the specified inline image attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -80,13 +81,14 @@ namespace ActionMailerNext.Mvc5
         /// <param name="id">Any HTML ID that you want the image tag to have.</param>
         /// <param name="htmlAttributes">An anonymous object with extra html attributes you wish to add to this tag.</param>
         /// <returns>An HTML image tag linked against the specified inline image attachment.</returns>
-        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId, string alt, string id, object htmlAttributes)
+        public static MvcHtmlString InlineImage(this HtmlHelper helper, string contentId, string alt, string id,
+            object htmlAttributes)
         {
             if (contentId == null)
                 throw new ArgumentNullException("contentId");
 
             var builder = new TagBuilder("img");
-            var fileUrl = String.Format("cid:{0}", contentId);
+            string fileUrl = String.Format("cid:{0}", contentId);
 
             builder.MergeAttribute("src", fileUrl);
 
@@ -103,7 +105,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates a link tag for an inline CSS attachment.
+        ///     Creates a link tag for an inline CSS attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -114,7 +116,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates a link tag for an inline CSS attachment.
+        ///     Creates a link tag for an inline CSS attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -126,7 +128,7 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates a link tag for an inline CSS attachment.
+        ///     Creates a link tag for an inline CSS attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
@@ -138,20 +140,21 @@ namespace ActionMailerNext.Mvc5
         }
 
         /// <summary>
-        /// Creates a link tag for an inline CSS attachment.
+        ///     Creates a link tag for an inline CSS attachment.
         /// </summary>
         /// <param name="helper">Your html helper instance.</param>
         /// <param name="contentId">The content id (in ActionMailer this is the attachment name).</param>
         /// <param name="media">The media type for the link tag.</param>
         /// <param name="htmlAttributes">An anonymous object with extra html attributes you wish to add to this tag.</param>
         /// <returns>An HTML link tag that reprensents the inline CSS attachment specified.</returns>
-        public static MvcHtmlString InlineCSS(this HtmlHelper helper, string contentId, string media, object htmlAttributes)
+        public static MvcHtmlString InlineCSS(this HtmlHelper helper, string contentId, string media,
+            object htmlAttributes)
         {
             if (contentId == null)
                 throw new ArgumentNullException("contentId");
 
             var builder = new TagBuilder("link");
-            var fileUrl = String.Format("cid:{0}", contentId);
+            string fileUrl = String.Format("cid:{0}", contentId);
 
             builder.MergeAttribute("href", fileUrl);
             builder.MergeAttribute("rel", "stylesheet");

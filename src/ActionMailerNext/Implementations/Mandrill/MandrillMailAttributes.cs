@@ -16,9 +16,7 @@ namespace ActionMailerNext.Implementations.Mandrill
     /// </summary>
     public class MandrillMailAttributes : IMailAttributes
     {
-
         /// <summary>
-        /// 
         /// </summary>
         public MandrillMailAttributes()
         {
@@ -31,72 +29,6 @@ namespace ActionMailerNext.Implementations.Mandrill
             Headers = new Dictionary<string, string>();
         }
 
-      
-
-        /// <summary>
-        ///     Creates a EmailMessage for the given IMailAttributes instance.
-        /// </summary>
-        public EmailMessage GenerateProspectiveMailMessage()
-        {
-            var mail = this;
-
-            if (mail.Cc.Any())
-                throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
-
-            if (mail.ReplyTo.Any())
-                throw new NotSupportedException("The ReplyTo field is not supported with the MandrillMailSender");
-
-            //create base message
-            var message = new EmailMessage
-            {
-                from_name = mail.From.DisplayName,
-                from_email = mail.From.Address,
-                to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
-                bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
-                subject = mail.Subject
-            };
-
-            //add headers
-            foreach (var kvp in mail.Headers)
-                message.AddHeader(kvp.Key, kvp.Value);
-
-            //add content
-            foreach (var view in mail.AlternateViews)
-            {
-                using (var reader = new StreamReader(view.ContentStream))
-                {
-                    var body = reader.ReadToEnd();
-
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
-                        message.text = body;
-
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
-                        message.html = body;
-                }
-            }
-
-            //add attachments
-            var atts = new List<attachment>();
-            foreach (var attachment in mail.Attachments)
-            {
-                var mailAttachment = AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value,
-                    false);
-                using (var stream = new MemoryStream())
-                {
-                    mailAttachment.ContentStream.CopyTo(stream);
-                    var base64Data = Convert.ToBase64String(stream.ToArray());
-                    atts.Add(new attachment
-                    {
-                        content = base64Data,
-                        name = mailAttachment.Name,
-                        type = mailAttachment.ContentType.MediaType,
-                    });
-                }
-            }
-            message.attachments = atts;
-
-            return message;
-        }
 
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
@@ -159,5 +91,71 @@ namespace ActionMailerNext.Implementations.Mandrill
         ///     the view should be named.
         /// </summary>
         public IList<AlternateView> AlternateViews { get; private set; }
+
+        /// <summary>
+        ///     Creates a EmailMessage for the given IMailAttributes instance.
+        /// </summary>
+        public EmailMessage GenerateProspectiveMailMessage()
+        {
+            MandrillMailAttributes mail = this;
+
+            if (mail.Cc.Any())
+                throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
+
+            if (mail.ReplyTo.Any())
+                throw new NotSupportedException("The ReplyTo field is not supported with the MandrillMailSender");
+
+            //create base message
+            var message = new EmailMessage
+            {
+                from_name = mail.From.DisplayName,
+                from_email = mail.From.Address,
+                to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
+                bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
+                subject = mail.Subject
+            };
+
+            //add headers
+            foreach (var kvp in mail.Headers)
+                message.AddHeader(kvp.Key, kvp.Value);
+
+            //add content
+            foreach (AlternateView view in mail.AlternateViews)
+            {
+                using (var reader = new StreamReader(view.ContentStream))
+                {
+                    string body = reader.ReadToEnd();
+
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                        message.text = body;
+
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
+                        message.html = body;
+                }
+            }
+
+            //add attachments
+            var atts = new List<attachment>();
+            foreach (var attachment in mail.Attachments)
+            {
+                Attachment mailAttachment = AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
+                    attachment.Value,
+                    false);
+                using (var stream = new MemoryStream())
+                {
+                    mailAttachment.ContentStream.CopyTo(stream);
+                    string base64Data = Convert.ToBase64String(stream.ToArray());
+                    atts.Add(new attachment
+                    {
+                        content = base64Data,
+                        name = mailAttachment.Name,
+                        type = mailAttachment.ContentType.MediaType,
+                    });
+                }
+            }
+            message.attachments = atts;
+
+            return message;
+        }
     }
 }

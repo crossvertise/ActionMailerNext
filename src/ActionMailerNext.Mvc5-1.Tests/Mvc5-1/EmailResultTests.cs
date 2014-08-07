@@ -1,4 +1,5 @@
 ﻿#region License
+
 /* Copyright (C) 2012 by Scott W. Anderson
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 #endregion
 
 using System;
@@ -31,33 +33,37 @@ using NUnit.Framework;
 namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
 {
     [TestFixture]
-    public class EmailResultTests {
+    public class EmailResultTests
+    {
         [Test]
-        public void ConstructorWithNullInterceptorThrows() {
+        public void ConstructorWithNullInterceptorThrows()
+        {
             var mockSender = A.Fake<IMailSender>();
 
-            Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(null, mockSender, new SmtpMailAttributes(), "View", "Master", null, true);
-            });
+            Assert.Throws<ArgumentNullException>(
+                () => { new EmailResult(null, mockSender, new SmtpMailAttributes(), "View", "Master", null, true); });
         }
 
         [Test]
-        public void ConstructorWithNullSenderThrows() {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-
-            Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", "Master", null, true);
-            });
-        }
-
-        [Test]
-        public void ConstructorWithNullMailMessageThrows() {
+        public void ConstructorWithNullMailMessageThrows()
+        {
             var mockSender = A.Fake<IMailSender>();
             var mockInterceptor = A.Fake<IMailInterceptor>();
 
-            Assert.Throws<ArgumentNullException>(() => {
-                new EmailResult(mockInterceptor, mockSender, null, "View", "Master", null, true);
-            });
+            Assert.Throws<ArgumentNullException>(
+                () => { new EmailResult(mockInterceptor, mockSender, null, "View", "Master", null, true); });
+        }
+
+        [Test]
+        public void ConstructorWithNullSenderThrows()
+        {
+            var mockInterceptor = A.Fake<IMailInterceptor>();
+
+            Assert.Throws<ArgumentNullException>(
+                () =>
+                {
+                    new EmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", "Master", null, true);
+                });
         }
     }
 }

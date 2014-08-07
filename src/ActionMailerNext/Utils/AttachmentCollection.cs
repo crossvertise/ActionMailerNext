@@ -24,13 +24,12 @@ namespace ActionMailerNext.Utils
         public Dictionary<string, byte[]> Inline { get; private set; }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="fileBytes"></param>
         /// <param name="inline"></param>
         /// <returns></returns>
-        public static Attachment ModifyAttachmentProperties(string fileName, byte[] fileBytes , bool inline)
+        public static Attachment ModifyAttachmentProperties(string fileName, byte[] fileBytes, bool inline)
         {
             // ideally we'd like to find the mime type for each attachment automatically
             // based on the file extension.
@@ -42,7 +41,7 @@ namespace ActionMailerNext.Utils
             }
             else
             {
-                var extension = fileName.Substring(fileName.LastIndexOf("."));
+                string extension = fileName.Substring(fileName.LastIndexOf("."));
                 if (!string.IsNullOrEmpty(extension))
                     mimeType = MimeTypes.ResolveByExtension(extension);
             }
