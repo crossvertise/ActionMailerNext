@@ -1,5 +1,6 @@
 ﻿using System.Net.Mail;
 using ActionMailerNext.Mvc5_2;
+using ActionMailerNext.Mvc5_2.Tests.Mvc5_2;
 
 namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
 {

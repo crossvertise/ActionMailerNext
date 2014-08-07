@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using ActionMailerNext.Interfaces;
 using Mandrill;
+using Attachment = System.Net.Mail.Attachment;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
 namespace ActionMailerNext.Implementations.Mandrill
@@ -97,7 +98,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// </summary>
         public EmailMessage GenerateProspectiveMailMessage()
         {
-            MandrillMailAttributes mail = this;
+            var mail = this;
 
             if (mail.Cc.Any())
                 throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
@@ -124,7 +125,7 @@ namespace ActionMailerNext.Implementations.Mandrill
             {
                 using (var reader = new StreamReader(view.ContentStream))
                 {
-                    string body = reader.ReadToEnd();
+                    var body = reader.ReadToEnd();
 
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
                         message.text = body;
@@ -136,11 +137,10 @@ namespace ActionMailerNext.Implementations.Mandrill
 
             //add attachments
             var atts = new List<attachment>();
-            foreach (var attachment in mail.Attachments)
+            foreach (var mailAttachment in mail.Attachments.Select(attachment => AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
+                attachment.Value,
+                false)))
             {
-                Attachment mailAttachment = AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
-                    attachment.Value,
-                    false);
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);

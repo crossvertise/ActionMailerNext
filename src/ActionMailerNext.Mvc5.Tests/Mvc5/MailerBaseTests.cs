@@ -32,6 +32,9 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
+using ActionMailerNext.Mvc5;
+using ActionMailerNext.Mvc5.Tests.Areas.TestArea.Controllers;
+using ActionMailerNext.Mvc5.Tests.Mvc5;
 using FakeItEasy;
 using NUnit.Framework;
 

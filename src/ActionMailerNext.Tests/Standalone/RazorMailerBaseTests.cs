@@ -53,9 +53,9 @@ namespace ActionMailerNext.Tests.Standalone
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            RazorEmailResult email = mailer.Email("MultipartNoModel");
-            string textBody = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
-            string htmlBody = new StreamReader(email.Mail.AlternateViews[1].ContentStream).ReadToEnd().Trim();
+            var email = mailer.Email("MultipartNoModel");
+            var textBody = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var htmlBody = new StreamReader(email.Mail.AlternateViews[1].ContentStream).ReadToEnd().Trim();
 
             Assert.AreEqual("Testing multipart.", textBody);
             Assert.AreEqual("<p>Testing multipart.</p>", htmlBody);
@@ -67,7 +67,7 @@ namespace ActionMailerNext.Tests.Standalone
             var mockSender = A.Fake<IMailSender>();
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
-            RazorEmailResult email = mailer.Email("TextViewNoModel");
+            var email = mailer.Email("TextViewNoModel");
 
             Assert.AreSame(mockSender, mailer.MailSender);
             Assert.AreSame(mockSender, email.MailSender);
@@ -84,8 +84,8 @@ namespace ActionMailerNext.Tests.Standalone
                 Name = "Foo"
             };
 
-            RazorEmailResult email = mailer.Email("TextViewWithModel", model);
-            string body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var email = mailer.Email("TextViewWithModel", model);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
             Assert.AreEqual("Your name is:  Foo", body);
         }
@@ -97,8 +97,8 @@ namespace ActionMailerNext.Tests.Standalone
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            RazorEmailResult email = mailer.Email("TextViewNoModel");
-            string body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var email = mailer.Email("TextViewNoModel");
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
             Assert.AreEqual("This is a test", body);
         }
@@ -110,8 +110,8 @@ namespace ActionMailerNext.Tests.Standalone
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            RazorEmailResult email = mailer.Email("WhitespaceTrimTest", false);
-            string body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
+            var email = mailer.Email("WhitespaceTrimTest", false);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
 
             Assert.True(body.StartsWith(Environment.NewLine));
             Assert.True(body.EndsWith(Environment.NewLine));
@@ -124,8 +124,8 @@ namespace ActionMailerNext.Tests.Standalone
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            RazorEmailResult email = mailer.Email("WhitespaceTrimTest", trimBody: true);
-            string body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
+            var email = mailer.Email("WhitespaceTrimTest", trimBody: true);
+            var body = new StreamReader(email.Mail.AlternateViews[0].ContentStream).ReadToEnd();
 
             Assert.AreEqual("This thing has leading and trailing whitespace.", body);
         }
