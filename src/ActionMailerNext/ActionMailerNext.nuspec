@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>ActionMailerNext.Standalone</id>
+    <id>ActionMailerNext</id>
     <version>$version$</version>
     <authors>$author$</authors>
     <owners>$author$</owners>
@@ -9,7 +9,7 @@
     <projectUrl>https://github.com/crossvertise/ActionMailerNext</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-	<copyright>Copyright 2014 Scott Anderson, crossvertise GmbH</copyright>
+    <copyright>Copyright 2014 Scott Anderson, crossvertise GmbH</copyright>
     <tags>email mvc asp.net razor actionmailer actionmailer.net</tags>
   </metadata>
 </package>

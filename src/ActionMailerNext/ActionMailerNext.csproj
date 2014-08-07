@@ -78,6 +78,7 @@
     <Compile Include="Implementations\SMTP\SmtpMailSender.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ActionMailerNext.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

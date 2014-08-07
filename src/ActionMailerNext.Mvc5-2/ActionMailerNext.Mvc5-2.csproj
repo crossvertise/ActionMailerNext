@@ -54,6 +54,7 @@
     <Compile Include="UrlHelperExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ActionMailer.Net.Mvc5-2.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
