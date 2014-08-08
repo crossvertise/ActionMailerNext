@@ -8,4 +8,4 @@ Check our Wiki for installation, usage and configuration
 https://github.com/crossvertise/ActionMailerNext/wiki
 
 This application is built using AppVeyor:
-[![Build status](https://ci.appveyor.com/api/projects/status/6w54rmi2n2yduhb9)](https://ci.appveyor.com/project/hydr/actionmailernext)
+[![Build status](https://ci.appveyor.com/api/projects/status/6w54rmi2n2yduhb9)](https://ci.appveyor.com/project/Crossvertise/actionmailernext)
