@@ -26,12 +26,12 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("ActionMailer.Net.Tests")]
+[assembly: AssemblyTitle("ActionMailerNext.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ActionMailer.Net")]
-[assembly: AssemblyCopyright("Copyright © 2012 by Scott W. Anderson")]
+[assembly: AssemblyCompany("Scott W. Anderson, crossvertise GmbH")]
+[assembly: AssemblyProduct("ActionMailerNext.Tests")]
+[assembly: AssemblyCopyright("Copyright © 2014 Scott Anderson, crossvertise GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
