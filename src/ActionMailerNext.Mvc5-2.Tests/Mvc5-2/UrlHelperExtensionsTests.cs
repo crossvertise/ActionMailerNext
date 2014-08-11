@@ -27,10 +27,9 @@ using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using ActionMailerNext.Mvc5_2;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
+namespace ActionMailerNext.Mvc5_2.Tests
 {
     [TestFixture]
     public class UrlHelperExtensionsTests

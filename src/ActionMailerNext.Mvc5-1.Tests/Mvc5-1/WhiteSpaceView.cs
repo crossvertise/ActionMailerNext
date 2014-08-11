@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Web.Mvc;
 
-namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
+namespace ActionMailerNext.Mvc5_1.Tests
 {
     public class WhiteSpaceView : IView
     {

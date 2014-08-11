@@ -28,7 +28,7 @@ using System.Collections;
 using System.Web;
 using FakeItEasy;
 
-namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
+namespace ActionMailerNext.Mvc5_1.Tests
 {
     // Some helpers yanked from the MVC 4 source.
     public static class MvcHelper

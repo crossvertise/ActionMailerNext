@@ -24,9 +24,8 @@
 #endregion
 
 using ActionMailerNext.Interfaces;
-using ActionMailerNext.Mvc5_1;
 
-namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
+namespace ActionMailerNext.Mvc5_1.Tests
 {
     public class TestMailerBase : MailerBase
     {

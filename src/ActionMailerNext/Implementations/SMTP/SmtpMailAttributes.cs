@@ -93,7 +93,7 @@ namespace ActionMailerNext.Implementations.SMTP
         /// </summary>
         public MailMessage GenerateProspectiveMailMessage()
         {
-            SmtpMailAttributes mail = this;
+            var mail = this;
             var message = new MailMessage();
 
             for (int i = 0; i < mail.To.Count(); i++)

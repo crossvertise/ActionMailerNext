@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 
-namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
+namespace ActionMailerNext.Mvc5_2.Tests
 {
     public class WhiteSpaceViewEngine : IViewEngine
     {

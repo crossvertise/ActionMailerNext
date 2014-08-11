@@ -1,4 +1,5 @@
 ﻿using ActionMailerNext.Implementations.Mandrill;
+using ActionMailerNext.Implementations.SendGrid;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 
@@ -18,6 +19,10 @@ namespace ActionMailerNext.Mvc5_1
                 {
                     return new MandrillMailSender();
                 }
+                case MailMethod.SendGrid:
+                {
+                    return new SendGridMailSender();
+                }
                 default:
                 {
                     return null;
@@ -36,6 +41,10 @@ namespace ActionMailerNext.Mvc5_1
                 case MailMethod.Mandrill:
                 {
                     return new MandrillMailAttributes();
+                }
+                case MailMethod.SendGrid:
+                {
+                    return new SendGridMailAttributes();
                 }
                 default:
                 {

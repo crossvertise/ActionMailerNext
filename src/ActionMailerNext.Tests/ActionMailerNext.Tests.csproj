@@ -58,6 +58,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="SendGrid.SmtpApi, Version=1.1.3.0, Culture=neutral, PublicKeyToken=55aa52d3c3c0d2b2, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SendGrid.SmtpApi.1.1.3\lib\net40\SendGrid.SmtpApi.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGridMail, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2ae73662c35d80e4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Sendgrid.4.0.0\lib\SendGridMail.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeliveryHelperTests.cs" />
+    <Compile Include="SendGridMailAttributeTests.cs" />
     <Compile Include="MandrillMailAttributeTests.cs" />
     <Compile Include="SMTPMailAttributeTests.cs" />
     <Compile Include="MailSendingContextTests.cs" />
@@ -76,6 +85,7 @@
     <Compile Include="Standalone\RazorEmailResultTests.cs" />
     <Compile Include="Standalone\RazorMailerBaseTests.cs" />
     <Compile Include="Standalone\TestModel.cs" />
+    <None Include="app.config" />
     <None Include="Standalone\TestViews\TextViewWithModel.txt.cshtml" />
     <None Include="Standalone\TestViews\UTF8TextView.txt.cshtml" />
     <None Include="Standalone\TestViews\TextViewNoModel.txt.cshtml" />

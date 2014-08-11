@@ -7,7 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using ActionMailerNext.Interfaces;
 using Mandrill;
-using Attachment = System.Net.Mail.Attachment;
+
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
 namespace ActionMailerNext.Implementations.Mandrill
@@ -94,7 +94,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         public IList<AlternateView> AlternateViews { get; private set; }
 
         /// <summary>
-        ///     Creates a EmailMessage for the given IMailAttributes instance.
+        ///     Creates a EmailMessage for the given MandrillMailAttributes instance.
         /// </summary>
         public EmailMessage GenerateProspectiveMailMessage()
         {
@@ -113,15 +113,17 @@ namespace ActionMailerNext.Implementations.Mandrill
                 from_email = mail.From.Address,
                 to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
-                subject = mail.Subject
+                subject = mail.Subject,
+                important = mail.Priority == MailPriority.High
             };
+           
 
             //add headers
             foreach (var kvp in mail.Headers)
                 message.AddHeader(kvp.Key, kvp.Value);
 
             //add content
-            foreach (AlternateView view in mail.AlternateViews)
+            foreach (var view in mail.AlternateViews)
             {
                 using (var reader = new StreamReader(view.ContentStream))
                 {
@@ -144,7 +146,7 @@ namespace ActionMailerNext.Implementations.Mandrill
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);
-                    string base64Data = Convert.ToBase64String(stream.ToArray());
+                    var base64Data = Convert.ToBase64String(stream.ToArray());
                     atts.Add(new attachment
                     {
                         content = base64Data,

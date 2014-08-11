@@ -30,14 +30,12 @@ using System.Net.Mail;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Routing;
-using ActionMailer.Net.Mvc5_1.Tests.Areas.TestArea.Controllers;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
-using ActionMailerNext.Mvc5_1;
 using FakeItEasy;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5_1.Tests.Mvc5_1
+namespace ActionMailerNext.Mvc5_1.Tests
 {
     [TestFixture]
     public class MailerBaseTests

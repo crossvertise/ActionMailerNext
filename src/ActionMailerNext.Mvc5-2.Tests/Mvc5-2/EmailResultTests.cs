@@ -26,11 +26,10 @@
 using System;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
-using ActionMailerNext.Mvc5_2;
 using FakeItEasy;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
+namespace ActionMailerNext.Mvc5_2.Tests
 {
     [TestFixture]
     public class EmailResultTests

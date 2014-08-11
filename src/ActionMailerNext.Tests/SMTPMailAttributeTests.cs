@@ -48,16 +48,16 @@ namespace ActionMailerNext.Tests
             mailer.ReplyTo.Add(new MailAddress("test-reply-to@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
 
-            byte[] logoAttachmentBytes =
+           var logoAttachmentBytes =
                 File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
                     "logo.png"));
             mailer.Attachments["logo.png"] = logoAttachmentBytes;
 
             mailer.Attachments.Inline["logo-inline.png"] = logoAttachmentBytes;
 
-            MailMessage result = mailer.GenerateProspectiveMailMessage();
-            Attachment attachment = result.Attachments[0];
-            Attachment inlineAttachment = result.Attachments[1];
+            var result = mailer.GenerateProspectiveMailMessage();
+            var attachment = result.Attachments[0];
+            var inlineAttachment = result.Attachments[1];
             var attachmentBytes = new byte[attachment.ContentStream.Length];
             var inlineAttachmentBytes = new byte[inlineAttachment.ContentStream.Length];
             attachment.ContentStream.Read(attachmentBytes, 0, Convert.ToInt32(attachment.ContentStream.Length));

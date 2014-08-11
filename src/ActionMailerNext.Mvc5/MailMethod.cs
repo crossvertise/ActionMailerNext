@@ -3,6 +3,7 @@
     public enum MailMethod
     {
         SMTP,
-        Mandrill
+        Mandrill,
+        SendGrid
     }
 }

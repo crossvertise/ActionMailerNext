@@ -1,7 +1,6 @@
 ﻿using System.Net.Mail;
-using ActionMailerNext.Mvc5_2.Tests.Mvc5_2;
 
-namespace ActionMailerNext.Mvc5_2.Tests.Areas.TestArea.Controllers
+namespace ActionMailerNext.Mvc5_2.Tests
 {
     public class MailController : TestMailerBase
     {

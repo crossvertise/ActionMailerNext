@@ -24,12 +24,11 @@
 #endregion
 
 using System.Web.Mvc;
-using ActionMailerNext.Mvc5_2;
 using FakeItEasy;
 using HtmlAgilityPack;
 using NUnit.Framework;
 
-namespace ActionMailer.Net.Mvc5_2.Tests.Mvc5_2
+namespace ActionMailerNext.Mvc5_2.Tests
 {
     [TestFixture]
     public class HtmlHelperExtensionsTests

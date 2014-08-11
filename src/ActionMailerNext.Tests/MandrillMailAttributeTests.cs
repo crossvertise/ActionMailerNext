@@ -47,14 +47,14 @@ namespace ActionMailerNext.Tests
             mailer.Bcc.Add(new MailAddress("test-bcc@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
 
-            byte[] logoAttachmentBytes =
+            var logoAttachmentBytes =
                 File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
                     "logo.png"));
             mailer.Attachments["logo.png"] = logoAttachmentBytes;
 
-            EmailMessage result = mailer.GenerateProspectiveMailMessage();
-            attachment attachment = result.attachments.First();
-            byte[] attachmentBytes = Convert.FromBase64String(attachment.content);
+            var result = mailer.GenerateProspectiveMailMessage();
+            var attachment = result.attachments.First();
+            var attachmentBytes = Convert.FromBase64String(attachment.content);
 
             Assert.AreEqual("test@test.com", result.to.First().email);
             Assert.AreEqual("no-reply@mysite.com", result.from_email);
