@@ -12,13 +12,13 @@ namespace ActionMailerNext.Mvc5_1
 {
     /// <summary>
     ///     A special result that should be returned from each eaction in your
-    ///     mail controller.  Your controller must inherit from MailerBase.
+    ///     MailAttributes controller.  Your controller must inherit from MailerBase.
     /// </summary>
     public class EmailResult : ViewResult, IEmailResult
     {
         private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
-        private readonly IMailAttributes _mail;
+        private readonly IMailAttributes _mailAttributes;
         private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly bool _trimBody;
@@ -33,14 +33,14 @@ namespace ActionMailerNext.Mvc5_1
         ///     Creates a new EmailResult.  You must call ExecuteCore() before this result
         ///     can be successfully delivered.
         /// </summary>
-        /// <param name="interceptor">The IMailInterceptor that we will call when delivering mail.</param>
-        /// <param name="sender">The IMailSender that we will use to send mail.</param>
-        /// <param name="mail">The mail messageBase who's body needs populating.</param>
+        /// <param name="interceptor">The IMailInterceptor that we will call when delivering MailAttributes.</param>
+        /// <param name="sender">The IMailSender that we will use to send MailAttributes.</param>
+        /// <param name="mailAttributes">The MailAttributes messageBase who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the messageBase body (can be null)</param>
         /// <param name="masterName">The maste rpage to use when rendering the messageBase body (can be null)</param>
         /// <param name="messageEncoding">The encoding to use when rendering a messageBase.</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the messageBase body.</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mail, string viewName,
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mailAttributes, string viewName,
             string masterName, Encoding messageEncoding, bool trimBody)
         {
             if (interceptor == null)
@@ -49,13 +49,13 @@ namespace ActionMailerNext.Mvc5_1
             if (sender == null)
                 throw new ArgumentNullException("sender");
 
-            if (mail == null)
-                throw new ArgumentNullException("mail");
+            if (mailAttributes == null)
+                throw new ArgumentNullException("mailAttributes");
 
             ViewName = viewName ?? ViewName;
             MasterName = masterName ?? MasterName;
             _messageEncoding = messageEncoding;
-            _mail = mail;
+            _mailAttributes = mailAttributes;
             _mailSender = sender;
             _interceptor = interceptor;
             _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
@@ -65,13 +65,13 @@ namespace ActionMailerNext.Mvc5_1
         /// <summary>
         ///     The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public IMailAttributes Mail
+        public IMailAttributes MailAttributes
         {
-            get { return _mail; }
+            get { return _mailAttributes; }
         }
 
         /// <summary>
-        ///     The IMailSender instance that is used to deliver mail.
+        ///     The IMailSender instance that is used to deliver MailAttributes.
         /// </summary>
         public IMailSender MailSender
         {
@@ -91,7 +91,7 @@ namespace ActionMailerNext.Mvc5_1
         /// </summary>
         public void Deliver()
         {
-            _deliveryHelper.Deliver(Mail);
+            _deliveryHelper.Deliver(MailAttributes);
         }
 
         /// <summary>
@@ -101,12 +101,12 @@ namespace ActionMailerNext.Mvc5_1
         /// </summary>
         public async Task<IMailAttributes> DeliverAsync()
         {
-            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(Mail);
+            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
             return await deliverTask;
         }
 
         /// <summary>
-        ///     Causes the body of the mail messageBase to be generated.
+        ///     Causes the body of the MailAttributes messageBase to be generated.
         /// </summary>
         /// <param name="context">The controller context to use while rendering the body.</param>
         public override void ExecuteResult(ControllerContext context)
@@ -174,7 +174,7 @@ namespace ActionMailerNext.Mvc5_1
                 string body = RenderViewAsString(context, _textView);
                 AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
                     MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
-                Mail.AlternateViews.Add(altView);
+                MailAttributes.AlternateViews.Add(altView);
             }
 
             if (_htmlView != null)
@@ -182,7 +182,7 @@ namespace ActionMailerNext.Mvc5_1
                 string body = RenderViewAsString(context, _htmlView);
                 AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
                     MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                Mail.AlternateViews.Add(altView);
+                MailAttributes.AlternateViews.Add(altView);
             }
         }
     }

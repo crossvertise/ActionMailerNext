@@ -70,17 +70,17 @@ namespace ActionMailerNext.Mvc5_1.Tests
             // populates the mail body properly.
             EmailResult result = mailer.Email("TestView");
 
-            Assert.AreEqual(2, result.Mail.AlternateViews.Count());
+            Assert.AreEqual(2, result.MailAttributes.AlternateViews.Count());
 
-            var textReader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var textReader = new StreamReader(result.MailAttributes.AlternateViews[0].ContentStream);
             string textBody = textReader.ReadToEnd();
             StringAssert.Contains("TextView", textBody);
-            Assert.AreEqual("text/plain", result.Mail.AlternateViews[0].ContentType.MediaType);
+            Assert.AreEqual("text/plain", result.MailAttributes.AlternateViews[0].ContentType.MediaType);
 
-            var htmlReader = new StreamReader(result.Mail.AlternateViews[1].ContentStream);
+            var htmlReader = new StreamReader(result.MailAttributes.AlternateViews[1].ContentStream);
             string htmlBody = htmlReader.ReadToEnd();
             StringAssert.Contains("HtmlView", htmlBody);
-            Assert.AreEqual("text/html", result.Mail.AlternateViews[1].ContentType.MediaType);
+            Assert.AreEqual("text/html", result.MailAttributes.AlternateViews[1].ContentType.MediaType);
         }
 
         [Test]
@@ -96,7 +96,7 @@ namespace ActionMailerNext.Mvc5_1.Tests
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
             EmailResult result = mailer.Email("TestView");
-            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var reader = new StreamReader(result.MailAttributes.AlternateViews[0].ContentStream);
             string body = reader.ReadToEnd().Trim();
 
             Assert.AreEqual("TextView", body);
@@ -126,7 +126,7 @@ namespace ActionMailerNext.Mvc5_1.Tests
             mailer.MailAttributes.MessageEncoding = Encoding.UTF8;
 
             EmailResult result = mailer.Email("TestView");
-            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var reader = new StreamReader(result.MailAttributes.AlternateViews[0].ContentStream);
             string body = reader.ReadToEnd();
 
             Assert.AreEqual(Encoding.UTF8, result.MessageEncoding);
@@ -231,7 +231,7 @@ namespace ActionMailerNext.Mvc5_1.Tests
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
             EmailResult result = mailer.Email("WhiteSpaceView", trimBody: false);
-            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var reader = new StreamReader(result.MailAttributes.AlternateViews[0].ContentStream);
             string body = reader.ReadToEnd();
 
             Assert.True(body.StartsWith(Environment.NewLine));
@@ -251,7 +251,7 @@ namespace ActionMailerNext.Mvc5_1.Tests
             // this test just ensures that our Email() method actually
             // populates the mail body properly.
             EmailResult result = mailer.Email("WhiteSpaceView", trimBody: true);
-            var reader = new StreamReader(result.Mail.AlternateViews[0].ContentStream);
+            var reader = new StreamReader(result.MailAttributes.AlternateViews[0].ContentStream);
             string body = reader.ReadToEnd();
 
             Assert.AreEqual("This thing has leading and trailing whitespace.", body);
