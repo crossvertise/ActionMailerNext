@@ -11,7 +11,7 @@ namespace ActionMailerNext.Interfaces
         /// <summary>
         ///     The underlying IMailAttributes object that was passed to this object's constructor.
         /// </summary>
-        IMailAttributes Mail { get; }
+        IMailAttributes MailAttributes { get; }
 
         /// <summary>
         ///     The IMailSender instance that is used to deliver mail.

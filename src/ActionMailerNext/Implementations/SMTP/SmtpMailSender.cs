@@ -1,25 +1,25 @@
-﻿using System.Net.Mail;
-using System.Threading.Tasks;
-using ActionMailerNext.Interfaces;
-
-namespace ActionMailerNext.Implementations.SMTP
+﻿namespace ActionMailerNext.Implementations.SMTP
 {
+    using System.Net.Mail;
+    using System.Threading.Tasks;
+    using Interfaces;
+
     /// <summary>
-    ///     Implements IMailSender by using System.Net.Mail.SmtpClient.
+    ///     Implements IMailSender by using System.Net.MailAttributes.SmtpClient.
     /// </summary>
     public class SmtpMailSender : IMailSender
     {
         private readonly SmtpClient _client;
 
         /// <summary>
-        ///     Creates a new SMTPMailMessage sender based on System.Net.Mail.SmtpClient
+        ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
         public SmtpMailSender() : this(new SmtpClient())
         {
         }
 
         /// <summary>
-        ///     Creates a new SMTPMailMessage sender based on System.Net.Mail.SmtpClient
+        ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
         /// <param name="client">The underlying SmtpClient instance to use.</param>
         public SmtpMailSender(SmtpClient client)

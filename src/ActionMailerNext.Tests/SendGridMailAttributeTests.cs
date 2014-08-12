@@ -23,48 +23,32 @@
 
 #endregion
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Net.Mail;
-using System.Reflection;
-using ActionMailerNext.Implementations.Mandrill;
+using ActionMailerNext.Implementations.SendGrid;
 using NUnit.Framework;
 
 namespace ActionMailerNext.Tests
 {
     [TestFixture]
-    public class MandrillMailAttributeTests
+    public class SendGridMailAttributeTests
     {
         [Test]
         public void GeneratePropsectiveEmailMessageShouldSetCorrectMessageProperties()
         {
-            var mailer = new MandrillMailAttributes();
+            var mailer = new SendGridMailAttributes();
             mailer.To.Add(new MailAddress("test@test.com"));
             mailer.From = new MailAddress("no-reply@mysite.com");
             mailer.Subject = "test subject";
-            mailer.Bcc.Add(new MailAddress("test-bcc@test.com"));
             mailer.Headers.Add("X-No-Spam", "True");
-
-            var logoAttachmentBytes =
-                File.ReadAllBytes(Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "SampleData",
-                    "logo.png"));
-            mailer.Attachments["logo.png"] = logoAttachmentBytes;
-
+            
             var result = mailer.GenerateProspectiveMailMessage();
-            var attachment = result.attachments.First();
-            var attachmentBytes = Convert.FromBase64String(attachment.content);
-
-            Assert.AreEqual("test@test.com", result.to.First().email);
-            Assert.AreEqual("no-reply@mysite.com", result.from_email);
-            Assert.AreEqual("test-bcc@test.com", result.bcc_address);
-            Assert.AreEqual("test subject", result.subject);
-            Assert.AreEqual("True", result.headers["X-No-Spam"]);
-            Assert.AreEqual("logo.png", attachment.name);
-            Assert.AreEqual("image/png", attachment.type);
 
 
-            Assert.True(attachmentBytes.SequenceEqual(logoAttachmentBytes));
+            Assert.AreEqual("test@test.com", result.To[0].Address);
+            Assert.AreEqual("no-reply@mysite.com", result.From.Address);
+            Assert.AreEqual("test subject", result.Subject);
+            Assert.AreEqual("True", result.Headers["X-No-Spam"]);
+
         }
     }
 }

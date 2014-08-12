@@ -6,20 +6,19 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using ActionMailerNext.Interfaces;
-using Mandrill;
-
+using SendGrid;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
-namespace ActionMailerNext.Implementations.Mandrill
+namespace ActionMailerNext.Implementations.SendGrid
 {
     /// <summary>
-    ///     Mailer for Mandrill.
+    ///     Mailer for SMTP
     /// </summary>
-    public class MandrillMailAttributes : IMailAttributes
+    public class SendGridMailAttributes : IMailAttributes
     {
         /// <summary>
         /// </summary>
-        public MandrillMailAttributes()
+        public SendGridMailAttributes()
         {
             To = new List<MailAddress>();
             Cc = new List<MailAddress>();
@@ -131,7 +130,7 @@ namespace ActionMailerNext.Implementations.Mandrill
 
         /// <summary>
         ///     Any attachments you wish to add.  The key of this collection is what
-        ///     the file should be named.  The value is should represent the actual content
+        ///     the file should be named.  The value is should represent the binary bytes
         ///     of the file.
         /// </summary>
         /// <example>
@@ -140,39 +139,32 @@ namespace ActionMailerNext.Implementations.Mandrill
         public AttachmentCollection Attachments { get; private set; }
 
         /// <summary>
-        ///     Any view you wish to add.  The key of this collection is what
-        ///     the view should be named.
+        ///     Any view you wish to add.
         /// </summary>
         public IList<AlternateView> AlternateViews { get; private set; }
 
         /// <summary>
-        ///     Creates a EmailMessage for the given MandrillMailAttributes instance.
+        ///     Creates a SendGridMessage for the current SendGridMailAttributes instance.
         /// </summary>
-        public EmailMessage GenerateProspectiveMailMessage()
+        public SendGridMessage GenerateProspectiveMailMessage()
         {
             var mail = this;
 
             if (mail.Cc.Any())
-                throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
+                throw new NotSupportedException("The CC field is not supported with the SendGridMailSender");
 
-            if (mail.ReplyTo.Any())
-                throw new NotSupportedException("The ReplyTo field is not supported with the MandrillMailSender");
+            if (mail.Bcc.Any())
+                throw new NotSupportedException("The ReplyTo field is not supported with the SendGridMailSender");
 
             //create base message
-            var message = new EmailMessage
+            var message = new SendGridMessage
             {
-                from_name = mail.From.DisplayName,
-                from_email = mail.From.Address,
-                to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
-                bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
-                subject = mail.Subject,
-                important = mail.Priority == MailPriority.High
+                From = mail.From,
+                To = mail.To.ToArray(),
+                ReplyTo = mail.ReplyTo.ToArray(),
+                Subject = mail.Subject,
+                Headers = (Dictionary<string,string>)mail.Headers
             };
-           
-
-            //add headers
-            foreach (var kvp in mail.Headers)
-                message.AddHeader(kvp.Key, kvp.Value);
 
             //add content
             foreach (var view in mail.AlternateViews)
@@ -183,17 +175,16 @@ namespace ActionMailerNext.Implementations.Mandrill
 
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
                     {
-                        message.text = body;
+                        message.Text = body;
                     }
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                     {
-                        message.html = body;
+                        message.Html = body;
                     }
                 }
             }
 
             //add attachments
-            var atts = new List<attachment>();
             foreach (var mailAttachment in mail.Attachments.Select(attachment => AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
                 attachment.Value,
                 false)))
@@ -201,16 +192,9 @@ namespace ActionMailerNext.Implementations.Mandrill
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);
-                    var base64Data = Convert.ToBase64String(stream.ToArray());
-                    atts.Add(new attachment
-                    {
-                        content = base64Data,
-                        name = mailAttachment.Name,
-                        type = mailAttachment.ContentType.MediaType,
-                    });
+                    message.AddAttachment(stream, mailAttachment.Name);
                 }
             }
-            message.attachments = atts;
 
             return message;
         }

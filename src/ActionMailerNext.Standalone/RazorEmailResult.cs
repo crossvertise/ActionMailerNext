@@ -16,7 +16,7 @@ namespace ActionMailerNext.Standalone
     {
         private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
-        private readonly IMailAttributes _mail;
+        private readonly IMailAttributes _mailAttributes;
         private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly ITemplateService _templateService;
@@ -29,15 +29,15 @@ namespace ActionMailerNext.Standalone
         ///     Creates a new EmailResult.  You must call Compile() before this result
         ///     can be successfully delivered.
         /// </summary>
-        /// <param name="interceptor">The IMailInterceptor that we will call when delivering mail.</param>
-        /// <param name="sender">The IMailSender that we will use to send mail.</param>
-        /// <param name="mail">The mail message who's body needs populating.</param>
+        /// <param name="interceptor">The IMailInterceptor that we will call when delivering MailAttributes.</param>
+        /// <param name="sender">The IMailSender that we will use to send MailAttributes.</param>
+        /// <param name="mailAttributes"> message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
         /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
         /// <param name="messageEncoding"></param>
-        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mail, string viewName,
+        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mailAttributes, string viewName,
             Encoding messageEncoding,
             string viewPath, ITemplateService templateService, DynamicViewBag viewBag)
         {
@@ -47,8 +47,8 @@ namespace ActionMailerNext.Standalone
             if (sender == null)
                 throw new ArgumentNullException("sender");
 
-            if (mail == null)
-                throw new ArgumentNullException("mail");
+            if (mailAttributes == null)
+                throw new ArgumentNullException("mailAttributes");
 
             if (string.IsNullOrWhiteSpace(viewName))
                 throw new ArgumentNullException("viewName");
@@ -61,7 +61,7 @@ namespace ActionMailerNext.Standalone
 
             _interceptor = interceptor;
             _mailSender = sender;
-            _mail = mail;
+            _mailAttributes = mailAttributes;
             _viewName = viewName;
             _viewPath = viewPath;
             _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
@@ -75,13 +75,13 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public IMailAttributes Mail
+        public IMailAttributes MailAttributes
         {
-            get { return _mail; }
+            get { return _mailAttributes; }
         }
 
         /// <summary>
-        ///     The IMailSender instance that is used to deliver mail.
+        ///     The IMailSender instance that is used to deliver MailAttributes.
         /// </summary>
         public IMailSender MailSender
         {
@@ -101,7 +101,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public void Deliver()
         {
-            _deliveryHelper.Deliver(Mail);
+            _deliveryHelper.Deliver(MailAttributes);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public async Task<IMailAttributes> DeliverAsync()
         {
-            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(Mail);
+            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
             return await deliverTask;
         }
 
@@ -129,7 +129,7 @@ namespace ActionMailerNext.Standalone
 
                 AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
                     MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
-                Mail.AlternateViews.Add(altView);
+                MailAttributes.AlternateViews.Add(altView);
                 hasTxtView = true;
             }
             catch (TemplateResolvingException)
@@ -144,7 +144,7 @@ namespace ActionMailerNext.Standalone
 
                 AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
                     MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                Mail.AlternateViews.Add(altView);
+                MailAttributes.AlternateViews.Add(altView);
             }
             catch (TemplateResolvingException)
             {

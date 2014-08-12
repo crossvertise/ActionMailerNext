@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using ActionMailerNext.Interfaces;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
@@ -69,6 +72,57 @@ namespace ActionMailerNext.Implementations.SMTP
         public IDictionary<string, string> Headers { get; private set; }
 
         /// <summary>
+        ///     The generated text body of the message
+        /// </summary>
+        public string TextBody {
+            get
+            {
+                 foreach (var view in AlternateViews)
+                {
+                    using (var reader = new StreamReader(view.ContentStream))
+                    {
+                        var body = reader.ReadToEnd();
+                        if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                        {
+                            return body;
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        ///     The generated html body of the message
+        /// </summary>
+        public string HTMLBody
+        {
+            get
+            {
+                foreach (var view in AlternateViews)
+                {
+                    using (var reader = new StreamReader(view.ContentStream))
+                    {
+                        var body = reader.ReadToEnd();
+                        if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
+                        {
+                            return body;
+                        }
+                    }
+                }
+                return null;
+            }
+        }
+
+        /// <summary>
+        ///     The generated body of the message
+        /// </summary>
+        public string Body
+        {
+            get { return TextBody ?? HTMLBody; }
+        }
+
+        /// <summary>
         ///     Gets or sets the default message encoding when delivering mail.
         /// </summary>
         public Encoding MessageEncoding { get; set; }
@@ -96,22 +150,23 @@ namespace ActionMailerNext.Implementations.SMTP
             var mail = this;
             var message = new MailMessage();
 
-            for (int i = 0; i < mail.To.Count(); i++)
+            for (var i = 0; i < mail.To.Count(); i++)
                 message.To.Add(mail.To[i]);
 
-            for (int i = 0; i < mail.Cc.Count(); i++)
+            for (var i = 0; i < mail.Cc.Count(); i++)
                 message.CC.Add(mail.Cc[i]);
 
-            for (int i = 0; i < mail.Bcc.Count(); i++)
+            for (var i = 0; i < mail.Bcc.Count(); i++)
                 message.Bcc.Add(mail.Bcc[i]);
 
-            for (int i = 0; i < mail.ReplyTo.Count(); i++)
+            for (var i = 0; i < mail.ReplyTo.Count(); i++)
                 message.ReplyToList.Add(mail.ReplyTo[i]);
 
             // From is optional because it could be set in <mailSettings>
             if (!String.IsNullOrWhiteSpace(mail.From.Address))
                 message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
 
+            
             message.Subject = mail.Subject;
             message.BodyEncoding = mail.MessageEncoding;
             message.Priority = mail.Priority;
@@ -125,9 +180,9 @@ namespace ActionMailerNext.Implementations.SMTP
             foreach (var kvp in mail.Attachments.Inline)
                 message.Attachments.Add(AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, true));
 
-            foreach (AlternateView view in AlternateViews)
+            foreach (var view in AlternateViews)
                 message.AlternateViews.Add(view);
-
+            
             return message;
         }
     }

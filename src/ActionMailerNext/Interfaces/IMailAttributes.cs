@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 using System.Text;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
@@ -50,6 +51,22 @@ namespace ActionMailerNext.Interfaces
         ///     Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         IDictionary<string, string> Headers { get; }
+
+
+        /// <summary>
+        ///     The generated text body of the message
+        /// </summary>
+        string TextBody { get; }
+
+        /// <summary>
+        ///     The generated html body of the message
+        /// </summary>
+        string HTMLBody { get; }
+
+        /// <summary>
+        ///     The generated body of the message
+        /// </summary>
+        string Body { get; }
 
         /// <summary>
         ///     Gets or sets the default message encoding when delivering mail.
