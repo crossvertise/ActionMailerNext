@@ -1,5 +1,6 @@
 ﻿using System;
 using ActionMailerNext.Interfaces;
+using ActionMailerNext.Standalone.Helpers;
 using RazorEngine.Configuration;
 using RazorEngine.Templating;
 
@@ -16,6 +17,8 @@ namespace ActionMailerNext.Standalone
 
         private ITemplateService _templateService;
 
+        private string _usedViewPath;
+
         /// <summary>
         ///     Initializes MailerBase using the default SmtpMailSender and system Encoding.
         /// </summary>
@@ -23,8 +26,8 @@ namespace ActionMailerNext.Standalone
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         protected RazorMailerBase(IMailAttributes mailAttributes = null, IMailSender mailSender = null)
         {
-            MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
-            MailSender = mailSender ?? MailMethodUtil.GetSender();
+            MailAttributes = mailAttributes ?? MailSendorFactory.GetAttributes();
+            MailSender = mailSender ?? MailSendorFactory.GetSender();
 
             ViewBag = new DynamicViewBag();
         }
@@ -32,7 +35,12 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     The path to the folder containing your Razor views.
         /// </summary>
-        public abstract string ViewPath { get; }
+        public abstract string GlobalViewPath { get; }
+
+        /// <summary>
+        ///     The view settings needed to implement HTML/URL Helpers
+        /// </summary>
+        public abstract ViewSettings ViewSettings { get;}
 
         /// <summary>
         ///     The underlying IMailSender to use for outgoing messages.
@@ -52,7 +60,7 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     Used to add needed variable
         /// </summary>
-        public DynamicViewBag ViewBag { get; set; }
+        public dynamic ViewBag { get; set; }
 
 
         private ITemplateService TemplateService
@@ -63,11 +71,12 @@ namespace ActionMailerNext.Standalone
                 {
                     var config = new TemplateServiceConfiguration
                     {
-                        BaseTemplateType = TemplateBaseType ?? typeof (TemplateBase<>),
-                        Resolver = TemplateResolver ?? new RazorTemplateResolver(ViewPath),
+                        BaseTemplateType = TemplateBaseType ?? typeof(ExtendedTemplateBase<>),
+                        Resolver = TemplateResolver ?? new ExtendedTemplateResolver(_usedViewPath),
                     };
 
                     _templateService = new TemplateService(config);
+                    
                 }
                 return _templateService;
             }
@@ -107,11 +116,13 @@ namespace ActionMailerNext.Standalone
         ///     Constructs your mail message ready for delivery.
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">the main layout</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
+        /// <param name="externalViewPath">a View path that overrides the one set by the property</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual RazorEmailResult Email(string viewName, bool trimBody = true)
+        public virtual RazorEmailResult Email(string viewName, string masterName = null, bool trimBody = true, string externalViewPath = null)
         {
-            return Email<object>(viewName, null, trimBody);
+            return Email<object>(viewName, null, masterName, trimBody);
         }
 
         /// <summary>
@@ -119,18 +130,26 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>
+        /// <param name="masterName">the main layout</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
+        /// <param name="externalViewPath">a View path that overrides the one set by the property</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual RazorEmailResult Email<T>(string viewName, T model = null, bool trimBody = true) where T : class
+        public virtual RazorEmailResult Email<T>(string viewName, T model = null, string masterName = null, bool trimBody = true, string externalViewPath = null) where T : class
         {
             if (viewName == null)
                 throw new ArgumentNullException("viewName");
+            if (ViewBag != null)
+            {
+                ViewBag.ViewSettings = ViewSettings;
+            }
 
-            var result = new RazorEmailResult(this, MailSender, MailAttributes, viewName, MailAttributes.MessageEncoding,
-                ViewPath, TemplateService, ViewBag);
+            _usedViewPath = externalViewPath ?? GlobalViewPath;
+            var result = new RazorEmailResult(this, MailSender, MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
+                _usedViewPath, TemplateService, ViewBag);
 
             result.Compile(model, trimBody);
             return result;
         }
     }
+
 }

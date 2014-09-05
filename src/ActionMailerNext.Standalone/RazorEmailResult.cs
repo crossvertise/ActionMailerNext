@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Dynamic;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
+using ActionMailerNext.Standalone.Helpers;
 using ActionMailerNext.Utils;
 using RazorEngine.Templating;
 
@@ -24,6 +26,7 @@ namespace ActionMailerNext.Standalone
 
         private readonly string _viewName;
         private readonly string _viewPath;
+        private readonly string _masterName;
 
         /// <summary>
         ///     Creates a new EmailResult.  You must call Compile() before this result
@@ -33,12 +36,13 @@ namespace ActionMailerNext.Standalone
         /// <param name="sender">The IMailSender that we will use to send MailAttributes.</param>
         /// <param name="mailAttributes"> message who's body needs populating.</param>
         /// <param name="viewName">The view to use when rendering the message body.</param>
+        /// <param name="masterName">the main layout</param>
         /// <param name="viewPath">The path where we should search for the view.</param>
         /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
         /// <param name="messageEncoding"></param>
         public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mailAttributes, string viewName,
-            Encoding messageEncoding,
+            Encoding messageEncoding, string masterName,
             string viewPath, ITemplateService templateService, DynamicViewBag viewBag)
         {
             if (interceptor == null)
@@ -53,8 +57,6 @@ namespace ActionMailerNext.Standalone
             if (string.IsNullOrWhiteSpace(viewName))
                 throw new ArgumentNullException("viewName");
 
-            if (string.IsNullOrWhiteSpace(viewPath))
-                throw new ArgumentNullException("viewPath");
 
             if (templateService == null)
                 throw new ArgumentNullException("templateService");
@@ -63,12 +65,14 @@ namespace ActionMailerNext.Standalone
             _mailSender = sender;
             _mailAttributes = mailAttributes;
             _viewName = viewName;
+            _masterName = masterName;
             _viewPath = viewPath;
             _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
 
             _templateService = templateService;
-            _viewBag = viewBag;
             _messageEncoding = messageEncoding;
+
+            _viewBag = viewBag;
         }
 
 
@@ -121,13 +125,16 @@ namespace ActionMailerNext.Standalone
         public void Compile<T>(T model, bool trimBody)
         {
             bool hasTxtView = false;
+            var body = string.Empty;
+            var altView = null as AlternateView;
             try
             {
-                string body = _templateService.Resolve(_viewName + ".txt", model).Run(new ExecuteContext(_viewBag));
+
+                body = _templateService.Resolve(_viewName + ".txt", model).Run(new ExecuteContext(_viewBag));
                 if (trimBody)
                     body = body.Trim();
 
-                AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
+                altView = AlternateView.CreateAlternateViewFromString(body,
                     MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
                 MailAttributes.AlternateViews.Add(altView);
                 hasTxtView = true;
@@ -135,18 +142,31 @@ namespace ActionMailerNext.Standalone
             catch (TemplateResolvingException)
             {
             }
+                // Ensure master template is cached with _masterName
+            try
+            {
+                if (!String.IsNullOrWhiteSpace(_masterName))
+                {
+                    _templateService.Resolve(_masterName, model);
+                }
+            }
+            catch (TemplateResolvingException ex)
+            {
+                var error = string.Format("Could not find the master file [{0}] in the path [{1}]", _masterName, _viewPath);
+                throw new NoViewsFoundException(error);
+            }
+          
+
+            var itemplate = _templateService.Resolve(_viewName + ".html", model);
+            var templateBase = itemplate as TemplateBase;
+            if (templateBase != null && !String.IsNullOrWhiteSpace(_masterName)) templateBase.Layout = _masterName;
 
             try
             {
-                string body = _templateService.Resolve(_viewName + ".html", model).Run(new ExecuteContext(_viewBag));
-                if (trimBody)
-                    body = body.Trim();
-
-                AlternateView altView = AlternateView.CreateAlternateViewFromString(body,
-                    MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
-                MailAttributes.AlternateViews.Add(altView);
+                body = itemplate.Run(new ExecuteContext(_viewBag));
+                
             }
-            catch (TemplateResolvingException)
+            catch (TemplateResolvingException ex)
             {
                 if (!hasTxtView)
                     throw new NoViewsFoundException(
@@ -154,6 +174,20 @@ namespace ActionMailerNext.Standalone
                             "Could not find any CSHTML or VBHTML views named [{0}] in the path [{1}].  Ensure that you specify the format in the file name (ie: {0}.txt.cshtml or {0}.html.cshtml)",
                             _viewName, _viewPath));
             }
+            catch (NullReferenceException ex)
+            {
+                var error = string.Format("{0}\n{1}\n{2}\n{3}\n\n{4}\nFile:{5}", ex.Message, ex.InnerException, ex.Data, ex.Source, ex.StackTrace, _viewName);
+                throw new NullReferenceException(error);
+            }
+            
+            if (trimBody)
+                body = body.Trim();
+
+            altView = AlternateView.CreateAlternateViewFromString(body,
+                MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
+            MailAttributes.AlternateViews.Add(altView);
+            
+
         }
     }
 }

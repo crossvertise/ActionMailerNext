@@ -5,7 +5,7 @@ using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.Standalone
 {
-    internal static class MailMethodUtil
+    internal static class MailSendorFactory
     {
         public static IMailSender GetSender(MailMethod method = MailMethod.SMTP)
         {

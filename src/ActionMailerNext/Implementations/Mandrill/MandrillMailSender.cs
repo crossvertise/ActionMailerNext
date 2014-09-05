@@ -16,15 +16,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <summary>
         ///     Creates a new MandrillMailSender based on Mandrill.MandrillApi
         /// </summary>
-        public MandrillMailSender()
-        {
-            var apiKey = ConfigurationManager.AppSettings["MandrillApiKey"];
-            if (string.IsNullOrWhiteSpace(apiKey))
-                throw new InvalidOperationException(
-                    "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
-
-            _client = new MandrillApi(apiKey);
-        }
+        public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"]){}
 
         /// <summary>
         ///     Creates a new MandrillApi based onMandrill.MandrillApi
@@ -32,6 +24,10 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <param name="apiKey"></param>
         public MandrillMailSender(string apiKey)
         {
+            if (string.IsNullOrWhiteSpace(apiKey))
+                throw new ArgumentNullException("apiKey",
+                    "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
+
             _client = new MandrillApi(apiKey);
         }
 

@@ -33,14 +33,29 @@ namespace ActionMailerNext.Interfaces
         List<MailAddress> To { get; }
 
         /// <summary>
+        ///  Check if the current Sending method supports CC
+        /// </summary>
+        bool IsCcToSupported { get; }
+
+        /// <summary>
         ///     A collection of addresses that should be CC'ed.
         /// </summary>
         IList<MailAddress> Cc { get; }
 
         /// <summary>
+        ///  Check if the current Sending method supports BCC
+        /// </summary>
+        bool IsBccSupported { get; }
+
+        /// <summary>
         ///     A collection of addresses that should be BCC'ed.
         /// </summary>
         IList<MailAddress> Bcc { get; }
+
+        /// <summary>
+        ///  Check if the current Sending method supports ReplyTo
+        /// </summary>
+        bool IsReplyToSupported { get; }
 
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
@@ -51,8 +66,7 @@ namespace ActionMailerNext.Interfaces
         ///     Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         IDictionary<string, string> Headers { get; }
-
-
+        
         /// <summary>
         ///     The generated text body of the message
         /// </summary>

@@ -1,17 +1,18 @@
-﻿using ActionMailerNext.Implementations.Mandrill;
+﻿using System;
+using ActionMailerNext.Implementations.Mandrill;
 using ActionMailerNext.Implementations.SendGrid;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.Mvc5_2
 {
-    internal static class MailMethodUtil
+    internal static class MailSendorFactory
     {
-        public static IMailSender GetSender(MailMethod method = MailMethod.SMTP)
+        public static IMailSender GetSender(MailMethod method = MailMethod.Smtp)
         {
             switch (method)
             {
-                case MailMethod.SMTP:
+                case MailMethod.Smtp:
                 {
                     return new SmtpMailSender();
                 }
@@ -25,16 +26,16 @@ namespace ActionMailerNext.Mvc5_2
                 }
                 default:
                 {
-                    return null;
+                    throw new ArgumentException("Unsupported Method");
                 }
             }
         }
 
-        public static IMailAttributes GetAttributes(MailMethod method = MailMethod.SMTP)
+        public static IMailAttributes GetAttributes(MailMethod method = MailMethod.Smtp)
         {
             switch (method)
             {
-                case MailMethod.SMTP:
+                case MailMethod.Smtp:
                 {
                     return new SmtpMailAttributes();
                 }
@@ -48,7 +49,7 @@ namespace ActionMailerNext.Mvc5_2
                 }
                 default:
                 {
-                    return null;
+                    throw new ArgumentException("Unsupported Method");
                 }
             }
         }

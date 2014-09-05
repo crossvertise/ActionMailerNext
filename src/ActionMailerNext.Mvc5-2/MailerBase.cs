@@ -21,8 +21,8 @@ namespace ActionMailerNext.Mvc5_2
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
         protected MailerBase(IMailAttributes mailAttributes = null, IMailSender mailSender = null)
         {
-            MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
-            MailSender = mailSender ?? MailMethodUtil.GetSender();
+            MailAttributes = mailAttributes ?? MailSendorFactory.GetAttributes();
+            MailSender = mailSender ?? MailSendorFactory.GetSender();
 
             if (System.Web.HttpContext.Current == null) return;
             HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
@@ -73,8 +73,8 @@ namespace ActionMailerNext.Mvc5_2
 
         public void SetMailMethod(MailMethod method)
         {
-            MailAttributes = MailMethodUtil.GetAttributes(method);
-            MailSender = MailMethodUtil.GetSender(method);
+            MailAttributes = MailSendorFactory.GetAttributes(method);
+            MailSender = MailSendorFactory.GetSender(method);
         }
 
         public virtual EmailResult Email(string viewName, object model = null, string masterName = null,
@@ -93,8 +93,7 @@ namespace ActionMailerNext.Mvc5_2
             routeData.Values["controller"] = GetType().Name.Replace("Controller", string.Empty);
             routeData.Values["action"] = viewName;
 
-            var requestContext = new RequestContext(HttpContextBase, routeData);
-            ControllerContext = new ControllerContext(requestContext, this);
+            ControllerContext = new ControllerContext(HttpContextBase, routeData, this);
 
             result.ExecuteResult(ControllerContext);
             return result;

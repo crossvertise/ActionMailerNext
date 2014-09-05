@@ -51,15 +51,23 @@ namespace ActionMailerNext.Implementations.SendGrid
         /// </summary>
         public List<MailAddress> To { get; private set; }
 
+        public bool IsCcToSupported { get { return false; } }
+
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
         /// </summary>
         public IList<MailAddress> Cc { get; private set; }
 
+        
+        
+        public bool IsBccSupported { get { return false; } }
+
         /// <summary>
         ///     A collection of addresses that should be BCC'ed.
         /// </summary>
         public IList<MailAddress> Bcc { get; private set; }
+
+        public bool IsReplyToSupported { get { return true; } }
 
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
