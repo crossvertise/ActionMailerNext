@@ -18,6 +18,7 @@ namespace ActionMailerNext.Standalone.Helpers
         private readonly ExecuteContext _executeContext;
         private readonly ITemplateService _templateService;
         private readonly ViewSettings _viewSettings;
+        private readonly TModel _model;
 
 
         public StandaloneHtmlHelpers()
@@ -26,8 +27,9 @@ namespace ActionMailerNext.Standalone.Helpers
             this._templateService = new TemplateService();
         }
 
-        public StandaloneHtmlHelpers(ITemplateService templateService = null, DynamicViewBag viewBag = null)
+        public StandaloneHtmlHelpers(TModel model, ITemplateService templateService = null, DynamicViewBag viewBag = null)
         {
+            this._model = model;
             this._executeContext = (viewBag == null) ? new ExecuteContext() : new ExecuteContext(viewBag);
             this._templateService = templateService ?? new TemplateService();
             this._viewSettings = UtilHelper.GetDynamicMember(viewBag, "ViewSettings") as ViewSettings;
@@ -259,16 +261,29 @@ namespace ActionMailerNext.Standalone.Helpers
                 var htmlAttributesDict = UtilHelper.ObjectToDictionary(htmlAttributes);
                 htmlAttributesStr = UtilHelper.ConvertDictionaryToString(htmlAttributesDict);
             }
-            var tag = string.Format("<label {2}for=\"{0}\">{1}</label>", propName, resolvedLabelText, htmlAttributesStr);
+            var tag = string.Format("<label {2}for=\"{0}\">{1}</label>", propName, HttpUtility.HtmlEncode(resolvedLabelText), htmlAttributesStr);
             return new RawString(tag);
         }
-        
-        public IEncodedString DisplayFor<TValue>(Expression<Func<TValue>> expression)
+
+        public IEncodedString DisplayNameFor<TValue>(Expression<Func<TModel, TValue>> expression)
         {
+            var resolvedLabelText = UtilHelper.GetPropertyDisplayName(expression);
+
+            if (String.IsNullOrEmpty(resolvedLabelText))
+            {
+                return new HtmlEncodedString(string.Empty);
+            }
+
+            return new HtmlEncodedString(resolvedLabelText);
+        }
+        
+        public IEncodedString DisplayFor<TValue>(Expression<Func<TModel,TValue>> expression)
+        {
+            
             var value = string.Empty;
             try
             {
-                var result = expression.Compile()();
+                var result = expression.Compile()(_model);
                 value = string.Format(UtilHelper.GetPropertyDisplayFormat(expression), result);
             }
             catch (NullReferenceException ex)

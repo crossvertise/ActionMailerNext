@@ -10,12 +10,12 @@ using RazorEngine.Text;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
-    public class StandaloneUrlHelpers
+    public class StandaloneUrlHelpers<TModel> 
     {
         private readonly ExecuteContext _executeContext;
         private readonly ITemplateService _templateService;
         private readonly ViewSettings _viewSettings;
-
+        private readonly TModel _model;
 
         public StandaloneUrlHelpers()
         {
@@ -23,8 +23,9 @@ namespace ActionMailerNext.Standalone.Helpers
             this._templateService = new TemplateService();
         }
 
-        public StandaloneUrlHelpers(ITemplateService templateService = null, DynamicViewBag viewBag = null)
+        public StandaloneUrlHelpers(TModel model, ITemplateService templateService = null, DynamicViewBag viewBag = null)
         {
+            this._model = model;
             this._executeContext = (viewBag == null) ? new ExecuteContext() : new ExecuteContext(viewBag);
             this._templateService = templateService ?? new TemplateService();
             this._viewSettings = UtilHelper.GetDynamicMember(viewBag, "ViewSettings") as ViewSettings;

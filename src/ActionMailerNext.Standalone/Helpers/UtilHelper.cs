@@ -156,7 +156,7 @@ namespace ActionMailerNext.Standalone.Helpers
             return resourceManager.GetString(attr.Name);
         }
 
-        public static string GetPropertyDisplayFormat<TValue>(Expression<Func<TValue>> propertyExpression)
+        public static string GetPropertyDisplayFormat<TModel, TValue>(Expression<Func<TModel, TValue>> propertyExpression)
         {
             var memberInfo = GetPropertyInformation(propertyExpression.Body);
             if (memberInfo == null)

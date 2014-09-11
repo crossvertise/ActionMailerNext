@@ -1,4 +1,5 @@
-﻿using RazorEngine.Templating;
+﻿using System.Web.ModelBinding;
+using RazorEngine.Templating;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
@@ -9,21 +10,21 @@ namespace ActionMailerNext.Standalone.Helpers
     public class ExtendedTemplateBase<T> : TemplateBase<T>
     {
         private StandaloneHtmlHelpers<T> _html;
-        private StandaloneUrlHelpers _url;
+        private StandaloneUrlHelpers<T> _url;
         public StandaloneHtmlHelpers<T> Html
         {
             get
             {
-                this._html = this._html ?? new StandaloneHtmlHelpers<T>(TemplateService, ViewBag);
+                this._html = this._html ?? new StandaloneHtmlHelpers<T>(Model, TemplateService, ViewBag);
                 return this._html;
             }
         }
 
-        public StandaloneUrlHelpers Url
+        public StandaloneUrlHelpers<T> Url
         {
             get
             {
-                this._url = this._url ?? new StandaloneUrlHelpers(TemplateService, ViewBag);
+                this._url = this._url ?? new StandaloneUrlHelpers<T>(Model, TemplateService, ViewBag);
                 return this._url;
             }
         }
@@ -33,7 +34,7 @@ namespace ActionMailerNext.Standalone.Helpers
     public class ExtendedTemplateBase : TemplateBase
     {
         private StandaloneHtmlHelpers<object> _html;
-        private StandaloneUrlHelpers _url;
+        private StandaloneUrlHelpers<object> _url;
         public StandaloneHtmlHelpers<object> Html
         {
             get
@@ -43,11 +44,11 @@ namespace ActionMailerNext.Standalone.Helpers
             }
         }
 
-        public StandaloneUrlHelpers Url
+        public StandaloneUrlHelpers<object> Url
         {
             get
             {
-                this._url = this._url ?? new StandaloneUrlHelpers(TemplateService, ViewBag);
+                this._url = this._url ?? new StandaloneUrlHelpers<object>(TemplateService, ViewBag);
                 return this._url;
             }
         }
