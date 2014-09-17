@@ -187,7 +187,7 @@ namespace ActionMailerNext.Standalone.Helpers
 
             if (linkText == null)
             {
-                linkText = uri.ToString().Replace("//", "/");
+                linkText = uri.ToString();
             }
 
             var htmlAttrStr = UtilHelper.ConvertDictionaryToString(htmlAttributes);

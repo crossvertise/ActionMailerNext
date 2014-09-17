@@ -132,7 +132,7 @@ namespace ActionMailerNext.Standalone.Helpers
                 uri = uriBuilder.Uri;
             }
 
-            var link = uri.ToString().Replace("//","/");
+            var link = uri.ToString();
 
             return new RawString(link);
         }

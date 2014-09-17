@@ -7,7 +7,6 @@ using System.Net.Mime;
 using System.Text;
 using ActionMailerNext.Interfaces;
 using Mandrill;
-
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
 namespace ActionMailerNext.Implementations.Mandrill
@@ -206,6 +205,7 @@ namespace ActionMailerNext.Implementations.Mandrill
             {
                 using (var stream = new MemoryStream())
                 {
+                    
                     mailAttachment.ContentStream.CopyTo(stream);
                     var base64Data = Convert.ToBase64String(stream.ToArray());
                     atts.Add(new attachment

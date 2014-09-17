@@ -66,7 +66,11 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public dynamic ViewBag { get; set; }
 
-
+        public void SetMailMethod(MailMethod method)
+        {
+            MailAttributes = MailSendorFactory.GetAttributes(method);
+            MailSender = MailSendorFactory.GetSender(method);
+        }
         private ITemplateService TemplateService
         {
             get

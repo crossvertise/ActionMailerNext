@@ -7,11 +7,11 @@ namespace ActionMailerNext.Standalone
 {
     internal static class MailSendorFactory
     {
-        public static IMailSender GetSender(MailMethod method = MailMethod.SMTP)
+        public static IMailSender GetSender(MailMethod method = MailMethod.Smtp)
         {
             switch (method)
             {
-                case MailMethod.SMTP:
+                case MailMethod.Smtp:
                 {
                     return new SmtpMailSender();
                 }
@@ -30,11 +30,11 @@ namespace ActionMailerNext.Standalone
             }
         }
 
-        public static IMailAttributes GetAttributes(MailMethod method = MailMethod.SMTP)
+        public static IMailAttributes GetAttributes(MailMethod method = MailMethod.Smtp)
         {
             switch (method)
             {
-                case MailMethod.SMTP:
+                case MailMethod.Smtp:
                 {
                     return new SmtpMailAttributes();
                 }

@@ -43,8 +43,8 @@ namespace ActionMailerNext.Standalone.Helpers
             var routeString = Regex.Replace(newFormatStringBuilder.ToString(), "{([A-Z])+}", "", RegexOptions.IgnoreCase);
             if (routeString.EndsWith("/"))
                 routeString = routeString.Substring(0, routeString.Length - 1);
-            uriBuilder.Path = String.Format(routeString, routeDictionary.OrderBy(x => keyToInt[x.Key]).Select(x => x.Value).ToArray());
-
+            uriBuilder.Path = String.Format(routeString, routeDictionary.OrderBy(x => keyToInt[x.Key]).Select(x => x.Value).ToArray()).Replace("//", "/");
+           
             return uriBuilder.Uri;
         }
 
