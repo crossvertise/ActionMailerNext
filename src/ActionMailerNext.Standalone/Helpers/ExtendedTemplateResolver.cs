@@ -45,17 +45,15 @@ namespace ActionMailerNext.Standalone.Helpers
             var appRoot = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
             var csViewPath = (csViewName).StartsWith("~")
-                ? csViewName
+                ? Path.GetFullPath(Path.Combine(appRoot, csViewName.Substring(2)))
                 : Path.GetFullPath(Path.Combine(appRoot, _viewPath, csViewName));
             var vbViewPath = (vbViewName).StartsWith("~")
-                ? vbViewName
+                ? Path.GetFullPath(Path.Combine(appRoot, vbViewName.Substring(2)))
                 : Path.GetFullPath(Path.Combine(appRoot, _viewPath, vbViewName));
 
             
 
             //Works with forward and backward slashes in the path
-            
-
             if (File.Exists(csViewPath))
             {
                 return File.ReadAllText(csViewPath);
