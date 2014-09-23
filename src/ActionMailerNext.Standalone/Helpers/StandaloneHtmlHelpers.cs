@@ -1,38 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Web;
 using RazorEngine.Templating;
 using RazorEngine.Text;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
-
-
-    
-    public class StandaloneHtmlHelpers<TModel> 
+    public class StandaloneHtmlHelpers<TModel>
     {
         private readonly ExecuteContext _executeContext;
         private readonly ITemplateService _templateService;
         private readonly ViewSettings _viewSettings;
         private readonly TModel _model;
 
-
-        public StandaloneHtmlHelpers()
-        {
-            this._executeContext = new ExecuteContext();
-            this._templateService = new TemplateService();
-        }
-
-        public StandaloneHtmlHelpers(TModel model, ITemplateService templateService = null, DynamicViewBag viewBag = null)
+        public StandaloneHtmlHelpers(ITemplateService templateService, dynamic viewBag, TModel model)
         {
             this._model = model;
             this._executeContext = (viewBag == null) ? new ExecuteContext() : new ExecuteContext(viewBag);
             this._templateService = templateService ?? new TemplateService();
-            this._viewSettings = UtilHelper.GetDynamicMember(viewBag, "ViewSettings") as ViewSettings;
+            this._viewSettings = viewBag == null ? null : viewBag.ViewSettings as ViewSettings;
+
+            //this._viewSettings = UtilHelper.GetDynamicMember(viewBag, "ViewSettings") as ViewSettings;
         }
 
         public IEncodedString Raw(string input)

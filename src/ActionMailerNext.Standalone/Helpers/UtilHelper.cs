@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Globalization;
@@ -9,15 +7,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Security.AccessControl;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
-using Dynamitey;
-using Microsoft.CSharp.RuntimeBinder;
-using RazorEngine.Templating;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
@@ -75,13 +67,6 @@ namespace ActionMailerNext.Standalone.Helpers
             }
 
             return queryString.Substring(1);
-        }
-
-
-        [DebuggerStepThrough()]
-        public static object GetDynamicMember(object obj, string memberName)
-        {
-            return Dynamic.InvokeGet(obj, memberName);
         }
 
         public static string ConvertDictionaryToString(IDictionary<string, string> htmlAttributes)

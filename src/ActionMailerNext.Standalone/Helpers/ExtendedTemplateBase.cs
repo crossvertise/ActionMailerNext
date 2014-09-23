@@ -15,7 +15,7 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             get
             {
-                this._html = this._html ?? new StandaloneHtmlHelpers<T>(Model, TemplateService, ViewBag);
+                this._html = this._html ?? new StandaloneHtmlHelpers<T>(TemplateService, ViewBag, Model);
                 return this._html;
             }
         }
@@ -24,7 +24,7 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             get
             {
-                this._url = this._url ?? new StandaloneUrlHelpers<T>(Model, TemplateService, ViewBag);
+                this._url = this._url ?? new StandaloneUrlHelpers<T>(ViewBag, Model);
                 return this._url;
             }
         }
@@ -39,7 +39,7 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             get
             {
-                this._html = this._html ?? new StandaloneHtmlHelpers<object>(TemplateService, ViewBag);
+                this._html = this._html ?? new StandaloneHtmlHelpers<object>(TemplateService, ViewBag, null);
                 return this._html;
             }
         }
@@ -48,7 +48,7 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             get
             {
-                this._url = this._url ?? new StandaloneUrlHelpers<object>(TemplateService, ViewBag);
+                this._url = this._url ?? new StandaloneUrlHelpers<object>(ViewBag, null);
                 return this._url;
             }
         }

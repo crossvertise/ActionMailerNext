@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Web;
-using RazorEngine.Templating;
 using RazorEngine.Text;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
     public class StandaloneUrlHelpers<TModel> 
     {
-        private readonly ExecuteContext _executeContext;
-        private readonly ITemplateService _templateService;
         private readonly ViewSettings _viewSettings;
         private readonly TModel _model;
 
         public StandaloneUrlHelpers()
         {
-            this._executeContext = new ExecuteContext();
-            this._templateService = new TemplateService();
         }
 
-        public StandaloneUrlHelpers(TModel model, ITemplateService templateService = null, DynamicViewBag viewBag = null)
+        public StandaloneUrlHelpers(dynamic viewBag, TModel model)
         {
             this._model = model;
-            this._executeContext = (viewBag == null) ? new ExecuteContext() : new ExecuteContext(viewBag);
-            this._templateService = templateService ?? new TemplateService();
-            this._viewSettings = UtilHelper.GetDynamicMember(viewBag, "ViewSettings") as ViewSettings;
+            _viewSettings = viewBag.ViewSettings as ViewSettings;
 
         }
 
