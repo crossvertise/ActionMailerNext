@@ -6,6 +6,9 @@ using RazorEngine.Templating;
 
 namespace ActionMailerNext.Standalone
 {
+    using System.Collections.Generic;
+    using System.Web.UI.WebControls;
+
     /// <summary>
     ///     This is a standalone MailerBase that relies on RazorEngine to generate emails.
     /// </summary>
@@ -19,9 +22,9 @@ namespace ActionMailerNext.Standalone
         /// We use a singleton instance of the templating service in the mailer, to facilitate 
         /// caching of resolved and compiled views.
         /// </summary>
-        private static ITemplateService _templateService;
+        private static ITemplateService templateService;
 
-        private string _usedViewPath;
+        private ITemplateResolver templateResolver;
 
         /// <summary>
         ///     Initializes MailerBase using the default SmtpMailSender and system Encoding.
@@ -54,7 +57,17 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     A template resolver that is used to find the appropriate templates
         /// </summary>
-        public ITemplateResolver TemplateResolver { get; set; }
+        public ITemplateResolver TemplateResolver
+        {
+            get
+            {
+                return this.templateResolver ?? (this.templateResolver = new ExtendedTemplateResolver(GlobalViewPath));
+            }
+            set
+            {
+                this.templateResolver = value;
+            }
+        }
 
         /// <summary>
         ///     A template base that can add more features to RazorEngine
@@ -75,18 +88,18 @@ namespace ActionMailerNext.Standalone
         {
             get
             {
-                if (_templateService == null)
+                if (templateService == null)
                 {
                     var config = new TemplateServiceConfiguration
                     {
                         BaseTemplateType = TemplateBaseType ?? typeof(ExtendedTemplateBase<>),
-                        Resolver = TemplateResolver ?? new ExtendedTemplateResolver(_usedViewPath),
+                        Resolver = TemplateResolver,
                     };
 
-                    _templateService = new TemplateService(config);
+                    templateService = new TemplateService(config);
                     
                 }
-                return _templateService;
+                return templateService;
             }
         }
 
@@ -151,12 +164,27 @@ namespace ActionMailerNext.Standalone
                 ViewBag.ViewSettings = ViewSettings;
             }
 
-            _usedViewPath = externalViewPath ?? GlobalViewPath;
             var result = new RazorEmailResult(this, MailSender, MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
-                _usedViewPath, TemplateService, ViewBag);
+                externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
             result.Compile(model, trimBody);
             return result;
+        }
+
+        /// <summary>
+        /// Pre-Compiles the views in the dictionary using a the template resolver
+        /// </summary>
+        /// <param name="views"></param>
+        public virtual void PreCompileViews(IDictionary<string, Type> views)
+        {
+            foreach (var view in views)
+            {
+                var viewName = view.Key;
+                var modelType = view.Value;
+
+                var template = this.TemplateResolver.Resolve(viewName);
+                this.TemplateService.Compile(template, modelType, viewName);
+            }
         }
     }
 
