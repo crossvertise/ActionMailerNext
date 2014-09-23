@@ -27,6 +27,7 @@ using System.IO;
 using System.Reflection;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone;
+using ActionMailerNext.Standalone.Helpers;
 
 namespace ActionMailerNext.Tests.Standalone
 {
@@ -37,12 +38,25 @@ namespace ActionMailerNext.Tests.Standalone
         {
         }
 
-        public override string ViewPath
+        public override string GlobalViewPath
         {
             get
             {
                 return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone",
                     "TestViews");
+            }
+        }
+
+        public override ViewSettings ViewSettings
+        {
+            get
+            {
+                return new ViewSettings
+                {
+                    Hostname = "test.com",
+                    Protocol = "http",
+                    UrlPattern = "{controller}/{action}/{id}"
+                };
             }
         }
     }

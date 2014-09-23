@@ -4,6 +4,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
+using ActionMailerNext.Utils;
 using RazorEngine.Templating;
 
 namespace ActionMailerNext.Standalone
@@ -121,25 +122,55 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public void Compile<T>(T model, bool trimBody)
         {
-            string body;
+            string body = string.Empty;
             AlternateView altView;
 
-
-            // Ensure master template is cached with _masterName and compiled with type object
-            if (!String.IsNullOrWhiteSpace(_masterName))
+            var hasTxtView = false;
+            try
             {
-                _templateService.Resolve(_masterName, new object());
+                body = _templateService.Resolve(_viewName + ".txt", model).Run(new ExecuteContext(_viewBag));
+                if (trimBody)
+                    body = body.Trim();
+
+                altView = AlternateView.CreateAlternateViewFromString(body,
+                    MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Plain);
+                MailAttributes.AlternateViews.Add(altView);
+                hasTxtView = true;
+            }
+            catch (TemplateResolvingException)
+            {
+            }
+            try
+            {
+                // Ensure master template is cached with _masterName and compiled with type object
+                if (!String.IsNullOrWhiteSpace(_masterName))
+                {
+                    _templateService.Resolve(_masterName, new object());
+                }
+
+                var itemplate = _templateService.Resolve(_viewName + ".html", model);
+                var templateBase = itemplate as TemplateBase;
+                if (templateBase != null && !String.IsNullOrWhiteSpace(_masterName))
+                {
+                    templateBase.Layout = _masterName;
+                }
+
+                body = itemplate.Run(new ExecuteContext(_viewBag));
             }
 
-            var itemplate = _templateService.Resolve(_viewName + ".html", model);
-            var templateBase = itemplate as TemplateBase;
-            if (templateBase != null && !String.IsNullOrWhiteSpace(_masterName))
+            catch (TemplateResolvingException ex)
             {
-                templateBase.Layout = _masterName;
+                if (!hasTxtView)
+                    throw new NoViewsFoundException(
+                        string.Format(
+                            "Could not find any CSHTML or VBHTML views named [{0}] in the path [{1}].  Ensure that you specify the format in the file name (ie: {0}.txt.cshtml or {0}.html.cshtml)",
+                            _viewName, _viewPath));
             }
-
-
-            body = itemplate.Run(new ExecuteContext(_viewBag));
+            catch (NullReferenceException ex)
+            {
+                var error = string.Format("{0}\n{1}\n{2}\n{3}\n\n{4}\nFile:{5}", ex.Message, ex.InnerException, ex.Data, ex.Source, ex.StackTrace, _viewName);
+                throw new NullReferenceException(error);
+            }
 
 
             if (trimBody)

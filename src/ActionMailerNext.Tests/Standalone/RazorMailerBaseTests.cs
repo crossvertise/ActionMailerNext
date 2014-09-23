@@ -109,7 +109,7 @@ namespace ActionMailerNext.Tests.Standalone
             var attribute = new SmtpMailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            var email = mailer.Email("WhitespaceTrimTest", false);
+            var email = mailer.Email("WhitespaceTrimTest", null, false);
             var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd();
 
             Assert.True(body.StartsWith(Environment.NewLine));

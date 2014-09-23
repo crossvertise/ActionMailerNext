@@ -44,7 +44,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(null, mockSender, new SmtpMailAttributes(), "View", null, "Path",
+                    new RazorEmailResult(null, mockSender, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -58,7 +58,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", null, "Path",
+                    new RazorEmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -73,7 +73,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, null, "View", null, "Path", mockTemplateService,
+                    new RazorEmailResult(mockInterceptor, mockSender, null, "View", null, "_Layout", "Path", mockTemplateService,
                         null);
                 });
         }
@@ -88,22 +88,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), null, null, "Path",
-                        mockTemplateService, null);
-                });
-        }
-
-        [Test]
-        public void ConstructorWithNullViewPathThrows()
-        {
-            var mockSender = A.Fake<IMailSender>();
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockTemplateService = A.Fake<ITemplateService>();
-
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), "View", null, null,
+                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -118,7 +103,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), "View", null, "Path",
+                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
                         null, null);
                 });
         }
