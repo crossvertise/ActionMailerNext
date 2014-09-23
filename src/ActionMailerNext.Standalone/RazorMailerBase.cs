@@ -15,7 +15,11 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public IMailAttributes MailAttributes;
 
-        private ITemplateService _templateService;
+        /// <summary>
+        /// We use a singleton instance of the templating service in the mailer, to facilitate 
+        /// caching of resolved and compiled views.
+        /// </summary>
+        private static ITemplateService _templateService;
 
         private string _usedViewPath;
 
