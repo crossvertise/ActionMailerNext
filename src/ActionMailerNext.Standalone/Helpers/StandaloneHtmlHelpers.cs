@@ -277,9 +277,9 @@ namespace ActionMailerNext.Standalone.Helpers
             }
             catch (NullReferenceException ex)
             {
-                return new HtmlEncodedString(string.Empty);
+                return new RawString(string.Empty);
             }
-            return new HtmlEncodedString(value);
+            return new RawString(value);
         }
 
         public IEncodedString NewLineToBr(string input)
