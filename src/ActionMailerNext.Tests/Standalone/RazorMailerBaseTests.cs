@@ -112,8 +112,8 @@ namespace ActionMailerNext.Tests.Standalone
             var email = mailer.Email("WhitespaceTrimTest", null, false);
             var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd();
 
-            Assert.True(body.StartsWith(Environment.NewLine));
-            Assert.True(body.EndsWith(Environment.NewLine));
+            Assert.True(char.IsWhiteSpace(body,0));
+            Assert.True(char.IsWhiteSpace(body, body.Length-1));
         }
 
         [Test]
