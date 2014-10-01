@@ -42,8 +42,7 @@ namespace ActionMailerNext.Tests.Standalone
         {
             get
             {
-                return Path.Combine(Assembly.GetExecutingAssembly().FullName, "..", "..", "..", "Standalone",
-                    "TestViews");
+                return Path.Combine(Directory.GetCurrentDirectory(),"Standalone", "TestViews");
             }
         }
 

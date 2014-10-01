@@ -44,11 +44,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mandrill.1.0.85\lib\net40\Mandrill.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="RazorEngine">
-      <HintPath>..\packages\RazorEngine.3.4.0\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,15 +82,27 @@
     <Compile Include="Standalone\RazorMailerBaseTests.cs" />
     <Compile Include="Standalone\TestModel.cs" />
     <None Include="app.config" />
-    <None Include="Standalone\TestViews\TextViewWithModel.txt.cshtml" />
-    <None Include="Standalone\TestViews\UTF8TextView.txt.cshtml" />
-    <None Include="Standalone\TestViews\TextViewNoModel.txt.cshtml" />
-    <None Include="Standalone\TestViews\WhitespaceTrimTest.txt.cshtml" />
+    <Content Include="Standalone\TestViews\TextViewWithModel.txt.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Standalone\TestViews\UTF8TextView.txt.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Standalone\TestViews\TextViewNoModel.txt.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Standalone\TestViews\WhitespaceTrimTest.txt.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SampleData\logo.png" />
-    <None Include="Standalone\TestViews\MultipartNoModel.html.cshtml" />
-    <None Include="Standalone\TestViews\MultipartNoModel.txt.cshtml" />
+    <Content Include="Standalone\TestViews\MultipartNoModel.html.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Standalone\TestViews\MultipartNoModel.txt.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
