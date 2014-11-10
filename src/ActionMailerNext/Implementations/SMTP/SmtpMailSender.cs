@@ -1,4 +1,6 @@
-﻿namespace ActionMailerNext.Implementations.SMTP
+﻿using System.Collections.Generic;
+
+namespace ActionMailerNext.Implementations.SMTP
 {
     using System.Net.Mail;
     using System.Threading.Tasks;
@@ -32,21 +34,24 @@
         ///     Sends SMTPMailMessage synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SmtpMailAttributes you wish to send.</param>
-        public void Send(IMailAttributes mailAttributes)
+        public List<IMailResponse> Send(IMailAttributes mailAttributes)
         {
             var mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
             _client.Send(mail);
+
+            return null;
         }
 
         /// <summary>
         ///     Sends SMTPMailMessage asynchronously using tasks.
         /// </summary>
         /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes)
+        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
         {
             var mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
-            await _client.SendMailAsync(mail);
-            return mailAttributes;
+            _client.SendMailAsync(mail);
+
+            return null;
         }
 
         /// <summary>

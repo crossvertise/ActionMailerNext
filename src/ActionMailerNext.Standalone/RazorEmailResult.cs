@@ -113,7 +113,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public async Task<IMailAttributes> DeliverAsync()
         {
-            Task<IMailAttributes> deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
+            var deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
             return await deliverTask;
         }
 

@@ -16,7 +16,7 @@ namespace ActionMailerNext.Standalone
     {
         /// <summary>
         /// </summary>
-        public IMailAttributes MailAttributes;
+        public IMailAttributes MailAttributes { get; private set; }
 
         /// <summary>
         /// We use a singleton instance of the templating service in the mailer, to facilitate 

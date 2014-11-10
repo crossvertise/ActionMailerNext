@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Net;
 using System.Threading.Tasks;
@@ -43,21 +44,24 @@ namespace ActionMailerNext.Implementations.SendGrid
         ///     Sends SendGridMailMessage synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SendGridMailAttributes you wish to send.</param>
-        public void Send(IMailAttributes mailAttributes)
+        public List<IMailResponse> Send(IMailAttributes mailAttributes)
         {
             var mail = ((SendGridMailAttributes)mailAttributes).GenerateProspectiveMailMessage();
             _client.Deliver(mail);
+
+            return null;
         }
 
         /// <summary>
         ///     Sends SendGridMailMessage asynchronously using tasks.
         /// </summary>
         /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes)
+        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
         {
             var mail = ((SendGridMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
             await _client.DeliverAsync(mail);
-            return mailAttributes;
+
+            return null;
         }
 
         /// <summary>

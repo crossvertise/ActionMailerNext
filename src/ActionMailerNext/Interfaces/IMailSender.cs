@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ActionMailerNext.Interfaces
@@ -12,13 +13,13 @@ namespace ActionMailerNext.Interfaces
         ///     Sends IMailAttributes synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SMTPMailMessage message you wish to send.</param>
-        void Send(IMailAttributes mailAttributes);
+        List<IMailResponse> Send(IMailAttributes mailAttributes);
 
 
         /// <summary>
         ///     Sends IMailAttributes asynchronously using tasks.
         /// </summary>
         /// <param name="mailAttributes">The SMTPMailMessage message you wish to send.</param>
-        Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes);
+        Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes);
     }
 }

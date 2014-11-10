@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
 
@@ -65,8 +66,8 @@ namespace ActionMailerNext
             if (mailContext.Cancel)
                 return null;
 
-            Task<IMailAttributes> sendtask = _sender.SendAsync(mail);
-            await sendtask.ContinueWith(t => AsyncSendCompleted(t.Result));
+            var sendtask = _sender.SendAsync(mail);
+            await sendtask.ContinueWith(t => AsyncSendCompleted(mail));
             return mail;
         }
 

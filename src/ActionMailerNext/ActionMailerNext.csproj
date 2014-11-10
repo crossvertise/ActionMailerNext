@@ -65,9 +65,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implementations\Mandrill\MandrillMailAttributes.cs" />
+    <Compile Include="Implementations\Mandrill\MandrillMailResponse.cs" />
     <Compile Include="Implementations\Mandrill\MandrillMailSender.cs" />
     <Compile Include="Implementations\SendGrid\SendGridMailAttributes.cs" />
     <Compile Include="Implementations\SendGrid\SendGridMailSender.cs" />
+    <Compile Include="Interfaces\IMailResponse.cs" />
     <Compile Include="Utils\AlternativeViewCollection.cs" />
     <Compile Include="Utils\AttachmentCollection.cs" />
     <Compile Include="DeliveryHelper.cs" />

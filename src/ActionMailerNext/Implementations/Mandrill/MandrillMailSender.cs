@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
 using Mandrill;
@@ -36,25 +38,38 @@ namespace ActionMailerNext.Implementations.Mandrill
         ///     Sends MandrillMessage synchronously.
         /// </summary>
         /// <param name="mailAttributes">The IMailAttributes you wish to send.</param>
-        public void Send(IMailAttributes mailAttributes)
+        public List<IMailResponse> Send(IMailAttributes mailAttributes)
         {
             var mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
-            _client.SendMessage(mail);
+            var response = new List<IMailResponse>();
+
+            var re = _client.SendMessage(mail);
+            response.AddRange(re.Select(result => new MandrillMailResponse
+            {
+                Email = result.Email, Status = result.Status.ToString(), RejectReason = result.RejectReason, Id = result.Id
+            }));
+
+            return response;
         }
 
         /// <summary>
         ///     Sends MandrillMessage asynchronously using tasks.
         /// </summary>
         /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<IMailAttributes> SendAsync(IMailAttributes mailAttributes)
+        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
         {
             var mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var response = new List<IMailResponse>();
 
-            await _client.SendMessageAsync(mail);
-            return mailAttributes;
+            await _client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
+            {
+                Email = result.Email, Status = result.Status.ToString(), RejectReason = result.RejectReason, Id = result.Id
+            })));
+
+
+            return response;
         }
-
-
+        
         /// <summary>
         ///     Destroys the underlying MandrillApi.
         /// </summary>
