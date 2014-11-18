@@ -18,7 +18,7 @@ namespace ActionMailerNext.Mvc5_2
     {
         private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
-        private readonly IMailAttributes _mailAttributes;
+        private readonly MailAttributes _mailAttributes;
         private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly bool _trimBody;
@@ -40,7 +40,7 @@ namespace ActionMailerNext.Mvc5_2
         /// <param name="masterName">The maste rpage to use when rendering the messageBase body (can be null)</param>
         /// <param name="messageEncoding">The encoding to use when rendering a messageBase.</param>
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the messageBase body.</param>
-        public EmailResult(IMailInterceptor interceptor, IMailSender sender, IMailAttributes mailAttributes, string viewName,
+        public EmailResult(IMailInterceptor interceptor, IMailSender sender, MailAttributes mailAttributes, string viewName,
             string masterName, Encoding messageEncoding, bool trimBody)
         {
             if (interceptor == null)
@@ -65,7 +65,7 @@ namespace ActionMailerNext.Mvc5_2
         /// <summary>
         ///     The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public IMailAttributes MailAttributes
+        public MailAttributes MailAttributes
         {
             get { return _mailAttributes; }
         }
@@ -99,7 +99,7 @@ namespace ActionMailerNext.Mvc5_2
         ///     when the messageBase has been sent, then override the OnMailSent method in MailerBase which
         ///     will not fire until the asyonchronous send operation is complete.
         /// </summary>
-        public async Task<IMailAttributes> DeliverAsync()
+        public async Task<MailAttributes> DeliverAsync()
         {
             var deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
             return await deliverTask;

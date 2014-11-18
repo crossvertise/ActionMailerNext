@@ -20,6 +20,6 @@
         ///     This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
-        void OnMailSent(IMailAttributes mail);
+        void OnMailSent(MailAttributes mail);
     }
 }

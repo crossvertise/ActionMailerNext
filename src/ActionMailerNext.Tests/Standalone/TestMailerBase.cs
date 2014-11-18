@@ -33,7 +33,7 @@ namespace ActionMailerNext.Tests.Standalone
 {
     public class TestMailerBase : RazorMailerBase
     {
-        public TestMailerBase(IMailAttributes attributes = null, IMailSender sender = null)
+        public TestMailerBase(MailAttributes attributes = null, IMailSender sender = null)
             : base(attributes, sender)
         {
         }

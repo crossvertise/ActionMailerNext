@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.Mvc5_1
@@ -12,17 +13,17 @@ namespace ActionMailerNext.Mvc5_1
     /// </summary>
     public abstract class MailerBase : Controller, IMailInterceptor
     {
-        public IMailAttributes MailAttributes;
+        public MailAttributes MailAttributes;
 
         /// <summary>
         ///     Initializes MailerBase using the defaultMailSender and system Encoding.
         /// </summary>
         /// <param name="mailAttributes"> the mail attributes</param>
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
-        protected MailerBase(IMailAttributes mailAttributes = null, IMailSender mailSender = null)
+        protected MailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null)
         {
-            MailAttributes = mailAttributes ?? MailMethodUtil.GetAttributes();
-            MailSender = mailSender ?? MailMethodUtil.GetSender();
+            MailAttributes = mailAttributes ?? new MailAttributes();
+            MailSender = mailSender ?? new SmtpMailSender();
 
             if (System.Web.HttpContext.Current == null) return;
             HttpContextBase = new HttpContextWrapper(System.Web.HttpContext.Current);
@@ -46,7 +47,7 @@ namespace ActionMailerNext.Mvc5_1
             OnMailSending(context);
         }
 
-        void IMailInterceptor.OnMailSent(IMailAttributes mail)
+        void IMailInterceptor.OnMailSent(MailAttributes mail)
         {
             OnMailSent(mail);
         }
@@ -55,7 +56,7 @@ namespace ActionMailerNext.Mvc5_1
         ///     This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
-        protected virtual void OnMailSent(IMailAttributes mail)
+        protected virtual void OnMailSent(MailAttributes mail)
         {
         }
 
@@ -69,12 +70,6 @@ namespace ActionMailerNext.Mvc5_1
         /// </param>
         protected virtual void OnMailSending(MailSendingContext context)
         {
-        }
-
-        public void SetMailMethod(MailMethod method)
-        {
-            MailAttributes = MailMethodUtil.GetAttributes(method);
-            MailSender = MailMethodUtil.GetSender();
         }
 
         public virtual EmailResult Email(string viewName, object model = null, string masterName = null,

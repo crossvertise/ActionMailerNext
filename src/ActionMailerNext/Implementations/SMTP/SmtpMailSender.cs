@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ActionMailerNext.Implementations.SMTP
 {
@@ -29,14 +30,56 @@ namespace ActionMailerNext.Implementations.SMTP
             _client = client;
         }
 
+        /// <summary>
+        ///     Creates a MailMessage for the current SmtpMailAttribute instance.
+        /// </summary>
+        private MailMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        {
+            var message = new MailMessage();
+
+            for (var i = 0; i < mail.To.Count; i++)
+                message.To.Add(mail.To[i]);
+
+            for (var i = 0; i < mail.Cc.Count; i++)
+                message.CC.Add(mail.Cc[i]);
+
+            for (var i = 0; i < mail.Bcc.Count; i++)
+                message.Bcc.Add(mail.Bcc[i]);
+
+            for (var i = 0; i < mail.ReplyTo.Count; i++)
+                message.ReplyToList.Add(mail.ReplyTo[i]);
+
+            // From is optional because it could be set in <mailSettings>
+            if (!String.IsNullOrWhiteSpace(mail.From.Address))
+                message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
+
+
+            message.Subject = mail.Subject;
+            message.BodyEncoding = mail.MessageEncoding;
+            message.Priority = mail.Priority;
+
+            foreach (var kvp in mail.Headers)
+                message.Headers[kvp.Key] = kvp.Value;
+
+            foreach (var kvp in mail.Attachments)
+                message.Attachments.Add(Utils.AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, false));
+
+            foreach (var kvp in mail.Attachments.Inline)
+                message.Attachments.Add(Utils.AttachmentCollection.ModifyAttachmentProperties(kvp.Key, kvp.Value, true));
+
+            foreach (var view in mail.AlternateViews)
+                message.AlternateViews.Add(view);
+
+            return message;
+        }
 
         /// <summary>
         ///     Sends SMTPMailMessage synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SmtpMailAttributes you wish to send.</param>
-        public List<IMailResponse> Send(IMailAttributes mailAttributes)
+        public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-            var mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             _client.Send(mail);
 
             return null;
@@ -45,10 +88,10 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <summary>
         ///     Sends SMTPMailMessage asynchronously using tasks.
         /// </summary>
-        /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
+        /// <param name="mailAttributes">The MailAttributes message you wish to send.</param>
+        public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
-            var mail = ((SmtpMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             _client.SendMailAsync(mail);
 
             return null;

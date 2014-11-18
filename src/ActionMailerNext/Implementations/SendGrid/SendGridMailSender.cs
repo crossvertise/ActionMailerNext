@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
+using ActionMailerNext.Utils;
 using SendGrid;
 
 namespace ActionMailerNext.Implementations.SendGrid
@@ -38,15 +42,70 @@ namespace ActionMailerNext.Implementations.SendGrid
             var credentials = new NetworkCredential(username, password);
             _client = new Web(credentials);
         }
+        
+        /// <summary>
+        ///     Creates a SendGridMessage for the current SendGridMailAttributes instance.
+        /// </summary>
+        private SendGridMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        {
+
+            if (mail.Cc.Any())
+                throw new NotSupportedException("The CC field is not supported with the SendGridMailSender");
+
+            if (mail.Bcc.Any())
+                throw new NotSupportedException("The ReplyTo field is not supported with the SendGridMailSender");
+
+            //create base message
+            var message = new SendGridMessage
+            {
+                From = mail.From,
+                To = mail.To.ToArray(),
+                ReplyTo = mail.ReplyTo.ToArray(),
+                Subject = mail.Subject,
+                Headers = (Dictionary<string, string>)mail.Headers
+            };
+
+            //add content
+            foreach (var view in mail.AlternateViews)
+            {
+                using (var reader = new StreamReader(view.ContentStream))
+                {
+                    var body = reader.ReadToEnd();
+
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                    {
+                        message.Text = body;
+                    }
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
+                    {
+                        message.Html = body;
+                    }
+                }
+            }
+
+            //add attachments
+            foreach (var mailAttachment in mail.Attachments.Select(attachment => AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
+                attachment.Value,
+                false)))
+            {
+                using (var stream = new MemoryStream())
+                {
+                    mailAttachment.ContentStream.CopyTo(stream);
+                    message.AddAttachment(stream, mailAttachment.Name);
+                }
+            }
+
+            return message;
+        }
 
 
         /// <summary>
         ///     Sends SendGridMailMessage synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SendGridMailAttributes you wish to send.</param>
-        public List<IMailResponse> Send(IMailAttributes mailAttributes)
+        public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-            var mail = ((SendGridMailAttributes)mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             _client.Deliver(mail);
 
             return null;
@@ -55,10 +114,10 @@ namespace ActionMailerNext.Implementations.SendGrid
         /// <summary>
         ///     Sends SendGridMailMessage asynchronously using tasks.
         /// </summary>
-        /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
+        /// <param name="mailAttributes">The MailAttributes message you wish to send.</param>
+        public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
-            var mail = ((SendGridMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             await _client.DeliverAsync(mail);
 
             return null;

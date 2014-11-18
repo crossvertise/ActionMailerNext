@@ -64,16 +64,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementations\Mandrill\MandrillMailAttributes.cs" />
     <Compile Include="Implementations\Mandrill\MandrillMailResponse.cs" />
     <Compile Include="Implementations\Mandrill\MandrillMailSender.cs" />
-    <Compile Include="Implementations\SendGrid\SendGridMailAttributes.cs" />
     <Compile Include="Implementations\SendGrid\SendGridMailSender.cs" />
     <Compile Include="Interfaces\IMailResponse.cs" />
     <Compile Include="Utils\AlternativeViewCollection.cs" />
     <Compile Include="Utils\AttachmentCollection.cs" />
     <Compile Include="DeliveryHelper.cs" />
-    <Compile Include="Interfaces\IMailAttributes.cs" />
+    <Compile Include="MailAttributes.cs" />
     <Compile Include="Interfaces\IEmailResult.cs" />
     <Compile Include="Utils\NoViewsFoundException.cs" />
     <Compile Include="Interfaces\IMailInterceptor.cs" />
@@ -81,7 +79,6 @@
     <Compile Include="MailSendingContext.cs" />
     <Compile Include="Utils\MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Implementations\SMTP\SmtpMailAttributes.cs" />
     <Compile Include="Implementations\SMTP\SmtpMailSender.cs" />
   </ItemGroup>
   <ItemGroup>

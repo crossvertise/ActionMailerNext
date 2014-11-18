@@ -12,7 +12,12 @@ namespace ActionMailerNext.Implementations.Mandrill
         public string Email { get; set; }
         public string Status { get; set; }
         public string RejectReason { get; set; }
-
         public string Id { get; set; }
+
+        public override string ToString()
+        {
+            return String.Format("Id : {0}\nEmail : {1}\nStatus : {2}\nRejection Reason : {3}", Id, Email, Status,
+                RejectReason);
+        }
     }
 }

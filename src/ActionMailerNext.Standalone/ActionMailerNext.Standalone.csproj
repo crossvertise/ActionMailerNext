@@ -63,14 +63,6 @@
     <Compile Include="Helpers\StandaloneUrlHelpers.cs" />
     <Compile Include="Helpers\UtilHelper.cs" />
     <Compile Include="Helpers\ViewSettings.cs" />
-    <Compile Include="MailMethod.cs">
-      <SubType>
-      </SubType>
-    </Compile>
-    <Compile Include="MailSendorFactory.cs">
-      <SubType>
-      </SubType>
-    </Compile>
     <Compile Include="Helpers\NameValueCollectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RazorEmailResult.cs" />

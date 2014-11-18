@@ -9,9 +9,9 @@ namespace ActionMailerNext.Interfaces
     public interface IEmailResult
     {
         /// <summary>
-        ///     The underlying IMailAttributes object that was passed to this object's constructor.
+        ///     The underlying MailAttributes object that was passed to this object's constructor.
         /// </summary>
-        IMailAttributes MailAttributes { get; }
+        MailAttributes MailAttributes { get; }
 
         /// <summary>
         ///     The IMailSender instance that is used to deliver mail.
@@ -33,6 +33,6 @@ namespace ActionMailerNext.Interfaces
         ///     when the message has been sent, then override the OnMailSent method in MailerBase which
         ///     will not fire until the asyonchronous send operation is complete.
         /// </summary>
-        Task<IMailAttributes> DeliverAsync();
+        Task<MailAttributes> DeliverAsync();
     }
 }

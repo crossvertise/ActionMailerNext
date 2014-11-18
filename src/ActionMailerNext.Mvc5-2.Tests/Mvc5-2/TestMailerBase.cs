@@ -29,7 +29,7 @@ namespace ActionMailerNext.Mvc5_2.Tests
 {
     public class TestMailerBase : MailerBase
     {
-        public TestMailerBase(IMailAttributes attributes = null, IMailSender sender = null)
+        public TestMailerBase(MailAttributes attributes = null, IMailSender sender = null)
             : base(attributes, sender)
         {
         }

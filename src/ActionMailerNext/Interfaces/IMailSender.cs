@@ -10,16 +10,16 @@ namespace ActionMailerNext.Interfaces
     public interface IMailSender : IDisposable
     {
         /// <summary>
-        ///     Sends IMailAttributes synchronously.
+        ///     Sends MailAttributes synchronously.
         /// </summary>
         /// <param name="mailAttributes">The SMTPMailMessage message you wish to send.</param>
-        List<IMailResponse> Send(IMailAttributes mailAttributes);
+        List<IMailResponse> Send(MailAttributes mailAttributes);
 
 
         /// <summary>
-        ///     Sends IMailAttributes asynchronously using tasks.
+        ///     Sends MailAttributes asynchronously using tasks.
         /// </summary>
         /// <param name="mailAttributes">The SMTPMailMessage message you wish to send.</param>
-        Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes);
+        Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes);
     }
 }

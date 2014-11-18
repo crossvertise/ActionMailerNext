@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
 using Mandrill;
@@ -33,14 +36,83 @@ namespace ActionMailerNext.Implementations.Mandrill
             _client = new MandrillApi(apiKey);
         }
 
+        /// <summary>
+        ///     Creates a EmailMessage for the given MandrillMailAttributes instance.
+        /// </summary>
+        private EmailMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        {
+
+            if (mail.Cc.Any())
+                throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
+
+            if (mail.ReplyTo.Any())
+                throw new NotSupportedException("The ReplyTo field is not supported with the MandrillMailSender");
+
+            //create base message
+            var message = new EmailMessage
+            {
+                from_name = mail.From.DisplayName,
+                from_email = mail.From.Address,
+                to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
+                bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
+                subject = mail.Subject,
+                important = mail.Priority == MailPriority.High
+            };
+
+
+            //add headers
+            foreach (var kvp in mail.Headers)
+                message.AddHeader(kvp.Key, kvp.Value);
+
+            //add content
+            foreach (var view in mail.AlternateViews)
+            {
+                using (var reader = new StreamReader(view.ContentStream))
+                {
+                    var body = reader.ReadToEnd();
+
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                    {
+                        message.text = body;
+                    }
+                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
+                    {
+                        message.html = body;
+                    }
+                }
+            }
+
+            //add attachments
+            var atts = new List<attachment>();
+            foreach (var mailAttachment in mail.Attachments.Select(attachment => Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
+                attachment.Value,
+                false)))
+            {
+                using (var stream = new MemoryStream())
+                {
+
+                    mailAttachment.ContentStream.CopyTo(stream);
+                    var base64Data = Convert.ToBase64String(stream.ToArray());
+                    atts.Add(new attachment
+                    {
+                        content = base64Data,
+                        name = mailAttachment.Name,
+                        type = mailAttachment.ContentType.MediaType,
+                    });
+                }
+            }
+            message.attachments = atts;
+
+            return message;
+        }
 
         /// <summary>
         ///     Sends MandrillMessage synchronously.
         /// </summary>
-        /// <param name="mailAttributes">The IMailAttributes you wish to send.</param>
-        public List<IMailResponse> Send(IMailAttributes mailAttributes)
+        /// <param name="mailAttributes">The MailAttributes you wish to send.</param>
+        public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-            var mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
             var re = _client.SendMessage(mail);
@@ -55,10 +127,10 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <summary>
         ///     Sends MandrillMessage asynchronously using tasks.
         /// </summary>
-        /// <param name="mailAttributes">The IMailAttributes message you wish to send.</param>
-        public async Task<List<IMailResponse>> SendAsync(IMailAttributes mailAttributes)
+        /// <param name="mailAttributes">The MailAttributes message you wish to send.</param>
+        public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
-            var mail = ((MandrillMailAttributes) mailAttributes).GenerateProspectiveMailMessage();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
             await _client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse

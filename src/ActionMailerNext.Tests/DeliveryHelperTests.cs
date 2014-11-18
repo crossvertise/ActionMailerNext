@@ -60,7 +60,7 @@ namespace ActionMailerNext.Tests
 
             await helper.DeliverAsync(mail);
 
-            A.CallTo(() => interceptor.OnMailSent(A<IMailAttributes>.Ignored)).MustHaveHappened();
+            A.CallTo(() => interceptor.OnMailSent(A<MailAttributes>.Ignored)).MustHaveHappened();
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace ActionMailerNext.Tests
 
             helper.Deliver(new SmtpMailAttributes());
 
-            A.CallTo(() => sender.Send(A<IMailAttributes>.Ignored)).MustNotHaveHappened();
+            A.CallTo(() => sender.Send(A<MailAttributes>.Ignored)).MustNotHaveHappened();
         }
 
         [Test]

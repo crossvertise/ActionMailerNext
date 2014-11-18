@@ -9,83 +9,83 @@ namespace ActionMailerNext.Interfaces
     /// <summary>
     ///     All mailers should implement this interface.
     /// </summary>
-    public interface IMailAttributes
+    public class MailAttributes
     {
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
         ///     your name and email address or just an email address by itself.
         /// </summary>
-        MailAddress From { get; set; }
+        public MailAddress From { get; set; }
 
         /// <summary>
         ///     The subject line of the email.
         /// </summary>
-        string Subject { get; set; }
+        public string Subject { get; set; }
 
         /// <summary>
         ///     The Priority of the email.
         /// </summary>
-        MailPriority Priority { get; set; }
+        public MailPriority Priority { get; set; }
 
         /// <summary>
         ///     A collection of addresses this email should be sent to.
         /// </summary>
-        List<MailAddress> To { get; }
+        public List<MailAddress> To { get; set; }
 
         /// <summary>
         ///  Check if the current Sending method supports CC
         /// </summary>
-        bool IsCcToSupported { get; }
+        public bool IsCcToSupported { get; set; }
 
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
         /// </summary>
-        IList<MailAddress> Cc { get; }
+        public IList<MailAddress> Cc { get; set;}
 
         /// <summary>
         ///  Check if the current Sending method supports BCC
         /// </summary>
-        bool IsBccSupported { get; }
+        public bool IsBccSupported { get; set; }
 
         /// <summary>
         ///     A collection of addresses that should be BCC'ed.
         /// </summary>
-        IList<MailAddress> Bcc { get; }
+        public IList<MailAddress> Bcc { get; set; }
 
         /// <summary>
         ///  Check if the current Sending method supports ReplyTo
         /// </summary>
-        bool IsReplyToSupported { get; }
+        public bool IsReplyToSupported { get; set; }
 
         /// <summary>
         ///     A collection of addresses that should be listed in Reply-To header.
         /// </summary>
-        List<MailAddress> ReplyTo { get; }
+        public List<MailAddress> ReplyTo { get; set; }
 
         /// <summary>
         ///     Any custom headers (name and value) that should be placed on the message.
         /// </summary>
-        IDictionary<string, string> Headers { get; }
+        public IDictionary<string, string> Headers { get; set; }
         
         /// <summary>
         ///     The generated text body of the message
         /// </summary>
-        string TextBody { get; }
+        public string TextBody { get; set; }
 
         /// <summary>
         ///     The generated html body of the message
         /// </summary>
-        string HTMLBody { get; }
+        public string HtmlBody { get; set; }
 
         /// <summary>
         ///     The generated body of the message
         /// </summary>
-        string Body { get; }
+        public string Body { get; set; }
 
         /// <summary>
         ///     Gets or sets the default message encoding when delivering mail.
         /// </summary>
-        Encoding MessageEncoding { get; set; }
+        public Encoding MessageEncoding { get; set; }
 
         /// <summary>
         ///     Any attachments you wish to add.  The key of this collection is what
@@ -95,12 +95,17 @@ namespace ActionMailerNext.Interfaces
         /// <example>
         ///     Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
         /// </example>
-        AttachmentCollection Attachments { get; }
+        public AttachmentCollection Attachments { get; set; }
 
         /// <summary>
         ///     Any view you wish to add.  The key of this collection is what
         ///     the view should be named.
         /// </summary>
-        IList<AlternateView> AlternateViews { get; }
+        public IList<AlternateView> AlternateViews { get; set; }
+
+        /// <summary>
+        ///     Any extra properties that needs to be added in case of custom mail sender
+        /// </summary>
+        public IDictionary<String,String> CustomExtraProperties { get; set; }
     }
 }

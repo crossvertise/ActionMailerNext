@@ -34,7 +34,7 @@ namespace ActionMailerNext
         ///     Sends the given email
         /// </summary>
         /// <param name="mail">The mail message to send.</param>
-        public IMailAttributes Deliver(IMailAttributes mail)
+        public MailAttributes Deliver(MailAttributes mail)
         {
             if (mail == null)
                 throw new ArgumentNullException("mail");
@@ -55,7 +55,7 @@ namespace ActionMailerNext
         ///     Sends async the given email
         /// </summary>
         /// <param name="mail">The mail message to send.</param>
-        public async Task<IMailAttributes> DeliverAsync(IMailAttributes mail)
+        public async Task<MailAttributes> DeliverAsync(MailAttributes mail)
         {
             if (mail == null)
                 throw new ArgumentNullException("mail");
@@ -71,7 +71,7 @@ namespace ActionMailerNext
             return mail;
         }
 
-        private void AsyncSendCompleted(IMailAttributes mail)
+        private void AsyncSendCompleted(MailAttributes mail)
         {
             _interceptor.OnMailSent(mail);
         }

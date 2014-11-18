@@ -12,7 +12,7 @@ namespace ActionMailerNext
         /// <summary>
         ///     The generated mail message that is being sent.
         /// </summary>
-        public readonly IMailAttributes Mail;
+        public readonly MailAttributes Mail;
 
         /// <summary>
         ///     A special flag that you can toggle to prevent this mail
@@ -25,7 +25,7 @@ namespace ActionMailerNext
         ///     method in MailerBase.
         /// </summary>
         /// <param name="mail">The message you wish to wrap within this context.</param>
-        public MailSendingContext(IMailAttributes mail)
+        public MailSendingContext(MailAttributes mail)
         {
             Mail = mail;
             Cancel = false;

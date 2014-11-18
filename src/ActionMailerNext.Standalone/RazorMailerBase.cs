@@ -1,4 +1,5 @@
 ﻿using System;
+using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone.Helpers;
 using RazorEngine.Configuration;
@@ -16,7 +17,7 @@ namespace ActionMailerNext.Standalone
     {
         /// <summary>
         /// </summary>
-        public IMailAttributes MailAttributes { get; private set; }
+        public MailAttributes MailAttributes { get; private set; }
 
         /// <summary>
         /// We use a singleton instance of the templating service in the mailer, to facilitate 
@@ -31,10 +32,10 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         /// <param name="mailAttributes"></param>
         /// <param name="mailSender">The underlying mail sender to use for delivering mail.</param>
-        protected RazorMailerBase(IMailAttributes mailAttributes = null, IMailSender mailSender = null)
+        protected RazorMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null)
         {
-            MailAttributes = mailAttributes ?? MailSendorFactory.GetAttributes();
-            MailSender = mailSender ?? MailSendorFactory.GetSender();
+            MailAttributes = mailAttributes ?? new MailAttributes();
+            MailSender = mailSender ?? new SmtpMailSender();
 
             ViewBag = new DynamicViewBag();
         }
@@ -79,11 +80,6 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public dynamic ViewBag { get; set; }
 
-        public void SetMailMethod(MailMethod method)
-        {
-            MailAttributes = MailSendorFactory.GetAttributes(method);
-            MailSender = MailSendorFactory.GetSender(method);
-        }
         private ITemplateService TemplateService
         {
             get
@@ -120,7 +116,7 @@ namespace ActionMailerNext.Standalone
         ///     This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
-        void IMailInterceptor.OnMailSent(IMailAttributes mail)
+        void IMailInterceptor.OnMailSent(MailAttributes mail)
         {
             OnMailSent(mail);
         }
@@ -129,7 +125,7 @@ namespace ActionMailerNext.Standalone
         ///     This method is called when onMailsent is fired.
         /// </summary>
         /// <param name="mail"></param>
-        public void OnMailSent(IMailAttributes mail)
+        public void OnMailSent(MailAttributes mail)
         {
         }
 
