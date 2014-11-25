@@ -76,7 +76,7 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <summary>
         ///     Sends SMTPMailMessage synchronously.
         /// </summary>
-        /// <param name="mailAttributes">The SmtpMailAttributes you wish to send.</param>
+        /// <param name="mailAttributes">The MailAttributes you wish to send.</param>
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);

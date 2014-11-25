@@ -153,7 +153,7 @@ namespace ActionMailerNext.Mvc5_2.Tests
         public void PassingAMailSenderShouldWork()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attributes = new SmtpMailAttributes();
+            var attributes = new MailAttributes();
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new TextViewEngine());
 

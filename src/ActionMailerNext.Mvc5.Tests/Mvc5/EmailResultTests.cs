@@ -40,7 +40,7 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
             var mockSender = A.Fake<IMailSender>();
 
             Assert.Throws<ArgumentNullException>(
-                () => { new EmailResult(null, mockSender, new SmtpMailAttributes(), "View", "Master", null, true); });
+                () => { new EmailResult(null, mockSender, new MailAttributes(), "View", "Master", null, true); });
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace ActionMailerNext.Mvc5.Tests.Mvc5
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new EmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", "Master", null, true);
+                    new EmailResult(mockInterceptor, null, new MailAttributes(), "View", "Master", null, true);
                 });
         }
     }

@@ -34,7 +34,7 @@ namespace ActionMailerNext
         ///     Sends the given email
         /// </summary>
         /// <param name="mail">The mail message to send.</param>
-        public MailAttributes Deliver(MailAttributes mail)
+        public List<IMailResponse> Deliver(MailAttributes mail)
         {
             if (mail == null)
                 throw new ArgumentNullException("mail");
@@ -45,10 +45,10 @@ namespace ActionMailerNext
             if (mailContext.Cancel)
                 return null;
 
-            _sender.Send(mail);
+            var results = _sender.Send(mail);
             _interceptor.OnMailSent(mail);
 
-            return mail;
+            return results;
         }
 
         /// <summary>
@@ -68,6 +68,7 @@ namespace ActionMailerNext
 
             var sendtask = _sender.SendAsync(mail);
             await sendtask.ContinueWith(t => AsyncSendCompleted(mail));
+
             return mail;
         }
 

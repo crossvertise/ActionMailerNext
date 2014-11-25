@@ -56,7 +56,7 @@ namespace ActionMailerNext.Tests
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new SmtpMailAttributes();
+            var mail = new MailAttributes();
 
             await helper.DeliverAsync(mail);
 
@@ -69,7 +69,7 @@ namespace ActionMailerNext.Tests
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new SmtpMailAttributes();
+            var mail = new MailAttributes();
 
             helper.Deliver(mail);
 
@@ -85,7 +85,7 @@ namespace ActionMailerNext.Tests
             A.CallTo(() => interceptor.OnMailSending(A<MailSendingContext>.Ignored))
                 .Invokes(x => x.GetArgument<MailSendingContext>(0).Cancel = true);
 
-            helper.Deliver(new SmtpMailAttributes());
+            helper.Deliver(new MailAttributes());
 
             A.CallTo(() => sender.Send(A<MailAttributes>.Ignored)).MustNotHaveHappened();
         }
@@ -96,7 +96,7 @@ namespace ActionMailerNext.Tests
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new SmtpMailAttributes();
+            var mail = new MailAttributes();
 
             helper.Deliver(mail);
 
@@ -109,7 +109,7 @@ namespace ActionMailerNext.Tests
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new SmtpMailAttributes();
+            var mail = new MailAttributes();
 
             helper.Deliver(mail);
 
@@ -132,7 +132,7 @@ namespace ActionMailerNext.Tests
             var sender = A.Fake<IMailSender>();
             var interceptor = A.Fake<IMailInterceptor>();
             var helper = new DeliveryHelper(sender, interceptor);
-            var mail = new SmtpMailAttributes();
+            var mail = new MailAttributes();
 
             await helper.DeliverAsync(mail);
 

@@ -44,7 +44,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(null, mockSender, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(null, mockSender, new MailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -58,7 +58,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, null, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(mockInterceptor, null, new MailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -88,7 +88,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), null, null, "_Layout", "Path",
+                    new RazorEmailResult(mockInterceptor, mockSender, new MailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -103,7 +103,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new SmtpMailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(mockInterceptor, mockSender, new MailAttributes(), "View", null, "_Layout", "Path",
                         null, null);
                 });
         }

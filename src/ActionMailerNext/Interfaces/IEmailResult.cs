@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ActionMailerNext.Interfaces
@@ -26,7 +27,7 @@ namespace ActionMailerNext.Interfaces
         /// <summary>
         ///     Sends your message.  This call will block while the message is being sent. (not recommended)
         /// </summary>
-        void Deliver();
+        IList<IMailResponse> Deliver();
 
         /// <summary>
         ///     Sends your message asynchronously.  This method does not block.  If you need to know

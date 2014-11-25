@@ -39,7 +39,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void EmailWithNoViewNameShouldThrow()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
             Assert.Throws<ArgumentNullException>(() => mailer.Email(null));
@@ -49,7 +49,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void MultipartMessagesShouldRenderBothViews()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("MultipartNoModel");
@@ -64,7 +64,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void PassingAMailSenderShouldWork()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
             var email = mailer.Email("TextViewNoModel");
 
@@ -76,7 +76,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void PassingAModelShouldWork()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
             var model = new TestModel
             {
@@ -93,7 +93,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void RazorViewWithNoModelShouldRenderProperly()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("TextViewNoModel");
@@ -106,7 +106,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void WhiteSpaceShouldBeIncludedWhenRequired()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("WhitespaceTrimTest", null, false);
@@ -120,7 +120,7 @@ namespace ActionMailerNext.Tests.Standalone
         public void WhiteSpaceShouldBeTrimmedWhenRequired()
         {
             var mockSender = A.Fake<IMailSender>();
-            var attribute = new SmtpMailAttributes();
+            var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("WhitespaceTrimTest", trimBody: true);

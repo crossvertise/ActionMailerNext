@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
@@ -101,9 +102,9 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     Sends your message.  This call will block while the message is being sent. (not recommended)
         /// </summary>
-        public void Deliver()
+        public IList<IMailResponse> Deliver()
         {
-            _deliveryHelper.Deliver(MailAttributes);
+            return _deliveryHelper.Deliver(MailAttributes);
         }
 
         /// <summary>

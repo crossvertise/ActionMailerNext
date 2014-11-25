@@ -25,6 +25,7 @@
 
 using System.Net.Mail;
 using ActionMailerNext.Implementations.SMTP;
+using ActionMailerNext.Interfaces;
 using NUnit.Framework;
 
 namespace ActionMailerNext.Tests
@@ -35,7 +36,7 @@ namespace ActionMailerNext.Tests
         [Test]
         public void MailContextConstructorSetsUpObjectProperly()
         {
-            var mail = new SmtpMailAttributes {From = new MailAddress("no-reply@test.com")};
+            var mail = new MailAttributes {From = new MailAddress("no-reply@test.com")};
             mail.To.Add(new MailAddress("test@test.com"));
 
             var context = new MailSendingContext(mail);

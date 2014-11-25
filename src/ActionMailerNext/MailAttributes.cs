@@ -4,13 +4,27 @@ using System.Net.Mail;
 using System.Text;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
-namespace ActionMailerNext.Interfaces
+namespace ActionMailerNext
 {
     /// <summary>
     ///     All mailers should implement this interface.
     /// </summary>
     public class MailAttributes
     {
+
+        public MailAttributes()
+        {
+            To = new List<MailAddress>();
+            Cc = new List<MailAddress>();
+            Bcc = new List<MailAddress>();
+            ReplyTo = new List<MailAddress>();
+            Headers = new Dictionary<string, string>();
+            Attachments = new AttachmentCollection();
+            AlternateViews = new List<AlternateView>();
+            CustomExtraProperties = new Dictionary<string, string>();
+        }
+
+
         /// <summary>
         ///     A string representation of who this mail should be from.  Could be
         ///     your name and email address or just an email address by itself.

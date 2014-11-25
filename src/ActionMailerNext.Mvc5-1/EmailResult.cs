@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -89,9 +90,9 @@ namespace ActionMailerNext.Mvc5_1
         /// <summary>
         ///     Sends your messageBase.  This call will block while the messageBase is being sent. (not recommended)
         /// </summary>
-        public void Deliver()
+        public IList<IMailResponse> Deliver()
         {
-            _deliveryHelper.Deliver(MailAttributes);
+            return _deliveryHelper.Deliver(MailAttributes);
         }
 
         /// <summary>
