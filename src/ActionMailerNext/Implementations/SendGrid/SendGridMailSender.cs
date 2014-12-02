@@ -46,7 +46,7 @@ namespace ActionMailerNext.Implementations.SendGrid
         /// <summary>
         ///     Creates a SendGridMessage for the current SendGridMailAttributes instance.
         /// </summary>
-        private SendGridMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        protected SendGridMessage GenerateProspectiveMailMessage(MailAttributes mail)
         {
 
             if (mail.Cc.Any())

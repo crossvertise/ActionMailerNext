@@ -33,7 +33,7 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <summary>
         ///     Creates a MailMessage for the current SmtpMailAttribute instance.
         /// </summary>
-        private MailMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        protected MailMessage GenerateProspectiveMailMessage(MailAttributes mail)
         {
             var message = new MailMessage();
 

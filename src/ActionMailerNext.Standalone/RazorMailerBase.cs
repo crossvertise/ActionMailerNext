@@ -17,8 +17,9 @@ namespace ActionMailerNext.Standalone
     {
         /// <summary>
         /// </summary>
-        public MailAttributes MailAttributes { get; private set; }
+        public MailAttributes MailAttributes { get;  set; }
 
+        
         /// <summary>
         /// We use a singleton instance of the templating service in the mailer, to facilitate 
         /// caching of resolved and compiled views.
@@ -164,6 +165,12 @@ namespace ActionMailerNext.Standalone
                 externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
             result.Compile(model, trimBody);
+
+            foreach (var postprocessor in MailAttributes.PostProcessors)
+            {
+                result.MailAttributes = postprocessor.Execute(result.MailAttributes);
+            }
+
             return result;
         }
 

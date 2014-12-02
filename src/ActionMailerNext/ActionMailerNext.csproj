@@ -45,6 +45,9 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CsQuery">
+      <HintPath>..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
+    </Reference>
     <Reference Include="Mandrill">
       <HintPath>..\packages\Mandrill.1.0.85\lib\net40\Mandrill.dll</HintPath>
       <Private>True</Private>
@@ -52,6 +55,9 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PreMailer.Net">
+      <HintPath>..\packages\PreMailer.Net.1.2.9\lib\net40\PreMailer.Net.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
@@ -66,8 +72,11 @@
   <ItemGroup>
     <Compile Include="Implementations\Mandrill\MandrillMailResponse.cs" />
     <Compile Include="Implementations\Mandrill\MandrillMailSender.cs" />
+    <Compile Include="Implementations\Mandrill\MandrillStatus.cs" />
     <Compile Include="Implementations\SendGrid\SendGridMailSender.cs" />
     <Compile Include="Interfaces\IMailResponse.cs" />
+    <Compile Include="Interfaces\IPostProcessor.cs" />
+    <Compile Include="PostProccesors\InlineCssPostProcessor.cs" />
     <Compile Include="Utils\AlternativeViewCollection.cs" />
     <Compile Include="Utils\AttachmentCollection.cs" />
     <Compile Include="DeliveryHelper.cs" />

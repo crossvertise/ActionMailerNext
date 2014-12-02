@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using ActionMailerNext.Interfaces;
+using CsQuery.ExtensionMethods.Internal;
 using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
 
 namespace ActionMailerNext
@@ -21,7 +24,45 @@ namespace ActionMailerNext
             Headers = new Dictionary<string, string>();
             Attachments = new AttachmentCollection();
             AlternateViews = new List<AlternateView>();
-            CustomExtraProperties = new Dictionary<string, string>();
+            ExtraProperties = new Dictionary<string, string>();
+            PostProcessors = new List<IPostProcessor>();
+        }
+
+        public MailAttributes(MailAttributes mailAttributes, 
+            bool copyTo = true, bool copyCc = true,
+            bool copyBcc = true, bool copyReplyTo = true, bool referenceAttachments = true,
+            bool copyHeaders = true, bool copyExtraProperties = true, 
+            bool copyPostProcessors = true)
+        {
+
+            From = mailAttributes.From;
+            Subject = mailAttributes.Subject;
+            Priority = mailAttributes.Priority;
+            
+            IsCcToSupported = mailAttributes.IsCcToSupported;
+            IsBccSupported = mailAttributes.IsBccSupported;
+            IsReplyToSupported = mailAttributes.IsReplyToSupported;
+            
+            MessageEncoding = mailAttributes.MessageEncoding;
+            Body = mailAttributes.Body;
+            TextBody = mailAttributes.TextBody;
+            HtmlBody = mailAttributes.HtmlBody;
+
+            To = copyTo ? mailAttributes.To.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
+                .ToList() : new List<MailAddress>();
+            Cc = copyCc ? mailAttributes.Cc.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
+                    .ToList() : new List<MailAddress>();
+            Bcc = copyBcc ? mailAttributes.Bcc.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
+                    .ToList() : new List<MailAddress>();
+            ReplyTo = copyReplyTo ? mailAttributes.ReplyTo.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
+                    .ToList() : new List<MailAddress>();
+            Attachments = referenceAttachments ? mailAttributes.Attachments : new AttachmentCollection();
+            Headers = copyHeaders ? mailAttributes.Headers.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
+            ExtraProperties = copyExtraProperties ? mailAttributes.ExtraProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
+            PostProcessors = copyPostProcessors ? mailAttributes.PostProcessors.Select(pp => pp).ToList() : new List<IPostProcessor>();
+
+            AlternateViews = new List<AlternateView>();
+
         }
 
 
@@ -118,8 +159,14 @@ namespace ActionMailerNext
         public IList<AlternateView> AlternateViews { get; set; }
 
         /// <summary>
+        ///     Apply PreMailer.Net to convert all styles to inline styles to 
+        ///     avoid problems with different Email Clients
+        /// </summary>
+        public IList<IPostProcessor> PostProcessors { get; set; }
+
+        /// <summary>
         ///     Any extra properties that needs to be added in case of custom mail sender
         /// </summary>
-        public IDictionary<String,String> CustomExtraProperties { get; set; }
+        public IDictionary<String,String> ExtraProperties { get; set; }
     }
 }

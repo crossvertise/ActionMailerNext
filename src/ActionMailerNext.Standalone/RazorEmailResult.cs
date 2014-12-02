@@ -17,7 +17,7 @@ namespace ActionMailerNext.Standalone
     {
         private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
-        private readonly MailAttributes _mailAttributes;
+        private MailAttributes _mailAttributes;
         private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly ITemplateService _templateService;
@@ -81,6 +81,7 @@ namespace ActionMailerNext.Standalone
         public MailAttributes MailAttributes
         {
             get { return _mailAttributes; }
+            set { _mailAttributes = value; }
         }
 
         /// <summary>

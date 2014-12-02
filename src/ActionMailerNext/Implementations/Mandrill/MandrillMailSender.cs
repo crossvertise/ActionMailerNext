@@ -39,7 +39,7 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <summary>
         ///     Creates a EmailMessage for the given MandrillMailAttributes instance.
         /// </summary>
-        private EmailMessage GenerateProspectiveMailMessage(MailAttributes mail)
+        protected EmailMessage GenerateProspectiveMailMessage(MailAttributes mail)
         {
 
             if (mail.Cc.Any())
@@ -112,13 +112,17 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// <param name="mailAttributes">The MailAttributes you wish to send.</param>
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
-
+            
             var re = _client.SendMessage(mail);
             response.AddRange(re.Select(result => new MandrillMailResponse
             {
-                Email = result.Email, Status = result.Status.ToString(), RejectReason = result.RejectReason, Id = result.Id
+                Email = result.Email,
+                Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
+                RejectReason = result.RejectReason,
+                Id = result.Id
             }));
 
             return response;
@@ -135,7 +139,10 @@ namespace ActionMailerNext.Implementations.Mandrill
 
             await _client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
             {
-                Email = result.Email, Status = result.Status.ToString(), RejectReason = result.RejectReason, Id = result.Id
+                Email = result.Email,
+                Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
+                RejectReason = result.RejectReason,
+                Id = result.Id
             })));
 
 
