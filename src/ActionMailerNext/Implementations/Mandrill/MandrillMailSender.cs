@@ -83,7 +83,7 @@ namespace ActionMailerNext.Implementations.Mandrill
             }
 
             //add attachments
-            var atts = new List<attachment>();
+            var atts = new List<email_attachment>();
             foreach (var mailAttachment in mail.Attachments.Select(attachment => Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
                 attachment.Value,
                 false)))
@@ -93,7 +93,7 @@ namespace ActionMailerNext.Implementations.Mandrill
 
                     mailAttachment.ContentStream.CopyTo(stream);
                     var base64Data = Convert.ToBase64String(stream.ToArray());
-                    atts.Add(new attachment
+                    atts.Add(new email_attachment
                     {
                         content = base64Data,
                         name = mailAttachment.Name,
