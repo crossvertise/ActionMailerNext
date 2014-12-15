@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ActionMailerNext.Implementations.SMTP
 {
@@ -55,6 +56,7 @@ namespace ActionMailerNext.Implementations.SMTP
 
 
             message.Subject = mail.Subject;
+            message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1"); //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
             message.BodyEncoding = mail.MessageEncoding;
             message.Priority = mail.Priority;
 
