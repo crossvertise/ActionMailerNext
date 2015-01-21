@@ -41,28 +41,28 @@ namespace ActionMailerNext.Implementations.Mandrill
         /// </summary>
         protected EmailMessage GenerateProspectiveMailMessage(MailAttributes mail)
         {
-
-            if (mail.Cc.Any())
-                throw new NotSupportedException("The CC field is not supported with the MandrillMailSender");
-
-            if (mail.ReplyTo.Any())
-                throw new NotSupportedException("The ReplyTo field is not supported with the MandrillMailSender");
-
             //create base message
             var message = new EmailMessage
             {
                 from_name = mail.From.DisplayName,
                 from_email = mail.From.Address,
-                to = mail.To.Select(t => new EmailAddress(t.Address, t.DisplayName)),
+                to = mail.To.Union(mail.Cc).Select(t => new EmailAddress(t.Address, t.DisplayName)),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
                 subject = mail.Subject,
                 important = mail.Priority == MailPriority.High
             };
 
+            // We need to set Reply-To as a custom header
+            if (mail.ReplyTo.Any())
+            {
+                message.AddHeader("Reply-To", string.Join(" , ", mail.ReplyTo));
+            }
 
             //add headers
             foreach (var kvp in mail.Headers)
+            {
                 message.AddHeader(kvp.Key, kvp.Value);
+            }
 
             //add content
             foreach (var view in mail.AlternateViews)
