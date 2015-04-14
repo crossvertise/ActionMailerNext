@@ -8,7 +8,6 @@ using RazorEngine.Templating;
 namespace ActionMailerNext.Standalone
 {
     using System.Collections.Generic;
-    using System.Web.UI.WebControls;
 
     /// <summary>
     ///     This is a standalone MailerBase that relies on RazorEngine to generate emails.
