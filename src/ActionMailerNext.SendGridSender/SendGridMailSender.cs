@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ActionMailerNext.Interfaces;
+using System.Configuration;
+using System.IO;
+using System.Net;
+using System.Linq;
+using System.Net.Mime;
+using ActionMailerNext.Utils;
+using SendGrid;
 
 namespace ActionMailerNext.SendGridSender
 {
-    using System.Configuration;
-    using System.IO;
-    using System.Net;
-    using ActionMailerNext.Interfaces;
-    using SendGrid;
-    using System.Linq;
-    using System.Net.Mime;
-    using ActionMailerNext.Utils;
-
     public class SendGridMailSender : IMailSender
     {
         private readonly Web _client;

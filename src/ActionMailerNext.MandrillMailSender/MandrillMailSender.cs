@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Mail;
+using System.Configuration;
+using System.IO;
+using System.Net.Mime;
+using Mandrill;
+using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.MandrillMailSender
 {
-    using System.Configuration;
-    using System.IO;
-    using System.Net.Mime;
-    using Mandrill;
-    using Interfaces;
-
     public class MandrillMailSender : IMailSender
     {
         private MandrillApi _client;
