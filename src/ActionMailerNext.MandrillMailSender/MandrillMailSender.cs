@@ -11,8 +11,17 @@ using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.MandrillMailSender
 {
-    public class MandrillMailSender : IMailSender
+    using System.Runtime.InteropServices;
+    using System.Runtime.Versioning;
+    using System.Text;
+
+    using Microsoft.Win32.SafeHandles;
+
+    public class MandrillMailSender : IMailSender, IDisposable
     {
+        private bool disposed = false;
+
+        private SafeHandle resource;
         private MandrillApi _client;
 
         public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"]) { }
@@ -51,8 +60,8 @@ namespace ActionMailerNext.MandrillMailSender
             // Adding content to the message
             foreach (var view in mail.AlternateViews)
             {
-                using (var reader = new StreamReader(view.ContentStream))
-                {
+                var reader = new StreamReader(view.ContentStream, Encoding.UTF8, true, 1024, true);
+                
                     var body = reader.ReadToEnd();
 
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
@@ -63,7 +72,7 @@ namespace ActionMailerNext.MandrillMailSender
                     {
                         message.html = body;
                     }
-                }
+                
             }
 
             // Going through headers and adding them to the message
@@ -126,7 +135,16 @@ namespace ActionMailerNext.MandrillMailSender
 
         public void Dispose()
         {
-            _client = null;
+            this.Dispose(false);
+            GC.SuppressFinalize(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if(resource != null)resource.Dispose();   
+            }
         }
     }
 }

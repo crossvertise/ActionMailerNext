@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ActionMailerNext.Implementations.SMTP
 {
+    using System.Linq;
     using System.Net.Mail;
     using System.Threading.Tasks;
     using Interfaces;
@@ -57,7 +58,7 @@ namespace ActionMailerNext.Implementations.SMTP
 
             message.Subject = mail.Subject;
             message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1"); //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
-            message.BodyEncoding = mail.MessageEncoding;
+            message.BodyEncoding = Encoding.UTF8;
             message.Priority = mail.Priority;
 
             foreach (var kvp in mail.Headers)
@@ -81,10 +82,24 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <param name="mailAttributes">The MailAttributes you wish to send.</param>
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-            var mail = GenerateProspectiveMailMessage(mailAttributes);
-            _client.Send(mail);
+            var response = new List<IMailResponse>();
 
-            return null;
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
+            try
+            {
+                _client.Send(mail);
+            }
+            catch (SmtpFailedRecipientsException ex)
+            {
+                response.AddRange(ex.InnerExceptions.Select(e => new SmtpMailResponse
+                {
+                    Email = e.FailedRecipient,
+                    Status = SmtpMailResponse.GetProspectiveStatus(e.StatusCode.ToString()),
+                    RejectReason = e.Message
+                }));
+            }
+
+            return response;
         }
 
         /// <summary>
@@ -93,10 +108,24 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <param name="mailAttributes">The MailAttributes message you wish to send.</param>
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
-            var mail = GenerateProspectiveMailMessage(mailAttributes);
-            _client.SendMailAsync(mail);
+            var response = new List<IMailResponse>();
 
-            return null;
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
+            try
+            {
+                _client.SendMailAsync(mail);
+            }
+            catch (SmtpFailedRecipientsException ex)
+            {
+                response.AddRange(ex.InnerExceptions.Select(e => new SmtpMailResponse
+                {
+                    Email = e.FailedRecipient,
+                    Status = SmtpMailResponse.GetProspectiveStatus(e.StatusCode.ToString()),
+                    RejectReason = e.Message
+                }));
+            }
+
+            return response;
         }
 
         /// <summary>

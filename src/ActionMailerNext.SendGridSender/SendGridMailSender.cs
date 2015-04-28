@@ -12,8 +12,14 @@ using SendGrid;
 
 namespace ActionMailerNext.SendGridSender
 {
-    public class SendGridMailSender : IMailSender
+    using System.Net.Configuration;
+    using System.Runtime.InteropServices;
+
+    public class SendGridMailSender : IMailSender, IDisposable
     {
+        private bool disposed = false;
+
+        private SafeHandle resource;
         private readonly Web _client;
 
         public SendGridMailSender()
@@ -54,29 +60,32 @@ namespace ActionMailerNext.SendGridSender
             // Message content
             foreach (var view in mail.AlternateViews)
             {
-                using (var reader = new StreamReader(view.ContentStream))
-                {
-                    var body = reader.ReadToEnd();
+                var reader = new StreamReader(view.ContentStream);
 
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
-                    {
-                        message.Text = body;
-                    }
-                    if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
-                    {
-                        message.Html = body;
-                    }
+                var body = reader.ReadToEnd();
+
+                if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
+                {
+                    message.Text = body;
                 }
+                if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
+                {
+                    message.Html = body;
+                }
+
             }
 
             // Attachments
-            foreach (var mailAttachment in mail.Attachments.Select(attachment => AttachmentCollection.ModifyAttachmentProperties(attachment.Key,
-                attachment.Value,
-                false)))
+            foreach (
+                var mailAttachment in
+                    mail.Attachments.Select(
+                        attachment =>
+                        AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
             {
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);
+                    mailAttachment.ContentStream.Seek(0, SeekOrigin.Begin);
                     message.AddAttachment(stream, mailAttachment.Name);
                 }
             }
@@ -87,21 +96,53 @@ namespace ActionMailerNext.SendGridSender
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);
+            var response = new List<IMailResponse>();
+
             _client.Deliver(mail);
 
-            return null;
+            for (int i = 0; i < mailAttributes.To.Count; i++)
+            {
+                response.Add(new SendGridMailResponse
+                {
+                    Email = mailAttributes.To[i].Address,
+                    Status = "E-mail delivered successfully."
+                });
+            }
+
+            return response;
         }
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);
+            var response = new List<IMailResponse>();
+
             await _client.DeliverAsync(mail);
 
-            return null;
+            for (int i = 0; i <= mailAttributes.To.Count; i++)
+            {
+                response.Add(new SendGridMailResponse
+                {
+                    Email = mailAttributes.To[i].Address,
+                    Status = "E-mail delivered successfully."
+                });
+            }
+
+            return response;
         }
 
         public void Dispose()
         {
+            this.Dispose(false);
+            GC.SuppressFinalize(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (resource != null) resource.Dispose();
+            }
         }
     }
 }
