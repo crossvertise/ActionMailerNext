@@ -1,4 +1,5 @@
-﻿using ActionMailerNext.Interfaces;
+﻿using ActionMailerNext.Implementations.SMTP;
+using ActionMailerNext.Interfaces;
 using System;
 
 namespace ActionMailerNext.MandrillMailSender
@@ -8,6 +9,8 @@ namespace ActionMailerNext.MandrillMailSender
         public string Email { get; set; }
 
         public MandrillStatus Status { get; set; }
+
+        public DeliveryStatus DeliveryStatus { get; set; }
 
         public string RejectReason { get; set; }
 

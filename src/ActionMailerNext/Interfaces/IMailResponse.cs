@@ -7,6 +7,6 @@ namespace ActionMailerNext.Interfaces
     {
         string Email { get; }
 
-        //DeliveryStatus DeliveryStatus { get; }
+        DeliveryStatus DeliveryStatus { get; }
     }
 }

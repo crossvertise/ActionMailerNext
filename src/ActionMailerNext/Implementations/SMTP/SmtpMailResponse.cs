@@ -11,6 +11,8 @@ namespace ActionMailerNext.Implementations.SMTP
 
         public SmtpStatusCode Status { get; set; }
 
+        public DeliveryStatus DeliveryStatus { get; set; }
+
         public string RejectReason { get; set; }
 
         public override string ToString()

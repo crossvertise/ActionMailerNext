@@ -2,6 +2,7 @@
 
 namespace ActionMailerNext.SendGridSender
 {
+    using ActionMailerNext.Implementations.SMTP;
     using ActionMailerNext.Interfaces;
 
     public class SendGridMailResponse : IMailResponse
@@ -9,6 +10,8 @@ namespace ActionMailerNext.SendGridSender
         public string Email { get; set; }
 
         public string Status { get; set; }
+
+        public DeliveryStatus DeliveryStatus { get; set; }
 
         public override string ToString()
         {
