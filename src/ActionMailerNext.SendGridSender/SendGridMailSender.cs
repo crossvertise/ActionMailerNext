@@ -12,14 +12,10 @@ using SendGrid;
 
 namespace ActionMailerNext.SendGridSender
 {
-    using System.Net.Configuration;
-    using System.Runtime.InteropServices;
-
     public class SendGridMailSender : IMailSender, IDisposable
     {
         private bool disposed = false;
 
-        private SafeHandle resource;
         private readonly Web _client;
 
         public SendGridMailSender()
@@ -72,7 +68,6 @@ namespace ActionMailerNext.SendGridSender
                 {
                     message.Html = body;
                 }
-
             }
 
             // Attachments
@@ -84,12 +79,11 @@ namespace ActionMailerNext.SendGridSender
             {
                 using (var stream = new MemoryStream())
                 {
+                    stream.Seek(0, SeekOrigin.Begin);
                     mailAttachment.ContentStream.CopyTo(stream);
-                    mailAttachment.ContentStream.Seek(0, SeekOrigin.Begin);
                     message.AddAttachment(stream, mailAttachment.Name);
                 }
             }
-
             return message;
         }
 
@@ -108,7 +102,6 @@ namespace ActionMailerNext.SendGridSender
                     Status = "E-mail delivered successfully."
                 });
             }
-
             return response;
         }
 
@@ -127,7 +120,6 @@ namespace ActionMailerNext.SendGridSender
                     Status = "E-mail delivered successfully."
                 });
             }
-
             return response;
         }
 
@@ -137,12 +129,6 @@ namespace ActionMailerNext.SendGridSender
             GC.SuppressFinalize(true);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (resource != null) resource.Dispose();
-            }
-        }
+        protected virtual void Dispose(bool disposing) { }
     }
 }

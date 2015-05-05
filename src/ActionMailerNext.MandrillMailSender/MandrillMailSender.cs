@@ -11,17 +11,12 @@ using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.MandrillMailSender
 {
-    using System.Runtime.InteropServices;
-    using System.Runtime.Versioning;
     using System.Text;
-
-    using Microsoft.Win32.SafeHandles;
 
     public class MandrillMailSender : IMailSender, IDisposable
     {
         private bool disposed = false;
 
-        private SafeHandle resource;
         private MandrillApi _client;
 
         public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"]) { }
@@ -71,8 +66,7 @@ namespace ActionMailerNext.MandrillMailSender
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                     {
                         message.html = body;
-                    }
-                
+                    }      
             }
 
             // Going through headers and adding them to the message
@@ -141,10 +135,6 @@ namespace ActionMailerNext.MandrillMailSender
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                if(resource != null)resource.Dispose();   
-            }
         }
     }
 }

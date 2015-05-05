@@ -17,10 +17,9 @@ namespace ActionMailerNext.Mvc5_1
     /// </summary>
     public class EmailResult : ViewResult, IEmailResult
     {
-        private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
+        private readonly IMailSender _sender;
         private readonly MailAttributes _mailAttributes;
-        private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly bool _trimBody;
 
@@ -57,9 +56,8 @@ namespace ActionMailerNext.Mvc5_1
             MasterName = masterName ?? MasterName;
             _messageEncoding = messageEncoding;
             _mailAttributes = mailAttributes;
-            _mailSender = sender;
+            _sender = sender;
             _interceptor = interceptor;
-            _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
             _trimBody = trimBody;
         }
 
@@ -76,7 +74,7 @@ namespace ActionMailerNext.Mvc5_1
         /// </summary>
         public IMailSender MailSender
         {
-            get { return _mailSender; }
+            get { return _sender; }
         }
 
         /// <summary>
@@ -92,7 +90,7 @@ namespace ActionMailerNext.Mvc5_1
         /// </summary>
         public IList<IMailResponse> Deliver()
         {
-            return _deliveryHelper.Deliver(MailAttributes);
+            return _sender.Send(MailAttributes);
         }
 
         /// <summary>
@@ -102,8 +100,15 @@ namespace ActionMailerNext.Mvc5_1
         /// </summary>
         public async Task<MailAttributes> DeliverAsync()
         {
-            var deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
-            return await deliverTask;
+            var deliverTask = _sender.SendAsync(MailAttributes);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(MailAttributes));
+
+            return MailAttributes;
+        }
+
+        private void AsyncSendCompleted(MailAttributes mail)
+        {
+            _interceptor.OnMailSent(mail);
         }
 
         /// <summary>

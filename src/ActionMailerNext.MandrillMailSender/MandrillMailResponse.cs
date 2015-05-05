@@ -15,8 +15,7 @@ namespace ActionMailerNext.MandrillMailSender
 
         public override string ToString()
         {
-            return String.Format("Id : {0}\nEmail : {1}\nStatus : {2}\nRejection Reason : {3}", Id, Email, Status,
-                RejectReason);
+            return String.Format("Id : {0}\nEmail : {1}\nStatus : {2}\nRejection Reason : {3}", Id, Email, Status, RejectReason);
         }
 
         public static MandrillStatus GetProspectiveStatus(string statusString)

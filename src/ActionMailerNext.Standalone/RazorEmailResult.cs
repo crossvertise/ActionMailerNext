@@ -15,10 +15,9 @@ namespace ActionMailerNext.Standalone
     /// </summary>
     public class RazorEmailResult : IEmailResult
     {
-        private readonly DeliveryHelper _deliveryHelper;
         private readonly IMailInterceptor _interceptor;
+        private readonly IMailSender _sender;
         private MailAttributes _mailAttributes;
-        private readonly IMailSender _mailSender;
         private readonly Encoding _messageEncoding;
         private readonly ITemplateService _templateService;
         private readonly dynamic _viewBag;
@@ -60,13 +59,12 @@ namespace ActionMailerNext.Standalone
             if (templateService == null)
                 throw new ArgumentNullException("templateService");
 
-            _interceptor = interceptor;
-            _mailSender = sender;
             _mailAttributes = mailAttributes;
             _viewName = viewName;
             _masterName = masterName;
             _viewPath = viewPath;
-            _deliveryHelper = new DeliveryHelper(_mailSender, _interceptor);
+            _sender = sender;
+            _interceptor = interceptor;
 
             _templateService = templateService;
             _messageEncoding = messageEncoding;
@@ -89,7 +87,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public IMailSender MailSender
         {
-            get { return _mailSender; }
+            get { return _sender; }
         }
 
         /// <summary>
@@ -105,7 +103,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public IList<IMailResponse> Deliver()
         {
-            return _deliveryHelper.Deliver(MailAttributes);
+            return _sender.Send(MailAttributes);
         }
 
         /// <summary>
@@ -115,8 +113,15 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public async Task<MailAttributes> DeliverAsync()
         {
-            var deliverTask = _deliveryHelper.DeliverAsync(MailAttributes);
-            return await deliverTask;
+            var deliverTask = _sender.SendAsync(MailAttributes);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(MailAttributes));
+
+            return MailAttributes;
+        }
+
+        private void AsyncSendCompleted(MailAttributes mail)
+        {
+            _interceptor.OnMailSent(mail);
         }
 
         /// <summary>

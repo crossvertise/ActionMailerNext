@@ -58,13 +58,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementations\SMTP\DeliveryStatus.cs" />
     <Compile Include="Implementations\SMTP\SmtpMailResponse.cs" />
     <Compile Include="Interfaces\IMailResponse.cs" />
     <Compile Include="Interfaces\IPostProcessor.cs" />
     <Compile Include="PostProccesors\InlineCssPostProcessor.cs" />
     <Compile Include="Utils\AlternativeViewCollection.cs" />
     <Compile Include="Utils\AttachmentCollection.cs" />
-    <Compile Include="DeliveryHelper.cs" />
     <Compile Include="MailAttributes.cs" />
     <Compile Include="Interfaces\IEmailResult.cs" />
     <Compile Include="Utils\NoViewsFoundException.cs" />

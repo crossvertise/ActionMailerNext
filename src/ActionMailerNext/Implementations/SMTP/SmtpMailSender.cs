@@ -12,14 +12,15 @@ namespace ActionMailerNext.Implementations.SMTP
     /// <summary>
     ///     Implements IMailSender by using System.Net.MailAttributes.SmtpClient.
     /// </summary>
-    public class SmtpMailSender : IMailSender
+    public class SmtpMailSender : IMailSender, IDisposable
     {
         private readonly SmtpClient _client;
 
         /// <summary>
         ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
-        public SmtpMailSender() : this(new SmtpClient())
+        public SmtpMailSender()
+            : this(new SmtpClient())
         {
         }
 
@@ -88,6 +89,12 @@ namespace ActionMailerNext.Implementations.SMTP
             try
             {
                 _client.Send(mail);
+                response.AddRange(mail.To.Select(mailAddr => new SmtpMailResponse()
+                {
+                    Email = mailAddr.Address,
+                    Status = SmtpMailResponse.GetProspectiveStatus(SmtpStatusCode.Ok.ToString()),
+                    RejectReason = null
+                }));
             }
             catch (SmtpFailedRecipientsException ex)
             {
@@ -98,7 +105,6 @@ namespace ActionMailerNext.Implementations.SMTP
                     RejectReason = e.Message
                 }));
             }
-
             return response;
         }
 
@@ -114,6 +120,12 @@ namespace ActionMailerNext.Implementations.SMTP
             try
             {
                 _client.SendMailAsync(mail);
+                response.AddRange(mail.To.Select(mailAddr => new SmtpMailResponse()
+                {
+                    Email = mailAddr.Address, 
+                    Status = SmtpMailResponse.GetProspectiveStatus(SmtpStatusCode.Ok.ToString()), 
+                    RejectReason = null
+                }));
             }
             catch (SmtpFailedRecipientsException ex)
             {
@@ -124,7 +136,6 @@ namespace ActionMailerNext.Implementations.SMTP
                     RejectReason = e.Message
                 }));
             }
-
             return response;
         }
 
@@ -133,7 +144,10 @@ namespace ActionMailerNext.Implementations.SMTP
         /// </summary>
         public void Dispose()
         {
-            _client.Dispose();
+            this.Dispose(false);
+            GC.SuppressFinalize(true);
         }
+
+        protected virtual void Dispose(bool disposing) { }
     }
 }

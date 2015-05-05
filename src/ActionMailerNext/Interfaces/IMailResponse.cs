@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ActionMailerNext.Interfaces
 {
-    public interface IMailResponse 
+    using ActionMailerNext.Implementations.SMTP;
+
+    public interface IMailResponse
     {
-        
+        string Email { get; }
+
+        //DeliveryStatus DeliveryStatus { get; }
     }
 }
