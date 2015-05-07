@@ -24,6 +24,11 @@ namespace ActionMailerNext.Implementations.SMTP
         {
             return (SmtpStatusCode)Enum.Parse(typeof(SmtpStatusCode), statusString, true);
         }
+
+        public static DeliveryStatus GetdeliveryStatus(string deliveryStatus)
+        {
+            return (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), deliveryStatus, true);
+        }
     }
 
 }

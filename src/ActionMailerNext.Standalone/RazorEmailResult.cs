@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
-using System.Threading.Tasks;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Utils;
 using RazorEngine.Templating;
@@ -15,8 +13,6 @@ namespace ActionMailerNext.Standalone
     /// </summary>
     public class RazorEmailResult : IEmailResult
     {
-        private readonly IMailInterceptor _interceptor;
-        private readonly IMailSender _sender;
         private MailAttributes _mailAttributes;
         private readonly Encoding _messageEncoding;
         private readonly ITemplateService _templateService;
@@ -39,16 +35,10 @@ namespace ActionMailerNext.Standalone
         /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
         /// <param name="messageEncoding"></param>
-        public RazorEmailResult(IMailInterceptor interceptor, IMailSender sender, MailAttributes mailAttributes, string viewName,
+        public RazorEmailResult(MailAttributes mailAttributes, string viewName,
             Encoding messageEncoding, string masterName,
             string viewPath, ITemplateService templateService, DynamicViewBag viewBag)
         {
-            if (interceptor == null)
-                throw new ArgumentNullException("interceptor");
-
-            if (sender == null)
-                throw new ArgumentNullException("sender");
-
             if (mailAttributes == null)
                 throw new ArgumentNullException("mailAttributes");
 
@@ -63,8 +53,6 @@ namespace ActionMailerNext.Standalone
             _viewName = viewName;
             _masterName = masterName;
             _viewPath = viewPath;
-            _sender = sender;
-            _interceptor = interceptor;
 
             _templateService = templateService;
             _messageEncoding = messageEncoding;
@@ -83,45 +71,11 @@ namespace ActionMailerNext.Standalone
         }
 
         /// <summary>
-        ///     The IMailSender instance that is used to deliver MailAttributes.
-        /// </summary>
-        public IMailSender MailSender
-        {
-            get { return _sender; }
-        }
-
-        /// <summary>
         ///     The default encoding used to send a messageBase.
         /// </summary>
         public Encoding MessageEncoding
         {
             get { return _messageEncoding; }
-        }
-
-        /// <summary>
-        ///     Sends your message.  This call will block while the message is being sent. (not recommended)
-        /// </summary>
-        public IList<IMailResponse> Deliver()
-        {
-            return _sender.Send(MailAttributes);
-        }
-
-        /// <summary>
-        ///     Sends your message asynchronously.  This method does not block.  If you need to know
-        ///     when the message has been sent, then override the OnMailSent method in MailerBase which
-        ///     will not fire until the asyonchronous send operation is complete.
-        /// </summary>
-        public async Task<MailAttributes> DeliverAsync()
-        {
-            var deliverTask = _sender.SendAsync(MailAttributes);
-            await deliverTask.ContinueWith(t => AsyncSendCompleted(MailAttributes));
-
-            return MailAttributes;
-        }
-
-        private void AsyncSendCompleted(MailAttributes mail)
-        {
-            _interceptor.OnMailSent(mail);
         }
 
         /// <summary>

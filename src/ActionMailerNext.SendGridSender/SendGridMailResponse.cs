@@ -17,5 +17,9 @@ namespace ActionMailerNext.SendGridSender
         {
             return String.Format("Email : {0}\nStatus : {1}", Email, Status);
         }
+        public static DeliveryStatus GetdeliveryStatus(string deliveryStatus)
+        {
+            return (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), deliveryStatus, true);
+        }
     }
 }

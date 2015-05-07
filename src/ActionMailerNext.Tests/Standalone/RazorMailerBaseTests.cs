@@ -60,17 +60,17 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.AreEqual("<p>Testing multipart.</p>", htmlBody);
         }
 
-        [Test]
-        public void PassingAMailSenderShouldWork()
-        {
-            var mockSender = A.Fake<IMailSender>();
-            var attribute = new MailAttributes();
-            var mailer = new TestMailerBase(attribute, mockSender);
-            var email = mailer.Email("TextViewNoModel");
+        //[Test]
+        //public void PassingAMailSenderShouldWork()
+        //{
+        //    var mockSender = A.Fake<IMailSender>();
+        //    var attribute = new MailAttributes();
+        //    var mailer = new TestMailerBase(attribute, mockSender);
+        //    var email = mailer.Email("TextViewNoModel");
 
-            Assert.AreSame(mockSender, mailer.MailSender);
-            Assert.AreSame(mockSender, email.MailSender);
-        }
+        //    Assert.AreSame(mockSender, mailer.MailSender);
+        //    Assert.AreSame(mockSender, email.MailSender);
+        //}
 
         [Test]
         public void PassingAModelShouldWork()

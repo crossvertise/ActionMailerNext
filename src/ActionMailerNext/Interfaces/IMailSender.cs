@@ -21,5 +21,19 @@ namespace ActionMailerNext.Interfaces
         /// </summary>
         /// <param name="mailAttributes">The SMTPMailMessage message you wish to send.</param>
         Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes);
+
+        /// <summary>
+        /// Method to be called directly after defining MailSender to deliver email synchronously.
+        /// </summary>
+        /// <param name="emailResult"></param>
+        /// <returns></returns>
+        List<IMailResponse> Deliver(IEmailResult emailResult);
+
+        /// <summary>
+        /// Method to be called directly after defining MailSender to deliver email asynchronously.
+        /// </summary>
+        /// <param name="emailResult"></param>
+        /// <returns></returns>
+        Task<MailAttributes> DeliverAsync(IEmailResult emailResult);
     }
 }

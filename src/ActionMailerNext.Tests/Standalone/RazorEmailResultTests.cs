@@ -44,7 +44,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(null, mockSender, new MailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -58,7 +58,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, null, new MailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -73,7 +73,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, null, "View", null, "_Layout", "Path", mockTemplateService,
+                    new RazorEmailResult(null, "View", null, "_Layout", "Path", mockTemplateService,
                         null);
                 });
         }
@@ -88,7 +88,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new MailAttributes(), null, null, "_Layout", "Path",
+                    new RazorEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
                 });
         }
@@ -103,7 +103,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(mockInterceptor, mockSender, new MailAttributes(), "View", null, "_Layout", "Path",
+                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
                         null, null);
                 });
         }

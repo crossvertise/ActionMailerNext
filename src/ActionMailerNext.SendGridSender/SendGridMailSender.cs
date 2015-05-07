@@ -16,6 +16,7 @@ namespace ActionMailerNext.SendGridSender
     {
         private bool disposed = false;
 
+        private IMailInterceptor _interceptor;
         private readonly Web _client;
 
         public SendGridMailSender()
@@ -30,8 +31,9 @@ namespace ActionMailerNext.SendGridSender
             _client = new Web(credentials);
         }
 
-        public SendGridMailSender(string username, string password)
+        public SendGridMailSender(string username, string password, IMailInterceptor interceptor)
         {
+            _interceptor = interceptor;
             var credentials = new NetworkCredential(username, password);
             _client = new Web(credentials);
         }
@@ -87,6 +89,13 @@ namespace ActionMailerNext.SendGridSender
             return message;
         }
 
+        #region Send methods
+
+        public virtual List<IMailResponse> Deliver(IEmailResult emailResult)
+        {
+            return this.Send(emailResult.MailAttributes);
+        }
+
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);
@@ -103,6 +112,19 @@ namespace ActionMailerNext.SendGridSender
                 });
             }
             return response;
+        }
+
+        /// <summary>
+        ///     Sends your message asynchronously.  This method does not block.  If you need to know
+        ///     when the message has been sent, then override the OnMailSent method in MailerBase which
+        ///     will not fire until the asyonchronous send operation is complete.
+        /// </summary>
+        public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
+        {
+            var deliverTask = this.SendAsync(emailResult.MailAttributes);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult.MailAttributes));
+
+            return emailResult.MailAttributes;
         }
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
@@ -123,6 +145,19 @@ namespace ActionMailerNext.SendGridSender
             return response;
         }
 
+        #endregion
+
+        #region Private methods
+
+        private void AsyncSendCompleted(MailAttributes mail)
+        {
+            _interceptor.OnMailSent(mail);
+        }
+
+        #endregion
+
+        #region Dispose
+
         public void Dispose()
         {
             this.Dispose(false);
@@ -130,5 +165,7 @@ namespace ActionMailerNext.SendGridSender
         }
 
         protected virtual void Dispose(bool disposing) { }
+
+        #endregion
     }
 }

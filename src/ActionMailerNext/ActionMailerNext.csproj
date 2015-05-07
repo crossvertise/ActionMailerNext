@@ -58,7 +58,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implementations\SMTP\DeliveryStatus.cs" />
+    <Compile Include="DeliveryStatus.cs" />
     <Compile Include="Implementations\SMTP\SmtpMailResponse.cs" />
     <Compile Include="Interfaces\IMailResponse.cs" />
     <Compile Include="Interfaces\IPostProcessor.cs" />

@@ -14,13 +14,14 @@ namespace ActionMailerNext.Implementations.SMTP
     /// </summary>
     public class SmtpMailSender : IMailSender, IDisposable
     {
+        private readonly IMailInterceptor _interceptor;
         private readonly SmtpClient _client;
 
         /// <summary>
         ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
         public SmtpMailSender()
-            : this(new SmtpClient())
+            : this(new SmtpClient(), null)
         {
         }
 
@@ -28,8 +29,9 @@ namespace ActionMailerNext.Implementations.SMTP
         ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
         /// <param name="client">The underlying SmtpClient instance to use.</param>
-        public SmtpMailSender(SmtpClient client)
+        public SmtpMailSender(SmtpClient client, IMailInterceptor interceptor)
         {
+            _interceptor = interceptor;
             _client = client;
         }
 
@@ -77,6 +79,11 @@ namespace ActionMailerNext.Implementations.SMTP
             return message;
         }
 
+        public virtual List<IMailResponse> Deliver(IEmailResult emailResult)
+        {
+            return this.Send(emailResult.MailAttributes);
+        }
+
         /// <summary>
         ///     Sends SMTPMailMessage synchronously.
         /// </summary>
@@ -106,6 +113,19 @@ namespace ActionMailerNext.Implementations.SMTP
                 }));
             }
             return response;
+        }
+
+        /// <summary>
+        ///     Sends your message asynchronously.  This method does not block.  If you need to know
+        ///     when the message has been sent, then override the OnMailSent method in MailerBase which
+        ///     will not fire until the asyonchronous send operation is complete.
+        /// </summary>
+        public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
+        {
+            var deliverTask = this.SendAsync(emailResult.MailAttributes);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult));
+
+            return emailResult.MailAttributes;
         }
 
         /// <summary>
@@ -149,5 +169,10 @@ namespace ActionMailerNext.Implementations.SMTP
         }
 
         protected virtual void Dispose(bool disposing) { }
+
+        private void AsyncSendCompleted(IEmailResult email)
+        {
+           _interceptor.OnMailSent(email.MailAttributes);
+        }
     }
 }

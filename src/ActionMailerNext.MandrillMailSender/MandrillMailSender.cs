@@ -17,16 +17,18 @@ namespace ActionMailerNext.MandrillMailSender
     {
         private bool disposed = false;
 
+        private IMailInterceptor _interceptor;
         private MandrillApi _client;
 
-        public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"]) { }
+        public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"], null) { }
 
-        public MandrillMailSender(string apiKey)
+        public MandrillMailSender(string apiKey, IMailInterceptor interceptor)
         {
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new ArgumentNullException("apiKey",
                     "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
+            _interceptor = interceptor;
             _client = new MandrillApi(apiKey);
         }
 
@@ -94,6 +96,12 @@ namespace ActionMailerNext.MandrillMailSender
             return message;
         }
 
+        #region Send methods
+
+        public virtual List<IMailResponse> Deliver(IEmailResult emailResult) {
+            return this.Send(emailResult.MailAttributes);
+        }
+
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);
@@ -109,6 +117,19 @@ namespace ActionMailerNext.MandrillMailSender
             }));
 
             return response;
+        }
+
+        /// <summary>
+        ///     Sends your message asynchronously.  This method does not block.  If you need to know
+        ///     when the message has been sent, then override the OnMailSent method in MailerBase which
+        ///     will not fire until the asyonchronous send operation is complete.
+        /// </summary>
+        public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
+        {
+            var deliverTask = this.SendAsync(emailResult.MailAttributes);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult.MailAttributes));
+
+            return emailResult.MailAttributes;
         }
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
@@ -127,6 +148,19 @@ namespace ActionMailerNext.MandrillMailSender
             return response;
         }
 
+        #endregion
+
+        #region Private methods
+
+        private void AsyncSendCompleted(MailAttributes mail)
+        {
+            _interceptor.OnMailSent(mail);
+        }
+
+        #endregion
+
+        #region Dispose
+
         public void Dispose()
         {
             this.Dispose(false);
@@ -136,5 +170,7 @@ namespace ActionMailerNext.MandrillMailSender
         protected virtual void Dispose(bool disposing)
         {
         }
+
+        #endregion
     }
 }

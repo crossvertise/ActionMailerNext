@@ -160,7 +160,7 @@ namespace ActionMailerNext.Standalone
                 ViewBag.ViewSettings = ViewSettings;
             }
 
-            var result = new RazorEmailResult(this, MailSender, MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
+            var result = new RazorEmailResult(MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
                 externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
             result.Compile(model, trimBody);
@@ -189,5 +189,4 @@ namespace ActionMailerNext.Standalone
             }
         }
     }
-
 }

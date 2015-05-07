@@ -1,5 +1,5 @@
 ﻿
-namespace ActionMailerNext.Implementations.SMTP
+namespace ActionMailerNext
 {
     public enum DeliveryStatus
     {
