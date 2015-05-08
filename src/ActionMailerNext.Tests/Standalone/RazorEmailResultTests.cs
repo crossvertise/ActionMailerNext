@@ -36,34 +36,6 @@ namespace ActionMailerNext.Tests.Standalone
     public class RazorEmailResultTests
     {
         [Test]
-        public void ConstructorWithNullInterceptorThrows()
-        {
-            var mockSender = A.Fake<IMailSender>();
-            var mockTemplateService = A.Fake<ITemplateService>();
-
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
-                        mockTemplateService, null);
-                });
-        }
-
-        [Test]
-        public void ConstructorWithNullSenderThrows()
-        {
-            var mockInterceptor = A.Fake<IMailInterceptor>();
-            var mockTemplateService = A.Fake<ITemplateService>();
-
-            Assert.Throws<ArgumentNullException>(
-                () =>
-                {
-                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
-                        mockTemplateService, null);
-                });
-        }
-
-        [Test]
         public void ConstructorWithNullMailMessageThrows()
         {
             var mockSender = A.Fake<IMailSender>();
