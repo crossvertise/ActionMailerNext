@@ -1,0 +1,19 @@
+version: '{build}'
+branches:
+  only:
+  - master
+nuget:
+  account_feed: true
+  disable_publish_on_pr: true
+build:
+  project: src/ActionMailer.Net.sln
+  publish_nuget: true
+  verbosity: minimal
+deploy:
+  provider: NuGet
+  server:                  # remove to push to NuGet.org
+  api_key:
+    secure: mfSPwpGzwv4UiOHcD3whrvz8MFxzhDVFK9PGPm1p6NQ=
+  skip_symbols: false
+  symbol_server:           # remove to push symbols to SymbolSource.org
+  artifact: /.*\.nupkg/  
