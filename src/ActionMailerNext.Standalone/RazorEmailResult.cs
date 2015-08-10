@@ -119,7 +119,7 @@ namespace ActionMailerNext.Standalone
                 body = itemplate.Run(new ExecuteContext(_viewBag));
             }
 
-            catch (TemplateResolvingException ex)
+            catch (TemplateResolvingException)
             {
                 if (!hasTxtView)
                     throw new NoViewsFoundException(
