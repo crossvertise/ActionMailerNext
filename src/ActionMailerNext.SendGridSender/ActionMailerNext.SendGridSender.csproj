@@ -58,6 +58,7 @@
     <Compile Include="SendGridMailSender.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ActionMailerNext.SendGridSender.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

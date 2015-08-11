@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>ActionMailerNext.SendGridSender</id>
+    <version>$version$</version>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/crossvertise/ActionMailerNext/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/crossvertise/ActionMailerNext</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2014 Scott Anderson, crossvertise GmbH</copyright>
+    <tags>email actionmailer sendgrid actionmailer.net</tags>
+  </metadata>
+</package>
