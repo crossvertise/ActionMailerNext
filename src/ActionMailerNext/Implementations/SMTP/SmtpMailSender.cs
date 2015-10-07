@@ -55,7 +55,7 @@ namespace ActionMailerNext.Implementations.SMTP
                 message.ReplyToList.Add(mail.ReplyTo[i]);
 
             // From is optional because it could be set in <mailSettings>
-            if (!String.IsNullOrWhiteSpace(mail.From?.Address))
+            if (mail.From != null && !String.IsNullOrWhiteSpace(mail.From.Address))
                 message.From = new MailAddress(mail.From.Address, mail.From.DisplayName);
 
 
