@@ -85,7 +85,7 @@ namespace ActionMailerNext.MandrillMailSender
                     attachments.Add(new email_attachment
                     {
                         content = base64Data,
-                        name = mailAttachment.Name,
+                        name = ReplaceGermanCharacters(mailAttachment.Name),
                         type = mailAttachment.ContentType.MediaType,
                     });
                 }
@@ -155,6 +155,17 @@ namespace ActionMailerNext.MandrillMailSender
         private void AsyncSendCompleted(MailAttributes mail)
         {
             _interceptor.OnMailSent(mail);
+        }
+
+        private string ReplaceGermanCharacters(string s)
+        {
+            return s.Replace("ö", "oe")
+                    .Replace("ü", "ue")
+                    .Replace("ä", "ae")
+                    .Replace("Ö", "Oe")
+                    .Replace("Ü", "Ue")
+                    .Replace("Ä", "Ae")
+                    .Replace("ß", "ss");
         }
 
         #endregion
