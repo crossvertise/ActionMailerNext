@@ -11,14 +11,13 @@ using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.MandrillMailSender
 {
+    using System.Globalization;
     using System.Text;
 
-    public class MandrillMailSender : IMailSender, IDisposable
+    public class MandrillMailSender : IMailSender
     {
-        private bool disposed = false;
-
-        private IMailInterceptor _interceptor;
-        private MandrillApi _client;
+        private readonly IMailInterceptor interceptor;
+        private readonly MandrillApi client;
 
         public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"], null) { }
 
@@ -28,8 +27,8 @@ namespace ActionMailerNext.MandrillMailSender
                 throw new ArgumentNullException("apiKey",
                     "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
-            _interceptor = interceptor;
-            _client = new MandrillApi(apiKey);
+            this.interceptor = interceptor;
+            this.client = new MandrillApi(apiKey);
         }
 
         /// <summary>
@@ -37,15 +36,17 @@ namespace ActionMailerNext.MandrillMailSender
         /// </summary>
         protected EmailMessage GenerateProspectiveMailMessage(MailAttributes mail)
         {
+            var idnmapping = new IdnMapping();
+
             //create base message
             var message = new EmailMessage
             {
                 from_name = mail.From.DisplayName,
                 from_email = mail.From.Address,
-                to = mail.To.Union(mail.Cc).Select(t => new EmailAddress(t.Address, t.DisplayName)),
+                to = mail.To.Union(mail.Cc).Select(t => new EmailAddress(idnmapping.GetAscii(t.Address), t.DisplayName)),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
                 subject = mail.Subject,
-                important = mail.Priority == MailPriority.High ? true : false
+                important = mail.Priority == MailPriority.High
             };
 
             // We need to set Reply-To as a custom header
@@ -107,7 +108,7 @@ namespace ActionMailerNext.MandrillMailSender
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            var resp = _client.SendMessage(mail);
+            var resp = this.client.SendMessage(mail);
             response.AddRange(resp.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
@@ -137,7 +138,7 @@ namespace ActionMailerNext.MandrillMailSender
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            await _client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
+            await this.client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
                 Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
@@ -154,7 +155,7 @@ namespace ActionMailerNext.MandrillMailSender
 
         private void AsyncSendCompleted(MailAttributes mail)
         {
-            _interceptor.OnMailSent(mail);
+            this.interceptor.OnMailSent(mail);
         }
 
         private string ReplaceGermanCharacters(string s)
