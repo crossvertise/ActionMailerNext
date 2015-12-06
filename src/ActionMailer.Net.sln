@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.MandrillMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.SendGridSender", "ActionMailerNext.SendGridSender\ActionMailerNext.SendGridSender.csproj", "{CA56D468-E010-4151-B934-24FAB8E226D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.MandrillMailSender.Tests", "ActionMailerNext.MandrillMailSender.Tests\ActionMailerNext.MandrillMailSender.Tests.csproj", "{DF80E4B8-86B4-4556-B1B8-41094C23DA08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -154,6 +156,16 @@ Global
 		{CA56D468-E010-4151-B934-24FAB8E226D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CA56D468-E010-4151-B934-24FAB8E226D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CA56D468-E010-4151-B934-24FAB8E226D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,5 +175,6 @@ Global
 		{2130EAD7-7BD8-4B82-BA55-B0E1F7B4339E} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 		{B84A14D1-0A09-49AE-9B3C-B3893CCA137D} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 		{7B20D875-D13A-4EAC-BF4E-E2C99C000F6E} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
+		{DF80E4B8-86B4-4556-B1B8-41094C23DA08} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 	EndGlobalSection
 EndGlobal

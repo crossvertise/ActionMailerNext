@@ -43,7 +43,12 @@ namespace ActionMailerNext.MandrillMailSender
             {
                 from_name = mail.From.DisplayName,
                 from_email = mail.From.Address,
-                to = mail.To.Union(mail.Cc).Select(t => new EmailAddress(idnmapping.GetAscii(t.Address), t.DisplayName)),
+                to = mail.To.Union(mail.Cc).Select(
+                    t =>
+                        {
+                            var domainSplit = t.Address.Split('@');
+                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
+                        }),
                 bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
                 subject = mail.Subject,
                 important = mail.Priority == MailPriority.High

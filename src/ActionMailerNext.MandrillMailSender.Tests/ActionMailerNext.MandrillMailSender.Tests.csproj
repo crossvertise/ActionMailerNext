@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B84A14D1-0A09-49AE-9B3C-B3893CCA137D}</ProjectGuid>
+    <ProjectGuid>{DF80E4B8-86B4-4556-B1B8-41094C23DA08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ActionMailerNext.Mvc5_1.Tests</RootNamespace>
-    <AssemblyName>ActionMailerNext.Mvc5-1.Tests</AssemblyName>
+    <RootNamespace>ActionMailerNext.MandrillMailSender.Tests</RootNamespace>
+    <AssemblyName>ActionMailerNext.MandrillMailSender.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -32,66 +32,42 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FakeItEasy, Version=1.23.0.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\FakeItEasy.1.23.0\lib\net40\FakeItEasy.dll</HintPath>
-    </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.1\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Mvc5-1\EmailResultTests.cs" />
-    <Compile Include="Mvc5-1\HtmlHelperExtensionsTests.cs" />
-    <Compile Include="Mvc5-1\HtmlView.cs" />
-    <Compile Include="Mvc5-1\MailController.cs" />
-    <Compile Include="Mvc5-1\MailerBaseTests.cs" />
-    <Compile Include="Mvc5-1\TestMailerBase.cs" />
-    <Compile Include="Mvc5-1\MultipartViewEngine.cs" />
-    <Compile Include="Mvc5-1\MvcHelper.cs" />
-    <Compile Include="Mvc5-1\TestController.cs" />
-    <Compile Include="Mvc5-1\TestMailController.cs" />
-    <Compile Include="Mvc5-1\TextView.cs" />
-    <Compile Include="Mvc5-1\TextViewEngine.cs" />
-    <Compile Include="Mvc5-1\UrlHelperExtensionsTests.cs" />
-    <Compile Include="Mvc5-1\UTF8View.cs" />
-    <Compile Include="Mvc5-1\UTF8ViewEngine.cs" />
-    <Compile Include="Mvc5-1\WhiteSpaceView.cs" />
-    <Compile Include="Mvc5-1\WhiteSpaceViewEngine.cs" />
+    <Compile Include="MandrillMailSenderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActionMailerNext.Mvc5-1\ActionMailerNext.Mvc5-1.csproj">
-      <Project>{a2a24342-b533-45ca-83ea-6636e847702d}</Project>
-      <Name>ActionMailerNext.Mvc5-1</Name>
+    <ProjectReference Include="..\ActionMailerNext.MandrillMailSender\ActionMailerNext.MandrillMailSender.csproj">
+      <Project>{E89BD900-6C86-4E2D-9522-6F44156A1EA2}</Project>
+      <Name>ActionMailerNext.MandrillMailSender</Name>
     </ProjectReference>
     <ProjectReference Include="..\ActionMailerNext\ActionMailerNext.csproj">
       <Project>{85ec0023-cbbf-4c91-8681-d88da6334305}</Project>
       <Name>ActionMailerNext</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
