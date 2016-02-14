@@ -16,19 +16,19 @@ namespace ActionMailerNext.MandrillMailSender
 
     public class MandrillMailSender : IMailSender
     {
-        private readonly IMailInterceptor interceptor;
-        private readonly MandrillApi client;
+        private readonly IMailInterceptor _interceptor;
+        private readonly MandrillApi _client;
 
-        public MandrillMailSender() : this(ConfigurationManager.AppSettings["MandrillApiKey"], null) { }
+        public MandrillMailSender(IMailInterceptor interceptor = null) : this(ConfigurationManager.AppSettings["MandrillApiKey"], interceptor) { }
 
-        public MandrillMailSender(string apiKey, IMailInterceptor interceptor)
+        public MandrillMailSender(string apiKey, IMailInterceptor interceptor = null)
         {
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new ArgumentNullException("apiKey",
                     "The AppSetting 'MandrillApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
-            this.interceptor = interceptor;
-            this.client = new MandrillApi(apiKey);
+            _interceptor = interceptor;
+            _client = new MandrillApi(apiKey);
         }
 
         /// <summary>
@@ -110,10 +110,13 @@ namespace ActionMailerNext.MandrillMailSender
 
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
+            if (_interceptor != null)
+                _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            var resp = this.client.SendMessage(mail);
+            var resp = _client.SendMessage(mail);
             response.AddRange(resp.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
@@ -121,6 +124,9 @@ namespace ActionMailerNext.MandrillMailSender
                 RejectReason = result.RejectReason,
                 Id = result.Id
             }));
+
+            if (_interceptor != null)
+                _interceptor.OnMailSent(mailAttributes);
 
             return response;
         }
@@ -140,10 +146,13 @@ namespace ActionMailerNext.MandrillMailSender
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
+            if (_interceptor != null)
+                _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            await this.client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
+            await _client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
                 Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
@@ -160,7 +169,8 @@ namespace ActionMailerNext.MandrillMailSender
 
         private void AsyncSendCompleted(MailAttributes mail)
         {
-            this.interceptor.OnMailSent(mail);
+            if (_interceptor != null)
+                _interceptor.OnMailSent(mail);
         }
 
         private string ReplaceGermanCharacters(string s)
