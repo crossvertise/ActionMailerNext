@@ -38,20 +38,37 @@ namespace ActionMailerNext.MandrillMailSender
         {
             var idnmapping = new IdnMapping();
 
+            var emailAddresses = mail.To
+                .Select(
+                    t =>
+                    {
+                        var domainSplit = t.Address.Split('@');
+                        return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "to" };
+                    })
+                .Union(
+                    mail.Cc.Select(
+                        t =>
+                        {
+                            var domainSplit = t.Address.Split('@');
+                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "cc" };
+                        }))
+                .Union(
+                    mail.Bcc.Select(
+                        t =>
+                        {
+                            var domainSplit = t.Address.Split('@');
+                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "bcc" };
+                        }));       
+
             //create base message
             var message = new EmailMessage
             {
                 from_name = mail.From.DisplayName,
                 from_email = mail.From.Address,
-                to = mail.To.Union(mail.Cc).Select(
-                    t =>
-                        {
-                            var domainSplit = t.Address.Split('@');
-                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                        }),
-                bcc_address = mail.Bcc.Any() ? mail.Bcc.First().Address : null,
+                to = emailAddresses,
                 subject = mail.Subject,
-                important = mail.Priority == MailPriority.High
+                important = mail.Priority == MailPriority.High,
+                preserve_recipients = true
             };
 
             // We need to set Reply-To as a custom header
