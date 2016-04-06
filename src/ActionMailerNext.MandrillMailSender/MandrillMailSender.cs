@@ -124,14 +124,25 @@ namespace ActionMailerNext.MandrillMailSender
 
         #region Send methods
 
-        public virtual List<IMailResponse> Deliver(IEmailResult emailResult) 
-        {
+        public virtual List<IMailResponse> Deliver(IEmailResult emailResult) {
             return this.Send(emailResult.MailAttributes);
         }
 
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-            return this.SendAsync(mailAttributes).Result;
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
+            var response = new List<IMailResponse>();
+
+            var resp = this.client.SendMessage(new SendMessageRequest(mail));
+            response.AddRange(resp.Result.Select(result => new MandrillMailResponse
+            {
+                Email = result.Email,
+                Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
+                RejectReason = result.RejectReason,
+                Id = result.Id
+            }));
+
+            return response;
         }
 
         /// <summary>
@@ -142,7 +153,7 @@ namespace ActionMailerNext.MandrillMailSender
         public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
         {
             var deliverTask = this.SendAsync(emailResult.MailAttributes);
-            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult.MailAttributes)).ConfigureAwait(false);
+            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult.MailAttributes));
 
             return emailResult.MailAttributes;
         }
@@ -158,7 +169,7 @@ namespace ActionMailerNext.MandrillMailSender
                 Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
                 RejectReason = result.RejectReason,
                 Id = result.Id
-            }))).ConfigureAwait(false);
+            })));
 
             return response;
         }
