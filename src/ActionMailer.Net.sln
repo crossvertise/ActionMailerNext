@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4191E949-6E92-4A07-A5C0-5A14C4900CE6}"
 	ProjectSection(SolutionItems) = preProject
@@ -35,6 +35,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.SendGridSender", "ActionMailerNext.SendGridSender\ActionMailerNext.SendGridSender.csproj", "{CA56D468-E010-4151-B934-24FAB8E226D7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.MandrillMailSender.Tests", "ActionMailerNext.MandrillMailSender.Tests\ActionMailerNext.MandrillMailSender.Tests.csproj", "{DF80E4B8-86B4-4556-B1B8-41094C23DA08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.Mvc5-3", "ActionMailerNext.Mvc5-3\ActionMailerNext.Mvc5-3.csproj", "{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.Mvc5-3.Tests", "ActionMailerNext.Mvc5-3.Tests\ActionMailerNext.Mvc5-3.Tests.csproj", "{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,6 +170,30 @@ Global
 		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DF80E4B8-86B4-4556-B1B8-41094C23DA08}.Release|x86.ActiveCfg = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Debug|x86.Build.0 = Debug|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|x86.ActiveCfg = Release|Any CPU
+		{769BBF5A-B4F0-41B4-8DC4-C79A1B2F8B90}.Release|x86.Build.0 = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,5 +204,6 @@ Global
 		{B84A14D1-0A09-49AE-9B3C-B3893CCA137D} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 		{7B20D875-D13A-4EAC-BF4E-E2C99C000F6E} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 		{DF80E4B8-86B4-4556-B1B8-41094C23DA08} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
+		{B7EE797C-1209-4C23-8E50-5DBE4C802AEA} = {5AE0534E-6DFD-4511-978F-5D4CAF13AF41}
 	EndGlobalSection
 EndGlobal
