@@ -20,8 +20,8 @@ namespace ActionMailerNext.Implementations.SMTP
         /// <summary>
         ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
-        public SmtpMailSender()
-            : this(new SmtpClient(), null)
+        public SmtpMailSender(IMailInterceptor interceptor = null)
+            : this(new SmtpClient(), interceptor)
         {
         }
 
@@ -29,7 +29,8 @@ namespace ActionMailerNext.Implementations.SMTP
         ///     Creates a new SMTPMailMessage sender based on System.Net.MailAttributes.SmtpClient
         /// </summary>
         /// <param name="client">The underlying SmtpClient instance to use.</param>
-        public SmtpMailSender(SmtpClient client, IMailInterceptor interceptor)
+        /// <param name="interceptor"></param>
+        public SmtpMailSender(SmtpClient client, IMailInterceptor interceptor = null)
         {
             _interceptor = interceptor;
             _client = client;
@@ -92,6 +93,9 @@ namespace ActionMailerNext.Implementations.SMTP
         {
             var response = new List<IMailResponse>();
 
+            if (_interceptor != null)
+                _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             try
             {
@@ -102,6 +106,9 @@ namespace ActionMailerNext.Implementations.SMTP
                     Status = SmtpMailResponse.GetProspectiveStatus(SmtpStatusCode.Ok.ToString()),
                     RejectReason = null
                 }));
+
+                if (_interceptor != null)
+                    _interceptor.OnMailSent(mailAttributes);
             }
             catch (SmtpFailedRecipientsException ex)
             {
@@ -136,14 +143,16 @@ namespace ActionMailerNext.Implementations.SMTP
         {
             var response = new List<IMailResponse>();
 
+            _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             try
             {
                 _client.SendMailAsync(mail);
                 response.AddRange(mail.To.Select(mailAddr => new SmtpMailResponse()
                 {
-                    Email = mailAddr.Address, 
-                    Status = SmtpMailResponse.GetProspectiveStatus(SmtpStatusCode.Ok.ToString()), 
+                    Email = mailAddr.Address,
+                    Status = SmtpMailResponse.GetProspectiveStatus(SmtpStatusCode.Ok.ToString()),
                     RejectReason = null
                 }));
             }
@@ -172,7 +181,8 @@ namespace ActionMailerNext.Implementations.SMTP
 
         private void AsyncSendCompleted(IEmailResult email)
         {
-           _interceptor.OnMailSent(email.MailAttributes);
+            if (this._interceptor != null)
+                this._interceptor.OnMailSent(email.MailAttributes);
         }
     }
 }

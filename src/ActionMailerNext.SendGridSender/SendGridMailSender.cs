@@ -16,23 +16,17 @@ namespace ActionMailerNext.SendGridSender
     {
         private bool disposed = false;
 
-        private IMailInterceptor _interceptor;
+        private readonly IMailInterceptor _interceptor;
         private readonly Web _client;
 
-        public SendGridMailSender()
+        public SendGridMailSender(IMailInterceptor interceptor = null) : this(ConfigurationManager.AppSettings["SendGridUser"], ConfigurationManager.AppSettings["SendGridPass"], interceptor) { }
+
+        public SendGridMailSender(string username, string password, IMailInterceptor interceptor = null)
         {
-            var username = ConfigurationManager.AppSettings["SendGridUser"];
-            var password = ConfigurationManager.AppSettings["SendGridPass"];
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 throw new InvalidOperationException(
                     "The AppSetting 'SendGridUser' and 'SendGridPass' are not defined correctly. Either define this configuration section or use the constructor with username and password parameter.");
 
-            var credentials = new NetworkCredential(username, password);
-            _client = new Web(credentials);
-        }
-
-        public SendGridMailSender(string username, string password, IMailInterceptor interceptor)
-        {
             _interceptor = interceptor;
             var credentials = new NetworkCredential(username, password);
             _client = new Web(credentials);
@@ -98,6 +92,9 @@ namespace ActionMailerNext.SendGridSender
 
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
+            if (_interceptor != null)
+                _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
@@ -111,6 +108,10 @@ namespace ActionMailerNext.SendGridSender
                     Status = "E-mail delivered successfully."
                 });
             }
+
+            if (_interceptor != null)
+                _interceptor.OnMailSent(mailAttributes);
+
             return response;
         }
 
@@ -129,6 +130,9 @@ namespace ActionMailerNext.SendGridSender
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
+            if (_interceptor != null)
+                _interceptor.OnMailSending(new MailSendingContext(mailAttributes));
+
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
@@ -151,7 +155,8 @@ namespace ActionMailerNext.SendGridSender
 
         private void AsyncSendCompleted(MailAttributes mail)
         {
-            _interceptor.OnMailSent(mail);
+            if (_interceptor != null)
+                _interceptor.OnMailSent(mail);
         }
 
         #endregion
