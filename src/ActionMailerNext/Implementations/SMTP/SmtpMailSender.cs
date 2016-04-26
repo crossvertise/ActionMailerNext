@@ -60,7 +60,7 @@ namespace ActionMailerNext.Implementations.SMTP
 
 
             message.Subject = mail.Subject;
-            message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1"); //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
+            message.SubjectEncoding = mail.SubjectEncoding ?? Encoding.GetEncoding("ISO-8859-1");//Ребят, это не кашерно! А как же здоровая демократия? Давайте людям самим выберать кодировку тем сообщений! //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
             message.BodyEncoding = Encoding.UTF8;
             message.Priority = mail.Priority;
 
