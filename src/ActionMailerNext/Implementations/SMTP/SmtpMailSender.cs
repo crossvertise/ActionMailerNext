@@ -139,7 +139,7 @@ namespace ActionMailerNext.Implementations.SMTP
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             try
             {
-                _client.SendMailAsync(mail);
+                await _client.SendMailAsync(mail);
                 response.AddRange(mail.To.Select(mailAddr => new SmtpMailResponse()
                 {
                     Email = mailAddr.Address, 
