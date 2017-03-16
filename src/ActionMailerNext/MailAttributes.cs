@@ -76,7 +76,12 @@ namespace ActionMailerNext
         ///     The subject line of the email.
         /// </summary>
         public string Subject { get; set; }
-
+        /// <summary>
+        ///     Gets or sets the default subject encoding when delivering mail.
+        ///     <para>Default ISO-8859-1. for latin charsets. <see cref="https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64"/></para>
+        ///     Use Utf-8 for Cyrillic charsets.
+        /// </summary>
+        public Encoding SubjectEncoding { get; set; }
         /// <summary>
         ///     The Priority of the email.
         /// </summary>

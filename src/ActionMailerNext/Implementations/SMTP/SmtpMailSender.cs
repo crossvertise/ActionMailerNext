@@ -60,8 +60,10 @@ namespace ActionMailerNext.Implementations.SMTP
 
 
             message.Subject = mail.Subject;
-            message.SubjectEncoding = Encoding.GetEncoding("ISO-8859-1"); //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
-            message.BodyEncoding = Encoding.UTF8;
+
+            //https://connect.microsoft.com/VisualStudio/feedback/details/785710/mailmessage-subject-incorrectly-encoded-in-utf-8-base64
+            message.SubjectEncoding = mail.SubjectEncoding ?? Encoding.GetEncoding("ISO-8859-1");
+            message.BodyEncoding = mail.MessageEncoding ?? Encoding.UTF8;
             message.Priority = mail.Priority;
 
             foreach (var kvp in mail.Headers)
@@ -139,7 +141,7 @@ namespace ActionMailerNext.Implementations.SMTP
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             try
             {
-                _client.SendMailAsync(mail);
+                await _client.SendMailAsync(mail);
                 response.AddRange(mail.To.Select(mailAddr => new SmtpMailResponse()
                 {
                     Email = mailAddr.Address, 
