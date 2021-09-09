@@ -53,8 +53,10 @@ namespace ActionMailerNext.Tests.Standalone
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("MultipartNoModel");
-            var htmlBody = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var textBody = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+            var htmlBody = new StreamReader(email.MailAttributes.AlternateViews[1].ContentStream).ReadToEnd().Trim();
 
+            Assert.AreEqual("Testing multipart.", textBody);
             Assert.AreEqual("<p>Testing multipart.</p>", htmlBody);
         }
 
@@ -73,6 +75,19 @@ namespace ActionMailerNext.Tests.Standalone
             var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
             Assert.AreEqual("Your name is:  Foo", body);
+        }
+
+        [Test]
+        public void RazorViewWithNoModelShouldRenderProperly()
+        {
+            var mockSender = A.Fake<IMailSender>();
+            var attribute = new MailAttributes();
+            var mailer = new TestMailerBase(attribute, mockSender);
+
+            var email = mailer.Email("TextViewNoModel");
+            var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
+
+            Assert.AreEqual("This is a test", body);
         }
 
         [Test]

@@ -24,7 +24,8 @@
 #endregion
 
 using System.Net.Mail;
-
+using ActionMailerNext.Implementations.SMTP;
+using ActionMailerNext.Interfaces;
 using NUnit.Framework;
 
 namespace ActionMailerNext.Tests
