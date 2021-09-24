@@ -8,8 +8,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Resources;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
 
 using HandlebarsDotNet;
@@ -25,6 +23,7 @@ namespace ActionMailerNext.Standalone.Helpers
     {
         private IHandlebars _hbsService;
         private ViewSettings _viewSettings;
+        private string _resourcesDefaultNamespace;
 
         private Func<string, string, HandlebarsException> missingParameterException = (helperName, argumentName) => new HandlebarsException(string.Format("{{{{0}}}} helper is missing an argument", helperName), new ArgumentNullException(argumentName));
 
@@ -33,10 +32,11 @@ namespace ActionMailerNext.Standalone.Helpers
         /// </summary>
         /// <param name="hbsService"></param>
         /// <param name="viewSettings"></param>
-        public HandlebarsHelpers(IHandlebars hbsService, ViewSettings viewSettings)
+        public HandlebarsHelpers(IHandlebars hbsService, ViewSettings viewSettings, string resourcesDefaultNamespace)
         {
             _hbsService = hbsService;
             _viewSettings = viewSettings;
+            _resourcesDefaultNamespace = resourcesDefaultNamespace;
         }
 
         /// <summary>
@@ -328,7 +328,7 @@ namespace ActionMailerNext.Standalone.Helpers
 
                 if (resource.Length == 2)
                 {
-                    resourceFile = "Xv.Infrastructure.Standard.Resources." + resourceFile;
+                    resourceFile = $"{_resourcesDefaultNamespace}." + resourceFile;
                 }
 
                 // implement some cache

@@ -12,14 +12,16 @@ namespace ActionMailerNext.Standalone.Helpers
     {
         protected readonly IHandlebars _hbsService;
         private readonly ITemplateResolver _templateResolver;
+        private readonly string _resourcesDefaultNamespace;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="templateResolver"></param>
         /// <param name="viewSettings"></param>
-        public TemplateService(ITemplateResolver templateResolver, ViewSettings viewSettings)
+        public TemplateService(ITemplateResolver templateResolver, ViewSettings viewSettings, string resourcesDefaultNamespace)
         {
+            _resourcesDefaultNamespace = resourcesDefaultNamespace;
             _templateResolver = templateResolver;
             _hbsService = Handlebars.Create();
             RegisterHelpers(viewSettings);
@@ -39,7 +41,7 @@ namespace ActionMailerNext.Standalone.Helpers
 
         public virtual void RegisterHelpers(ViewSettings viewSettings)
         {
-            var helpers = new HandlebarsHelpers(_hbsService, viewSettings);
+            var helpers = new HandlebarsHelpers(_hbsService, viewSettings, _resourcesDefaultNamespace);
 
             var methods = helpers.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.StartsWith("Register"));

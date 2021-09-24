@@ -18,6 +18,8 @@ namespace ActionMailerNext.Standalone
 
         private ITemplateResolver _templateResolver;
 
+        private string _resourcesDefaultNamespace;
+
         private dynamic _viewbag; 
 
         /// <summary>
@@ -31,8 +33,9 @@ namespace ActionMailerNext.Standalone
         /// <param name="mailAttributes"></param>
         /// <param name="mailSender"></param>
         /// <param name="templateResolver"></param>
-        protected HbsMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null)
+        protected HbsMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null, string resourcesDefaultNamespace = "Xv.Infrastructure.Standard.Resources")
         {
+            _resourcesDefaultNamespace = resourcesDefaultNamespace;
             MailAttributes = mailAttributes ?? new MailAttributes();
             MailSender = mailSender ?? new SmtpMailSender();
             _templateResolver = templateResolver;
@@ -89,7 +92,7 @@ namespace ActionMailerNext.Standalone
         {
             get
             {
-                return _templateService ?? (_templateService = new TemplateService(TemplateResolver, ViewSettings));
+                return _templateService ?? (_templateService = new TemplateService(TemplateResolver, ViewSettings, _resourcesDefaultNamespace));
             }
             set
             {
