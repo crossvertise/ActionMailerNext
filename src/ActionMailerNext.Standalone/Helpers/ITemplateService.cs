@@ -19,6 +19,6 @@ namespace ActionMailerNext.Standalone.Helpers
         /// 
         /// </summary>
         /// <param name="viewName"></param>
-        void AddTemplate(string viewName);
+        void AddTemplate(string viewName, string key = null);
     }
 }

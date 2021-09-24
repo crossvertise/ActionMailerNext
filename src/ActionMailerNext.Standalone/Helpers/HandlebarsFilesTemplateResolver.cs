@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
@@ -47,6 +48,35 @@ namespace ActionMailerNext.Standalone.Helpers
                 return File.ReadAllText(csViewPath);
             }
             throw new TemplateResolvingException { SearchPaths = new List<string> { csViewPath } };
+        }
+
+        public List<MailTemplate> GetAllPartialTemplates()
+        {
+            return GetAllTemplates().Where(t => t.IsPartial).ToList();
+        }
+
+        private IEnumerable<MailTemplate> GetAllTemplates()
+        {
+            var templates = SearchTemplates("*");
+            return templates;
+        }
+
+        private List<MailTemplate> SearchTemplates(string searchPattern)
+        {
+            searchPattern = $"*{searchPattern}*.hbs";
+            var templatesDir = Path.Combine(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, _viewPath);
+            var filesPaths = Directory.EnumerateFiles(templatesDir, searchPattern, SearchOption.AllDirectories);
+            var templates = from path in filesPaths
+                            let name = Path.GetFileNameWithoutExtension(path)
+                            let nameParts = name.Split('-')
+                            select new MailTemplate()
+                            {
+                                Key = path.Replace(templatesDir + "\\", "").Replace(".hbs", ""),
+                                IsPartial = nameParts[0].StartsWith("_"),
+                                Label = nameParts.Length > 1 ? nameParts[1] : null,
+                                Value = File.ReadAllText(path)
+                            };
+            return templates.ToList();
         }
     }
 }

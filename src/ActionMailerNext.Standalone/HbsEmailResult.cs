@@ -93,7 +93,6 @@ namespace ActionMailerNext.Standalone
 
                 body = itemplate.Run(model, _viewBag);
             }
-
             catch (TemplateResolvingException)
             {
                 if (!hasTxtView)

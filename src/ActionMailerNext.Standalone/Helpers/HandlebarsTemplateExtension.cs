@@ -1,5 +1,7 @@
 ﻿using HandlebarsDotNet;
 
+using System.Collections.Generic;
+
 namespace ActionMailerNext.Standalone.Helpers
 {
     /// <summary>
@@ -19,7 +21,8 @@ namespace ActionMailerNext.Standalone.Helpers
             var context = new
             {
                 Model = model,
-                ViewBag = viewbag
+                ViewBag = viewbag,
+                __Config = new Dictionary<string, object>()
             };
             return self(context);
         }

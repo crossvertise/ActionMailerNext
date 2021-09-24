@@ -1,5 +1,8 @@
 ﻿using HandlebarsDotNet;
 
+using System.Linq;
+using System.Reflection;
+
 namespace ActionMailerNext.Standalone.Helpers
 {
     /// <summary>
@@ -7,7 +10,7 @@ namespace ActionMailerNext.Standalone.Helpers
     /// </summary>
     public class TemplateService : ITemplateService
     {
-        private readonly IHandlebars _hbsService;
+        protected readonly IHandlebars _hbsService;
         private readonly ITemplateResolver _templateResolver;
 
         /// <summary>
@@ -19,7 +22,31 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             _templateResolver = templateResolver;
             _hbsService = Handlebars.Create();
-            _hbsService.RegisterHelpers(viewSettings);
+            RegisterHelpers(viewSettings);
+            _templateResolver.GetAllPartialTemplates().ForEach(template =>
+            {
+                try
+                {
+                    _hbsService.RegisterTemplate(template.Key, template.Value);
+                }
+                catch (System.Exception ex)
+                {
+
+                    throw new System.Exception($"Error at template key = {template.Key}", ex);
+                }
+            });
+        }
+
+        public virtual void RegisterHelpers(ViewSettings viewSettings)
+        {
+            var helpers = new HandlebarsHelpers(_hbsService, viewSettings);
+
+            var methods = helpers.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                .Where(m => m.Name.StartsWith("Register"));
+            foreach (var method in methods)
+            {
+                method.Invoke(helpers, new object[0]);
+            }
         }
 
         /// <summary>
@@ -32,23 +59,31 @@ namespace ActionMailerNext.Standalone.Helpers
         {
             if (!string.IsNullOrEmpty(layout))
             {
-                AddTemplate(layout);
+                AddTemplate(layout, "_Layout");
             }
-            return _hbsService.Compile(_templateResolver.Resolve(viewName));
+
+            try
+            {
+                return _hbsService.Compile(_templateResolver.Resolve(viewName));
+            }
+            catch (System.Exception ex)
+            {
+                throw new System.Exception($"Error at template = {viewName}", ex);
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="viewName"></param>
-        public void AddTemplate(string viewName)
+        public void AddTemplate(string viewName, string key = null)
         {
             if (string.IsNullOrEmpty(viewName))
             {
                 return;
             }
 
-            _hbsService.RegisterTemplate(viewName, _templateResolver.Resolve(viewName));
+            _hbsService.RegisterTemplate(string.IsNullOrEmpty(key) ? viewName : key, _templateResolver.Resolve(viewName));
         }
     }
 }

@@ -30,12 +30,13 @@ namespace ActionMailerNext.Standalone
         /// <param name="mailAttributes"></param>
         /// <param name="mailSender"></param>
         /// <param name="templateResolver"></param>
-        protected HbsMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null)
+        protected HbsMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null)
         {
             MailAttributes = mailAttributes ?? new MailAttributes();
             MailSender = mailSender ?? new SmtpMailSender();
             _templateResolver = templateResolver;
             ViewBag = new ExpandoObject();
+            _templateService = templateService;
         }
 
         /// <summary>
@@ -83,16 +84,15 @@ namespace ActionMailerNext.Standalone
             }
         }
 
-        private ITemplateService TemplateService
+        protected ITemplateService TemplateService
         {
             get
             {
-                if (_templateService == null)
-                {
-                    _templateService = new TemplateService(TemplateResolver, ViewSettings);
-                    
-                }
-                return _templateService;
+                return _templateService ?? (_templateService = new TemplateService(TemplateResolver, ViewSettings));
+            }
+            set
+            {
+                _templateService = value;
             }
         }
 
