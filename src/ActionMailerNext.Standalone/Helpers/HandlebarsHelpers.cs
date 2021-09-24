@@ -113,8 +113,6 @@ namespace ActionMailerNext.Standalone.Helpers
                     throw missingParameterException("actionLink", "controllerName");
                 }
 
-                Dictionary<string, string> routeValuesCasted = null;
-
                 var routeValues = CastDictionary(initialRouteValues);
                 if (initialRouteValues != null && routeValues == null)
                 {

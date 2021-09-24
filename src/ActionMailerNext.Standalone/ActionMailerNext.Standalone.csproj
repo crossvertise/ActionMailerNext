@@ -9,16 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="Handlebars.Net" Version="2.0.9" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ActionMailerNext\ActionMailerNext.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.ComponentModel.DataAnnotations">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.ComponentModel.DataAnnotations.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

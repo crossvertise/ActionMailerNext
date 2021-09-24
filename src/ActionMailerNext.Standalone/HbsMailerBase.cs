@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
+
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone.Helpers;
 
 namespace ActionMailerNext.Standalone
 {
-    using System.Collections.Generic;
-    using System.Dynamic;
 
     /// <summary>
-    ///     This is a standalone MailerBase that relies on RazorEngine to generate emails.
+    ///     This is a standalone MailerBase that relies on Handlebars to generate emails.
     /// </summary>
     public abstract class HbsMailerBase : IMailInterceptor
     {
