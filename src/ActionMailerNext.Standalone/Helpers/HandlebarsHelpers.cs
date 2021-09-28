@@ -116,13 +116,13 @@ namespace ActionMailerNext.Standalone.Helpers
                 var routeValues = CastDictionary(initialRouteValues);
                 if (initialRouteValues != null && routeValues == null)
                 {
-                    throw new ArgumentException("Couldn't Cast RouteValues");
+                    throw new ArgumentException("Couldn't Cast RouteValues. @{actionLink}");
                 }
 
                 var htmlAttributes = CastDictionary(initialHtmlAttributes);
                 if (initialHtmlAttributes != null && htmlAttributes == null)
                 {
-                    throw new ArgumentException("Couldn't Cast HtmlAttributes");
+                    throw new ArgumentException("Couldn't Cast HtmlAttributes. @{actionLink}");
                 }
 
 
@@ -193,27 +193,41 @@ namespace ActionMailerNext.Standalone.Helpers
 
                 var linkText = arguments[0].ToString();
                 var link = arguments[1].ToString();
-                var tableAttributes = arguments.Length > 2 ? arguments[2] as Dictionary<string, string> : null;
-                var ahrefAttributes = arguments.Length > 3 ? arguments[3] as Dictionary<string, string> : null;
+                var initialTableAttributes = arguments.Length > 2 ? arguments[2] as Dictionary<string, object> : null;
+                var initialahrefAttributes = arguments.Length > 3 ? arguments[3] as Dictionary<string, object> : null;
 
                 var ahrefAttrStr = string.Empty;
                 var tableAttrStr = string.Empty;
+
+                var tableAttributes = CastDictionary(initialTableAttributes);
+                var ahrefAttributes = CastDictionary(initialahrefAttributes);
+
+                if (tableAttributes == null && initialTableAttributes != null)
+                {
+                    throw new ArgumentException("Couldn't Cast Table Attributes. @{emailButton}");
+                }
+
+                if (ahrefAttributes == null && initialahrefAttributes != null)
+                {
+                    throw new ArgumentException("Couldn't Cast ahref Attributes. @{emailButton}");
+                }
+
                 if (ahrefAttributes == null)
                 {
                     ahrefAttributes = new Dictionary<string, string>
-                {
-                    {"style", "text-decoration:none"}
-                };
-
+                    {
+                        {"style", "text-decoration:none"}
+                    };
                 }
+
                 ahrefAttrStr = UtilHelper.ConvertDictionaryToString(ahrefAttributes);
 
                 if (tableAttributes == null)
                 {
                     tableAttributes = new Dictionary<string, string>
-                {
-                    {"class", "button-dark"}
-                };
+                    {
+                        {"class", "button-dark"}
+                    };
                 }
                 tableAttrStr = UtilHelper.ConvertDictionaryToString(tableAttributes);
 
@@ -241,7 +255,7 @@ namespace ActionMailerNext.Standalone.Helpers
 
                 var actionName = arguments[0].ToString();
                 var controllerName = arguments[1].ToString();
-                var routeValues = arguments.Length > 2 ? arguments[2] as Dictionary<string, string> : null;
+                var initialRouteValues = arguments.Length > 2 ? arguments[2] as Dictionary<string, object> : null;
                 var protocol = arguments.Length > 3 ? arguments[3].ToString() : null;
                 var hostName = arguments.Length > 4 ? arguments[4].ToString() : null;
 
@@ -253,6 +267,12 @@ namespace ActionMailerNext.Standalone.Helpers
                 if (string.IsNullOrWhiteSpace(controllerName))
                 {
                     throw missingParameterException("url", "controllerName");
+                }
+
+                var routeValues = CastDictionary(initialRouteValues);
+                if (initialRouteValues != null && routeValues == null)
+                {
+                    throw new ArgumentException("Couldn't Cast RouteValues. @{url}");
                 }
 
                 Uri uri = null;
