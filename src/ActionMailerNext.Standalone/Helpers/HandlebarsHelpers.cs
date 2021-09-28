@@ -1212,12 +1212,12 @@ namespace ActionMailerNext.Standalone.Helpers
 
         private Dictionary<string, string> CastDictionary(Dictionary<string, object> dictionary)
         {
-            if (dictionary == null || !dictionary.All(d => d.Value.GetType() == typeof(string)))
+            if (dictionary == null)
             {
                 return null;
             }
 
-            return dictionary.Select(d => new { d.Key, Value = (string)d.Value })
+            return dictionary.Select(d => new { d.Key, Value = d.Value.ToString() })
                 .ToDictionary(d => d.Key, d => d.Value);
         }
     }
