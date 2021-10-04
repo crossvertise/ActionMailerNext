@@ -71,7 +71,7 @@ namespace ActionMailerNext.Standalone.Helpers
 
         public static string ConvertDictionaryToString(IDictionary<string, string> htmlAttributes)
         {
-            return (htmlAttributes == null) ? string.Empty : htmlAttributes.Aggregate(string.Empty, (current, kvp) => current + (kvp.Key + " ='" + kvp.Value + "' "));
+            return (htmlAttributes == null) ? string.Empty : htmlAttributes.Aggregate(string.Empty, (current, kvp) => current + (kvp.Key + "=\"" + kvp.Value + "\" "));
         }
 
         public static IDictionary<string,string> ObjectToDictionary(object value)

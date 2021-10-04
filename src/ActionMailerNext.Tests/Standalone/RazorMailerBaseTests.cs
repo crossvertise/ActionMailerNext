@@ -53,24 +53,10 @@ namespace ActionMailerNext.Tests.Standalone
             var mailer = new TestMailerBase(attribute, mockSender);
 
             var email = mailer.Email("MultipartNoModel");
-            var textBody = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
-            var htmlBody = new StreamReader(email.MailAttributes.AlternateViews[1].ContentStream).ReadToEnd().Trim();
+            var htmlBody = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
 
-            Assert.AreEqual("Testing multipart.", textBody);
             Assert.AreEqual("<p>Testing multipart.</p>", htmlBody);
         }
-
-        //[Test]
-        //public void PassingAMailSenderShouldWork()
-        //{
-        //    var mockSender = A.Fake<IMailSender>();
-        //    var attribute = new MailAttributes();
-        //    var mailer = new TestMailerBase(attribute, mockSender);
-        //    var email = mailer.Email("TextViewNoModel");
-
-        //    Assert.AreSame(mockSender, mailer.MailSender);
-        //    Assert.AreSame(mockSender, email.MailSender);
-        //}
 
         [Test]
         public void PassingAModelShouldWork()
@@ -90,26 +76,13 @@ namespace ActionMailerNext.Tests.Standalone
         }
 
         [Test]
-        public void RazorViewWithNoModelShouldRenderProperly()
-        {
-            var mockSender = A.Fake<IMailSender>();
-            var attribute = new MailAttributes();
-            var mailer = new TestMailerBase(attribute, mockSender);
-
-            var email = mailer.Email("TextViewNoModel");
-            var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd().Trim();
-
-            Assert.AreEqual("This is a test", body);
-        }
-
-        [Test]
         public void WhiteSpaceShouldBeIncludedWhenRequired()
         {
             var mockSender = A.Fake<IMailSender>();
             var attribute = new MailAttributes();
             var mailer = new TestMailerBase(attribute, mockSender);
 
-            var email = mailer.Email("WhitespaceTrimTest", null, false);
+            var email = mailer.Email("WhitespaceTrimTest", trimBody: false);
             var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd();
 
             Assert.True(char.IsWhiteSpace(body,0));

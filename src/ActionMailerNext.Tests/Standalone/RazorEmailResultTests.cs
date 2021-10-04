@@ -27,9 +27,10 @@ using System;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone;
+using ActionMailerNext.Standalone.Helpers;
+
 using FakeItEasy;
 using NUnit.Framework;
-using RazorEngine.Templating;
 
 namespace ActionMailerNext.Tests.Standalone
 {
@@ -43,11 +44,11 @@ namespace ActionMailerNext.Tests.Standalone
             var mockTemplateService = A.Fake<ITemplateService>();
 
             Assert.Throws<ArgumentNullException>(
-                () =>
+                (TestDelegate)(() =>
                 {
-                    new RazorEmailResult(null, "View", null, "_Layout", "Path", mockTemplateService,
+                    new HBSEmailResult(null, "View", null, "_Layout", "Path", mockTemplateService,
                         null);
-                });
+                }));
         }
 
         [Test]
@@ -58,11 +59,11 @@ namespace ActionMailerNext.Tests.Standalone
             var mockTemplateService = A.Fake<ITemplateService>();
 
             Assert.Throws<ArgumentNullException>(
-                () =>
+                (TestDelegate)(() =>
                 {
-                    new RazorEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
+                    new HBSEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
-                });
+                }));
         }
 
         [Test]
@@ -75,7 +76,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new RazorEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
+                    new HBSEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
                         null, null);
                 });
         }

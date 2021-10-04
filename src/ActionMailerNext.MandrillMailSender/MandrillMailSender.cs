@@ -11,6 +11,9 @@ using ActionMailerNext.Interfaces;
 
 namespace ActionMailerNext.MandrillMailSender
 {
+    using Mandrill.Models;
+    using Mandrill.Requests.Messages;
+
     using System.Globalization;
     using System.Text;
 
@@ -43,32 +46,32 @@ namespace ActionMailerNext.MandrillMailSender
                     t =>
                     {
                         var domainSplit = t.Address.Split('@');
-                        return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "to" };
+                        return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { Type = "to" };
                     })
                 .Union(
                     mail.Cc.Select(
                         t =>
                         {
                             var domainSplit = t.Address.Split('@');
-                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "cc" };
+                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { Type = "cc" };
                         }))
                 .Union(
                     mail.Bcc.Select(
                         t =>
                         {
                             var domainSplit = t.Address.Split('@');
-                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { type = "bcc" };
+                            return new EmailAddress(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1])) { Type = "bcc" };
                         }));       
 
             //create base message
             var message = new EmailMessage
             {
-                from_name = mail.From.DisplayName,
-                from_email = mail.From.Address,
-                to = emailAddresses,
-                subject = mail.Subject,
-                important = mail.Priority == MailPriority.High,
-                preserve_recipients = true
+                FromName = mail.From.DisplayName,
+                FromEmail = mail.From.Address,
+                To = emailAddresses,
+                Subject = mail.Subject,
+                Important = mail.Priority == MailPriority.High,
+                PreserveRecipients = true
             };
 
             // We need to set Reply-To as a custom header
@@ -86,11 +89,11 @@ namespace ActionMailerNext.MandrillMailSender
 
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Plain)
                     {
-                        message.text = body;
+                        message.Text = body;
                     }
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                     {
-                        message.html = body;
+                        message.Html = body;
                     }      
             }
 
@@ -98,23 +101,23 @@ namespace ActionMailerNext.MandrillMailSender
             mail.Headers.ToList().ForEach(h => message.AddHeader(h.Key, h.Value));
 
             // Adding the attachments
-            var attachments = new List<email_attachment>();
+            var attachments = new List<EmailAttachment>();
             foreach (var mailAttachment in mail.Attachments.Select(attachment => Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
             {
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);
                     var base64Data = Convert.ToBase64String(stream.ToArray());
-                    attachments.Add(new email_attachment
+                    attachments.Add(new EmailAttachment
                     {
-                        content = base64Data,
-                        name = ReplaceGermanCharacters(mailAttachment.Name),
-                        type = mailAttachment.ContentType.MediaType,
+                        Content = base64Data,
+                        Name = ReplaceGermanCharacters(mailAttachment.Name),
+                        Type = mailAttachment.ContentType.MediaType,
                     });
                 }
             }
 
-            message.attachments = attachments;
+            message.Attachments = attachments;
 
             return message;
         }
@@ -130,7 +133,7 @@ namespace ActionMailerNext.MandrillMailSender
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            var resp = this.client.SendMessage(mail);
+            var resp = this.client.SendMessage(new SendMessageRequest(mail)).Result;
             response.AddRange(resp.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
@@ -160,7 +163,7 @@ namespace ActionMailerNext.MandrillMailSender
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            await this.client.SendMessageAsync(mail).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
+            await this.client.SendMessage(new SendMessageRequest(mail)).ContinueWith(x => response.AddRange(x.Result.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
                 Status = MandrillMailResponse.GetProspectiveStatus(result.Status.ToString()),
