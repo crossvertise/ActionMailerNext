@@ -1,5 +1,7 @@
 ﻿using HandlebarsDotNet;
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -12,16 +14,16 @@ namespace ActionMailerNext.Standalone.Helpers
     {
         protected readonly IHandlebars _hbsService;
         private readonly ITemplateResolver _templateResolver;
-        private readonly string _resourcesDefaultNamespace;
+        private readonly string _resourcesDefaultNamespace = "Xv.Infrastructure.Standard.Resources";
+        private string _resourcesNamespace;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="templateResolver"></param>
         /// <param name="viewSettings"></param>
-        public TemplateService(ITemplateResolver templateResolver, ViewSettings viewSettings, string resourcesDefaultNamespace)
+        public TemplateService(ITemplateResolver templateResolver, ViewSettings viewSettings)
         {
-            _resourcesDefaultNamespace = resourcesDefaultNamespace;
             _templateResolver = templateResolver;
             _hbsService = Handlebars.Create();
             RegisterHelpers(viewSettings);
@@ -33,15 +35,26 @@ namespace ActionMailerNext.Standalone.Helpers
                 }
                 catch (System.Exception ex)
                 {
-
                     throw new System.Exception($"Error at template key = {template.Key}", ex);
                 }
             });
         }
 
+        public string ResourcesNamespace
+        {
+            get
+            {
+                return string.IsNullOrEmpty(_resourcesNamespace) ? _resourcesDefaultNamespace : _resourcesNamespace;
+            }
+            set
+            {
+                _resourcesNamespace = value;
+            }
+        }
+
         public virtual void RegisterHelpers(ViewSettings viewSettings)
         {
-            var helpers = new HandlebarsHelpers(_hbsService, viewSettings, _resourcesDefaultNamespace);
+            var helpers = new HandlebarsHelpers(_hbsService, viewSettings, ResourcesNamespace);
 
             var methods = helpers.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance)
                 .Where(m => m.Name.StartsWith("Register"));

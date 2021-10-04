@@ -416,7 +416,14 @@ namespace ActionMailerNext.Standalone.Helpers
 
                 var dateStr = arguments.At<string>(0);
                 var format = arguments.At<string>(1);
-                if (!DateTime.TryParse(arguments[0].ToString(), out var date))
+
+                if (string.IsNullOrEmpty(dateStr))
+                {
+                    output.Write(string.Empty);
+                    return;
+                }
+
+                if (!DateTime.TryParse(dateStr, out var date))
                 {
                     if (string.Equals(dateStr, "now", StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -441,10 +448,10 @@ namespace ActionMailerNext.Standalone.Helpers
                         break;
                     case 3:
                         {
-                            var utcDate = DateTime.SpecifyKind((DateTime)date, DateTimeKind.Unspecified);
+                            var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Unspecified);
                             try
                             {
-                                var timeZone = TimeZoneInfo.FindSystemTimeZoneById(arguments.At<string>(2));
+                                var timeZone = arguments[2] is TimeZoneInfo info ? info : TimeZoneInfo.FindSystemTimeZoneById(arguments.At<string>(2));
                                 output.WriteSafeString(TimeZoneInfo.ConvertTimeFromUtc(utcDate, timeZone).ToString(format));
                             }
                             catch (Exception ex)
@@ -498,6 +505,30 @@ namespace ActionMailerNext.Standalone.Helpers
                 if (double.TryParse(arguments[0].ToString(), out var number1) && double.TryParse(arguments[1].ToString(), out var number2))
                 {
                     return number1 * number2;
+                }
+
+                throw new HandlebarsException("Couldn't parse arguments to numbers");
+            });
+        }
+
+        /// <summary>
+        /// {{add number1 number2}}
+        /// </summary>
+        /// <return>
+        /// Number
+        /// </return>
+        public void RegisterAdd_Helper()
+        {
+            _hbsService.RegisterHelper("add", (context, arguments) =>
+            {
+                if (arguments.Length != 2)
+                {
+                    throw new HandlebarsException("{{add}} helper must have 2 arguments");
+                }
+
+                if (double.TryParse(arguments[0].ToString(), out var number1) && double.TryParse(arguments[1].ToString(), out var number2))
+                {
+                    return number1 + number2;
                 }
 
                 throw new HandlebarsException("Couldn't parse arguments to numbers");
@@ -588,10 +619,20 @@ namespace ActionMailerNext.Standalone.Helpers
                     throw new HandlebarsException("{{greater}} helper must have 2 arguments");
                 }
 
-                var arg1 = arguments.At<double>(0);
-                var arg2 = arguments.At<double>(1);
+                var arg1 = arguments[0].ToString();
+                var arg2 = arguments[1].ToString();
 
-                return arg1 > arg2;
+                if (double.TryParse(arg1, out var dbl1) && double.TryParse(arg2, out var dbl2))
+                {
+                    return dbl1 > dbl2;
+                }
+
+                if (DateTime.TryParse(arg1, out var dt1) && DateTime.TryParse(arg2, out var dt2))
+                {
+                    return dt1 > dt2;
+                }
+
+                return false;
             });
         }
 
@@ -624,6 +665,54 @@ namespace ActionMailerNext.Standalone.Helpers
             });
         }
 
+        public void RegisterEnumHasFlag_Helper()
+        {
+            _hbsService.RegisterHelper("enumHasFlag", (context, arguments) =>
+            {
+                if (arguments.Length != 3)
+                {
+                    throw new HandlebarsException("{{enumHasFlag}} helper must have 2 arguments");
+                }
+
+                var enumTypeName = arguments[0].ToString();
+                var enumType = GetEnumType(enumTypeName);
+
+
+                int? searchFlag = null;
+                if (arguments[2]?.GetType().FullName == enumTypeName)
+                {
+                    searchFlag = (int)arguments[2];
+                }
+                else if (int.TryParse(arguments[2].ToString(), out var searchEnumValue))
+                {
+                    searchFlag = searchEnumValue;
+                }
+                else
+                {
+                    foreach (var val in Enum.GetValues(enumType))
+                    {
+                        if (string.Equals(Enum.GetName(enumType, val), arguments[2].ToString(), StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            searchFlag = (int)val;
+                            break;
+                        }
+                    }
+                }
+
+                if (searchFlag == null)
+                {
+                    return false;
+                }
+
+                if (!int.TryParse(arguments[1].ToString(), out var enumValue))
+                {
+                    return false;
+                }
+
+                return (enumValue & searchFlag) == searchFlag;
+            });
+        }
+
         /// <summary>
         /// {{enum 'Namespace.Enum' EnumValue}}
         /// </summary>
@@ -640,14 +729,13 @@ namespace ActionMailerNext.Standalone.Helpers
                 }
 
                 var enumTypeName = arguments[0].ToString();
-                if (!int.TryParse(arguments[1].ToString(), out var enumValue))
-                {
-                    return arguments[1].ToString();
-                }
-
                 var enumType = GetEnumType(enumTypeName);
+                string enumMemberName = arguments[1].ToString();
 
-                var enumMemberName = Enum.GetName(enumType, enumValue);
+                if(int.TryParse(arguments[1].ToString(), out var enumValue))
+                {
+                    enumMemberName = Enum.GetName(enumType, enumValue);
+                }
 
                 var enumMember = enumType.GetField(enumMemberName);
 
@@ -749,6 +837,9 @@ namespace ActionMailerNext.Standalone.Helpers
 
                 var list = arguments.At<string>(0);
                 var splitStr = arguments.At<string>(1);
+
+                splitStr = splitStr.Replace("\\n", "\n");
+                splitStr = splitStr.Replace("\\r", "\r");
 
                 return list.Split(new string[] { splitStr }, StringSplitOptions.None).Select(s => s.Trim());
             });
@@ -1050,6 +1141,28 @@ namespace ActionMailerNext.Standalone.Helpers
             });
         }
 
+        /// <summary>
+        /// {{count List}}
+        /// </summary>
+        /// <return>
+        /// Writes the count of a list items
+        /// </return>
+        public void RegisterCount_Helper()
+        {
+            _hbsService.RegisterHelper("count", (output, context, arguments) =>
+            {
+                if (arguments.Length != 1)
+                {
+                    throw new HandlebarsException("{{count}} helper must have 1 argument");
+                }
+
+                if (arguments[0] is IList list)
+                {
+                    output.WriteSafeString(list.Count);
+                }
+            });
+        }
+
         private bool IsTrue(object obj)
         {
             if (obj == null)
@@ -1217,7 +1330,7 @@ namespace ActionMailerNext.Standalone.Helpers
                 return null;
             }
 
-            return dictionary.Select(d => new { d.Key, Value = d.Value.ToString() })
+            return dictionary.Select(d => new { d.Key, Value = d.Value?.ToString() })
                 .ToDictionary(d => d.Key, d => d.Value);
         }
     }
