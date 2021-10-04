@@ -46,7 +46,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 (TestDelegate)(() =>
                 {
-                    new HbsEmailResult(null, "View", null, "_Layout", "Path", mockTemplateService,
+                    new HBSEmailResult(null, "View", null, "_Layout", "Path", mockTemplateService,
                         null);
                 }));
         }
@@ -61,7 +61,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 (TestDelegate)(() =>
                 {
-                    new HbsEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
+                    new HBSEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
                 }));
         }
@@ -76,7 +76,7 @@ namespace ActionMailerNext.Tests.Standalone
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    new HbsEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
+                    new HBSEmailResult(new MailAttributes(), "View", null, "_Layout", "Path",
                         null, null);
                 });
         }

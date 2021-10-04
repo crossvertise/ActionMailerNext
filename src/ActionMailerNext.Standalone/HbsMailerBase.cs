@@ -12,7 +12,7 @@ namespace ActionMailerNext.Standalone
     /// <summary>
     ///     This is a standalone MailerBase that relies on Handlebars to generate emails.
     /// </summary>
-    public abstract class HbsMailerBase : IMailInterceptor
+    public abstract class HBSMailerBase : IMailInterceptor
     {
         private ITemplateService _templateService;
 
@@ -31,7 +31,7 @@ namespace ActionMailerNext.Standalone
         /// <param name="mailAttributes"></param>
         /// <param name="mailSender"></param>
         /// <param name="templateResolver"></param>
-        protected HbsMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null)
+        protected HBSMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null)
         {
             MailAttributes = mailAttributes ?? new MailAttributes();
             MailSender = mailSender ?? new SmtpMailSender();
@@ -135,7 +135,7 @@ namespace ActionMailerNext.Standalone
         /// <param name="trimBody">Whether or not we should trim whitespace from the beginning and end of the message body.</param>
         /// <param name="externalViewPath">a View path that overrides the one set by the property</param>
         /// <returns>An EmailResult that you can Deliver();</returns>
-        public virtual HbsEmailResult Email(string viewName, object model = null, string masterName = null, bool trimBody = true, string externalViewPath = null)
+        public virtual HBSEmailResult Email(string viewName, object model = null, string masterName = null, bool trimBody = true, string externalViewPath = null)
         {
             if (viewName == null)
             {
@@ -147,7 +147,7 @@ namespace ActionMailerNext.Standalone
                 ViewBag.ViewSettings = ViewSettings;
             }
                 
-            var result = new HbsEmailResult(MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
+            var result = new HBSEmailResult(MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
                 externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
             result.Compile(model, trimBody);

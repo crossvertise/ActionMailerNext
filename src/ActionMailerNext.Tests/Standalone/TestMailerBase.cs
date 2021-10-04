@@ -31,7 +31,7 @@ using ActionMailerNext.Standalone.Helpers;
 
 namespace ActionMailerNext.Tests.Standalone
 {
-    public class TestMailerBase : HbsMailerBase
+    public class TestMailerBase : HBSMailerBase
     {
         public TestMailerBase(MailAttributes attributes = null, IMailSender sender = null)
             : base(attributes, sender)

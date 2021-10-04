@@ -11,7 +11,7 @@ namespace ActionMailerNext.Standalone
     /// <summary>
     ///     An container for MailMessage with the appropriate body rendered by Razor.
     /// </summary>
-    public class HbsEmailResult : IEmailResult
+    public class HBSEmailResult : IEmailResult
     {
         private MailAttributes _mailAttributes;
         private readonly Encoding _messageEncoding;
@@ -35,7 +35,7 @@ namespace ActionMailerNext.Standalone
         /// <param name="templateService">The template service defining a ITemplateResolver and a TemplateBase</param>
         /// <param name="viewBag">The viewBag is a dynamic object that can transfer data to the view</param>
         /// <param name="messageEncoding"></param>
-        public HbsEmailResult(MailAttributes mailAttributes, string viewName,
+        public HBSEmailResult(MailAttributes mailAttributes, string viewName,
             Encoding messageEncoding, string masterName,
             string viewPath, ITemplateService templateService, dynamic viewBag)
         {
