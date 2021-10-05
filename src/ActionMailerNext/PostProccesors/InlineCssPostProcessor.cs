@@ -15,6 +15,10 @@
 
             foreach (var view in mailAttributes.AlternateViews)
             {
+                if (!view.ContentStream.CanRead)
+                {
+                    continue;
+                }
                 using (var reader = new StreamReader(view.ContentStream))
                 {
                     var body = reader.ReadToEnd();

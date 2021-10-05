@@ -70,7 +70,7 @@ namespace ActionMailerNext.Standalone.Helpers
         /// <param name="viewName"></param>
         /// <param name="layout"></param>
         /// <returns></returns>
-        public HandlebarsTemplate<object, object> Compile(string viewName, string layout = null)
+        public HandlebarsTemplate<object, object> Compile(string viewName, string layout = null, string externalViewPath = null)
         {
             if (!string.IsNullOrEmpty(layout))
             {
@@ -79,11 +79,11 @@ namespace ActionMailerNext.Standalone.Helpers
 
             try
             {
-                return _hbsService.Compile(_templateResolver.Resolve(viewName));
+                return _hbsService.Compile(_templateResolver.Resolve(viewName, externalViewPath));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                throw new System.Exception($"Error at template = {viewName}", ex);
+                throw new Exception($"Error at template = {viewName}", ex);
             }
         }
 
@@ -91,14 +91,14 @@ namespace ActionMailerNext.Standalone.Helpers
         /// 
         /// </summary>
         /// <param name="viewName"></param>
-        public void AddTemplate(string viewName, string key = null)
+        public void AddTemplate(string viewName, string key = null, string externalViewPath = null)
         {
             if (string.IsNullOrEmpty(viewName))
             {
                 return;
             }
 
-            _hbsService.RegisterTemplate(string.IsNullOrEmpty(key) ? viewName : key, _templateResolver.Resolve(viewName));
+            _hbsService.RegisterTemplate(string.IsNullOrEmpty(key) ? viewName : key, _templateResolver.Resolve(viewName, externalViewPath));
         }
     }
 }

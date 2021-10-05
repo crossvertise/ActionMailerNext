@@ -81,7 +81,7 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         ///     Compiles the email body using the specified Razor view and model.
         /// </summary>
-        public void Compile<T>(T model, bool trimBody)
+        public void Compile<T>(T model, bool trimBody, string externalViewPath = null)
         {
             string body = string.Empty;
             AlternateView altView;
@@ -89,7 +89,7 @@ namespace ActionMailerNext.Standalone
             var hasTxtView = false;
             try
             {
-                var itemplate = _templateService.Compile(_viewName, _masterName);
+                var itemplate = _templateService.Compile(_viewName, _masterName, externalViewPath);
 
                 body = itemplate.Run(model, _viewBag);
             }

@@ -150,7 +150,7 @@ namespace ActionMailerNext.Standalone
             var result = new HBSEmailResult(MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
                 externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
-            result.Compile(model, trimBody);
+            result.Compile(model, trimBody, externalViewPath);
 
             foreach (var postprocessor in MailAttributes.PostProcessors)
             {

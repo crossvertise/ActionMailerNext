@@ -26,7 +26,7 @@ namespace ActionMailerNext.Standalone.Helpers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string Resolve(string name)
+        public string Resolve(string name, string externalViewPath = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return null;
@@ -38,9 +38,11 @@ namespace ActionMailerNext.Standalone.Helpers
 
             var appRoot = AppDomain.CurrentDomain.BaseDirectory;
 
+            var viewPath = string.IsNullOrEmpty(externalViewPath) ? _viewPath : externalViewPath;
+
             var csViewPath = (csViewName).StartsWith("~")
                 ? Path.GetFullPath(Path.Combine(appRoot, csViewName.Substring(2)))
-                : Path.GetFullPath(Path.Combine(appRoot, _viewPath, csViewName));
+                : Path.GetFullPath(Path.Combine(appRoot, viewPath, csViewName));
 
             //Works with forward and backward slashes in the path
             if (File.Exists(csViewPath))
