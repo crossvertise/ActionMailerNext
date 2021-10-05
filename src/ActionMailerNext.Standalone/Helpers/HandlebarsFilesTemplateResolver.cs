@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace ActionMailerNext.Standalone.Helpers
 {
@@ -47,7 +48,7 @@ namespace ActionMailerNext.Standalone.Helpers
             //Works with forward and backward slashes in the path
             if (File.Exists(csViewPath))
             {
-                return File.ReadAllText(csViewPath);
+                return File.ReadAllText(csViewPath, Encoding.UTF8);
             }
             throw new TemplateResolvingException { SearchPaths = new List<string> { csViewPath } };
         }
@@ -76,7 +77,7 @@ namespace ActionMailerNext.Standalone.Helpers
                                 Key = path.Replace(templatesDir + "\\", "").Replace(".hbs", ""),
                                 IsPartial = nameParts[0].StartsWith("_"),
                                 Label = nameParts.Length > 1 ? nameParts[1] : null,
-                                Value = File.ReadAllText(path)
+                                Value = File.ReadAllText(path, Encoding.UTF8)
                             };
             return templates.ToList();
         }
