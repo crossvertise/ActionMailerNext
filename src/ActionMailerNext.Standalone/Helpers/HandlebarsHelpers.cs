@@ -1134,10 +1134,15 @@ namespace ActionMailerNext.Standalone.Helpers
                     throw new HandlebarsException("{{orderBy}} helper must have at least 2 arguments");
                 }
 
-                var list = arguments.At<List<object>>(0).AsQueryable();
-                var properties = arguments.Skip(1).Cast<(string, bool)>().ToArray();
+                var list = arguments.At<IList>(0).AsQueryable();
+                var properties = arguments.Skip(1).Cast<Tuple<object, object>>().ToArray();
 
-                return GetOrderedList(list.AsQueryable(), properties);
+                if (!properties.All(p => p.Item1 is string && p.Item2 is bool))
+                {
+                    throw new ArgumentException("{{orderBy}} arguments are invalid", string.Join(" - ", properties.Select(p => p.Item1 + "=" + p.Item2)));
+                }
+
+                return GetOrderedList(list, properties.Select(p => (p.Item1.ToString(), (bool)p.Item2)).ToArray());
             });
         }
 
@@ -1193,7 +1198,7 @@ namespace ActionMailerNext.Standalone.Helpers
             return true;
         }
 
-        public List<object> GetOrderedList(IQueryable<object> query, (string propertyName, bool isAscending)[] properties)
+        public List<object> GetOrderedList(IQueryable query, (string propertyName, bool isAscending)[] properties)
         {
             IQueryable<object> result = null;
 
@@ -1205,7 +1210,7 @@ namespace ActionMailerNext.Standalone.Helpers
                 var propertyDirection = properties[i].isAscending;
 
                 string methodName = propertyDirection ? "OrderBy" : "OrderByDescending";
-                IQueryable<object> queryToOrder = query;
+                IQueryable queryToOrder = query;
 
                 if (i > 0)
                 {
