@@ -16,6 +16,7 @@ namespace ActionMailerNext.MandrillMailSender
 
     using System.Globalization;
     using System.Text;
+using System.Threading;
 
     public class MandrillMailSender : IMailSender
     {
@@ -133,7 +134,19 @@ namespace ActionMailerNext.MandrillMailSender
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
 
-            var resp = this.client.SendMessage(new SendMessageRequest(mail)).Result;
+
+            List<EmailResult> resp = null;
+
+            var completeEvent = new ManualResetEvent(false);
+
+            ThreadPool.QueueUserWorkItem((obj) =>
+            {
+                resp = client.SendMessage(new SendMessageRequest(mail)).Result;
+                completeEvent.Set();
+            });
+
+            completeEvent.WaitOne();
+
             response.AddRange(resp.Select(result => new MandrillMailResponse
             {
                 Email = result.Email,
