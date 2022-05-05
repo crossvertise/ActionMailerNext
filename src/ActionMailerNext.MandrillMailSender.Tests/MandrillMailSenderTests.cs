@@ -16,10 +16,10 @@
             sender.Send(
                 new MailAttributes()
                     {
-                        To = new List<MailAddress>() { new MailAddress("test@test.com") },
+                        To = new List<MailAddress>() { new MailAddress("test@crossvertise.com") },
                         Subject = "test",
                         Body = "test body",
-                        From = new MailAddress("your email", "name")
+                        From = new MailAddress("noreply@crossvertise.com", "name")
                     });
         }
     }

@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ActionMailerNext.Standalone.Helpers
+﻿namespace ActionMailerNext.Standalone.Models
 {
     public class MailTemplate
     {
-        public MailTemplate()
-        {
-        }
-
         public MailTemplate(string key, string value, string label, bool isPartial)
         {
             Key = key;

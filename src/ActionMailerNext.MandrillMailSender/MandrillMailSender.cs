@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Net.Mail;
 using System.Configuration;
@@ -9,15 +12,11 @@ using System.Net.Mime;
 using Mandrill;
 using ActionMailerNext.Interfaces;
 
+using Mandrill.Models;
+using Mandrill.Requests.Messages;
+
 namespace ActionMailerNext.MandrillMailSender
 {
-    using Mandrill.Models;
-    using Mandrill.Requests.Messages;
-
-    using System.Globalization;
-    using System.Text;
-using System.Threading;
-
     public class MandrillMailSender : IMailSender
     {
         private readonly IMailInterceptor interceptor;
@@ -133,7 +132,6 @@ using System.Threading;
         {
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var response = new List<IMailResponse>();
-
 
             List<EmailResult> resp = null;
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using ActionMailerNext.Standalone.Models;
 
-namespace ActionMailerNext.Standalone.Helpers
+namespace ActionMailerNext.Standalone.Interfaces
 {
     public interface ITemplateResolver
     {

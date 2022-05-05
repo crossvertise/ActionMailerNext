@@ -4,17 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using ActionMailerNext.Standalone.Interfaces;
+using ActionMailerNext.Standalone.Models;
+
 namespace ActionMailerNext.Standalone.Helpers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class HandlebarsFilesTemplateResolver : ITemplateResolver
     {
         private readonly string _viewPath;
 
         /// <summary>
-        ///     Creates a template resolver using the specified path.  If no path is given, this defaults to "Views"
+        /// Creates a template resolver using the specified path.  If no path is given, this defaults to "Views"
         /// </summary>
         /// <param name="viewPath">The path containing your views</param>
         public HandlebarsFilesTemplateResolver(string viewPath)
@@ -22,11 +22,6 @@ namespace ActionMailerNext.Standalone.Helpers
             _viewPath = viewPath;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
         public string Resolve(string name, string externalViewPath = null)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -45,7 +40,7 @@ namespace ActionMailerNext.Standalone.Helpers
                 ? Path.GetFullPath(Path.Combine(appRoot, csViewName.Substring(2)))
                 : Path.GetFullPath(Path.Combine(appRoot, viewPath, csViewName));
 
-            //Works with forward and backward slashes in the path
+            // Works with forward and backward slashes in the path
             if (File.Exists(csViewPath))
             {
                 return File.ReadAllText(csViewPath, Encoding.UTF8);
@@ -72,13 +67,12 @@ namespace ActionMailerNext.Standalone.Helpers
             var templates = from path in filesPaths
                             let name = Path.GetFileNameWithoutExtension(path)
                             let nameParts = name.Split('-')
-                            select new MailTemplate()
-                            {
-                                Key = path.Replace(templatesDir + "\\", "").Replace(".hbs", ""),
-                                IsPartial = nameParts[0].StartsWith("_"),
-                                Label = nameParts.Length > 1 ? nameParts[1] : null,
-                                Value = File.ReadAllText(path, Encoding.UTF8)
-                            };
+                            select new MailTemplate(
+                                key: path.Replace(templatesDir + "\\", "").Replace(".hbs", ""),
+                                value: File.ReadAllText(path, Encoding.UTF8),
+                                label: nameParts.Length > 1 ? nameParts[1] : null,
+                                isPartial: nameParts[0].StartsWith("_")
+                            );
             return templates.ToList();
         }
     }
