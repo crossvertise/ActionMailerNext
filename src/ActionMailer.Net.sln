@@ -22,7 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.MandrillMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.Tests", "ActionMailerNext.Tests\ActionMailerNext.Tests.csproj", "{7C48B5B5-0A73-4F66-AE94-32E04B369EF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionMailerNext.SendInBlue", "ActionMailerNext.SendInBlue\ActionMailerNext.SendInBlue.csproj", "{4FE327C2-9B01-4A86-B537-649AED462E43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.SendInBlue", "ActionMailerNext.SendInBlue\ActionMailerNext.SendInBlue.csproj", "{4FE327C2-9B01-4A86-B537-649AED462E43}"
+EndProject
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

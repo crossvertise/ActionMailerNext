@@ -1,12 +1,11 @@
-﻿using System;
+﻿using ActionMailerNext.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Net.Mail;
-using System.IO;
-using System.Net.Mime;
 using System.Configuration;
-using ActionMailerNext.Interfaces;
+using System.IO;
+using System.Linq;
+using System.Net.Mime;
+using System.Threading.Tasks;
 
 namespace ActionMailerNext.MandrillMailSender
 {
@@ -19,8 +18,8 @@ namespace ActionMailerNext.MandrillMailSender
 
     public class SendInBlueMailSender : IMailSender
     {
-        private readonly IMailInterceptor interceptor;
-        private readonly TransactionalEmailsApi client;
+        private readonly IMailInterceptor _interceptor;
+        private readonly TransactionalEmailsApi _client;
 
         public SendInBlueMailSender() : this(ConfigurationManager.AppSettings["SendInBlueApiKey"], null) { }
 
@@ -30,49 +29,47 @@ namespace ActionMailerNext.MandrillMailSender
                 throw new ArgumentNullException("apiKey",
                     "The AppSetting 'SendInBlueApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
-            this.interceptor = interceptor;
-            Configuration.Default.ApiKey.Add("api-key", apiKey);
-            this.client = new TransactionalEmailsApi();
+            _interceptor = interceptor;
+            if (!Configuration.Default.ApiKey.ContainsKey("api-key"))
+            {
+                Configuration.Default.ApiKey.Add("api-key", apiKey);
+            }
+            _client = new TransactionalEmailsApi();
         }
 
         /// <summary>
         ///     Creates a MailMessage for the current MailAttribute instance.
         /// </summary>
-        protected SendSmtpEmail GenerateProspectiveMailMessage(MailAttributes mail)
+        public SendSmtpEmail GenerateProspectiveMailMessage(MailAttributes mail)
         {
             var idnmapping = new IdnMapping();
 
-            var emailAddresses = mail.To
-                .Select(
-                    t =>
-                    {
-                        var domainSplit = t.Address.Split('@');
-                        return new SendSmtpEmailTo(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                    })
-                .Union(
-                    mail.Cc.Select(
-                        t =>
-                        {
-                            var domainSplit = t.Address.Split('@');
-                            return new SendSmtpEmailTo(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                        }))
-                .Union(
-                    mail.Bcc.Select(
-                        t =>
-                        {
-                            var domainSplit = t.Address.Split('@');
-                            return new SendSmtpEmailTo(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                        })).ToList();
-
-            var emailHeaders = new Dictionary<string, string>();
             //create base message
             var message = new SendSmtpEmail
             {
                 Sender = new SendSmtpEmailSender(mail.From.DisplayName, mail.From.Address),
-                To = emailAddresses,
+                To = mail.To.Select(
+                    t =>
+                    {
+                        var domainSplit = t.Address.Split('@');
+                        return new SendSmtpEmailTo(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
+                    }).ToList(),
+                Bcc = mail.Bcc.Select(
+                        t =>
+                        {
+                            var domainSplit = t.Address.Split('@');
+                            return new SendSmtpEmailBcc(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
+                        }).ToList(),
+                Cc = mail.Cc.Select(
+                        t =>
+                        {
+                            var domainSplit = t.Address.Split('@');
+                            return new SendSmtpEmailCc(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
+                        }).ToList(),
                 Subject = mail.Subject
             };
 
+            var emailHeaders = new Dictionary<string, string>();
             // We need to set Reply-To as a custom header
             if (mail.ReplyTo.Any())
             {
@@ -99,8 +96,8 @@ namespace ActionMailerNext.MandrillMailSender
             // Going through headers and adding them to the message
             mail.Headers.ToList().ForEach(h => emailHeaders.Add(h.Key, h.Value));
 
-            // Adding the attachments
             var attachments = new List<SendSmtpEmailAttachment>();
+            // Adding the attachments
             foreach (var mailAttachment in mail.Attachments.Select(attachment => Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
             {
                 using (var stream = new MemoryStream())
@@ -115,8 +112,14 @@ namespace ActionMailerNext.MandrillMailSender
                 }
             }
 
-            message.Attachment = attachments;
-            message.Headers = emailHeaders;
+            //Adding Tags
+            message.Tags = mail.Tags;
+
+            message.Attachment = attachments.Count == 0 ? null : attachments;
+            message.Headers = emailHeaders.Count == 0 ? null : emailHeaders;
+            message.Bcc = message.Bcc.Count == 0 ? null : message.Bcc;
+            message.Cc = message.Cc.Count == 0 ? null : message.Cc;
+
             return message;
         }
 
@@ -129,8 +132,27 @@ namespace ActionMailerNext.MandrillMailSender
 
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
         {
-           throw new NotImplementedException();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
+            var responses = new List<IMailResponse>();
+
+            var completeEvent = new ManualResetEvent(false);
+            ThreadPool.QueueUserWorkItem((obj) =>
+            {
+                _client.SendTransacEmail(mail);
+                completeEvent.Set();
+            });
+
+            completeEvent.WaitOne();
+            responses.Add(new SendInBlueMailResponse
+            {
+                Email = mailAttributes.From.Address,
+                DeliveryStatus = DeliveryStatus.QUEUED
+            });
+
+            return responses;
         }
+
+
 
         /// <summary>
         ///     Sends your message asynchronously.  This method does not block.  If you need to know
@@ -147,7 +169,18 @@ namespace ActionMailerNext.MandrillMailSender
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
         {
-            throw new NotImplementedException();
+            var mail = GenerateProspectiveMailMessage(mailAttributes);
+            var responses = new List<IMailResponse>();
+
+            await this._client.SendTransacEmailAsync(mail);
+
+            responses.Add(new SendInBlueMailResponse
+            {
+                Email = mailAttributes.From.Address,
+                DeliveryStatus = DeliveryStatus.QUEUED
+            });
+
+            return responses;
         }
 
         #endregion
@@ -156,7 +189,7 @@ namespace ActionMailerNext.MandrillMailSender
 
         private void AsyncSendCompleted(MailAttributes mail)
         {
-            this.interceptor.OnMailSent(mail);
+            this._interceptor.OnMailSent(mail);
         }
 
         private string ReplaceGermanCharacters(string s)

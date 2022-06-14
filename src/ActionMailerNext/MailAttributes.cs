@@ -29,21 +29,21 @@ namespace ActionMailerNext
             PostProcessors = new List<IPostProcessor>();
         }
 
-        public MailAttributes(MailAttributes mailAttributes, 
+        public MailAttributes(MailAttributes mailAttributes,
             bool copyTo = true, bool copyCc = true,
             bool copyBcc = true, bool copyReplyTo = true, bool referenceAttachments = true,
-            bool copyHeaders = true, bool copyExtraProperties = true, 
+            bool copyHeaders = true, bool copyExtraProperties = true,
             bool copyPostProcessors = true)
         {
 
             From = mailAttributes.From;
             Subject = mailAttributes.Subject;
             Priority = mailAttributes.Priority;
-            
+
             IsCcToSupported = mailAttributes.IsCcToSupported;
             IsBccSupported = mailAttributes.IsBccSupported;
             IsReplyToSupported = mailAttributes.IsReplyToSupported;
-            
+
             MessageEncoding = mailAttributes.MessageEncoding;
             Body = mailAttributes.Body;
             TextBody = mailAttributes.TextBody;
@@ -96,7 +96,7 @@ namespace ActionMailerNext
         /// <summary>
         ///     A collection of addresses that should be CC'ed.
         /// </summary>
-        public IList<MailAddress> Cc { get; set;}
+        public IList<MailAddress> Cc { get; set; }
 
         /// <summary>
         ///  Check if the current Sending method supports BCC
@@ -122,7 +122,7 @@ namespace ActionMailerNext
         ///     Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         public IDictionary<string, string> Headers { get; set; }
-        
+
         /// <summary>
         ///     The generated text body of the message
         /// </summary>
@@ -168,6 +168,11 @@ namespace ActionMailerNext
         /// <summary>
         ///     Any extra properties that needs to be added in case of custom mail sender
         /// </summary>
-        public IDictionary<String,String> ExtraProperties { get; set; }
+        public IDictionary<String, String> ExtraProperties { get; set; }
+
+        /// <summary>
+        /// Tag your emails to find them more easily
+        /// </summary>
+        public List<string> Tags { get; set; }
     }
 }
