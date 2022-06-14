@@ -1,20 +1,21 @@
-﻿using ActionMailerNext.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Net.Mime;
-using System.Threading.Tasks;
+﻿
 
 namespace ActionMailerNext.MandrillMailSender
 {
-    using sib_api_v3_sdk.Api;
-    using sib_api_v3_sdk.Client;
-    using sib_api_v3_sdk.Model;
-    using System.Globalization;
+    using System;
     using System.Text;
     using System.Threading;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Mime;
+    using System.Threading.Tasks;
+
+    using sib_api_v3_sdk.Api;
+    using sib_api_v3_sdk.Model;
+    using ActionMailerNext.Interfaces;
 
     public class SendInBlueMailSender : IMailSender
     {
@@ -44,7 +45,7 @@ namespace ActionMailerNext.MandrillMailSender
         {
             var idnmapping = new IdnMapping();
 
-            //create base message
+            // Create base message
             var message = new SendSmtpEmail
             {
                 Sender = new SendSmtpEmailSender(mail.From.DisplayName, mail.From.Address),
