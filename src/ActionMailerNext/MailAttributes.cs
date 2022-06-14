@@ -27,13 +27,14 @@ namespace ActionMailerNext
             AlternateViews = new List<AlternateView>();
             ExtraProperties = new Dictionary<string, string>();
             PostProcessors = new List<IPostProcessor>();
+            Tags = new List<string>();
         }
 
         public MailAttributes(MailAttributes mailAttributes,
             bool copyTo = true, bool copyCc = true,
             bool copyBcc = true, bool copyReplyTo = true, bool referenceAttachments = true,
             bool copyHeaders = true, bool copyExtraProperties = true,
-            bool copyPostProcessors = true)
+            bool copyPostProcessors = true, bool copyTags = true)
         {
 
             From = mailAttributes.From;
@@ -61,6 +62,7 @@ namespace ActionMailerNext
             Headers = copyHeaders ? mailAttributes.Headers.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
             ExtraProperties = copyExtraProperties ? mailAttributes.ExtraProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
             PostProcessors = copyPostProcessors ? mailAttributes.PostProcessors.Select(pp => pp).ToList() : new List<IPostProcessor>();
+            Tags = copyTags ? mailAttributes.Tags : null;
 
             AlternateViews = new List<AlternateView>();
 
