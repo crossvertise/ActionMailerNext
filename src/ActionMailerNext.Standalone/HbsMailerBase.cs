@@ -5,12 +5,15 @@ using System.Dynamic;
 using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone.Helpers;
+using ActionMailerNext.Standalone.Implementations;
+using ActionMailerNext.Standalone.Interfaces;
+using ActionMailerNext.Standalone.Models;
 
 namespace ActionMailerNext.Standalone
 {
 
     /// <summary>
-    ///     This is a standalone MailerBase that relies on Handlebars to generate emails.
+    /// This is a standalone MailerBase that relies on Handlebars to generate emails.
     /// </summary>
     public abstract class HBSMailerBase : IMailInterceptor
     {
@@ -20,18 +23,13 @@ namespace ActionMailerNext.Standalone
 
         private dynamic _viewbag; 
 
-        /// <summary>
-        /// 
-        /// </summary>
         public MailAttributes MailAttributes { get;  set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="mailAttributes"></param>
-        /// <param name="mailSender"></param>
-        /// <param name="templateResolver"></param>
-        protected HBSMailerBase(MailAttributes mailAttributes = null, IMailSender mailSender = null, ITemplateResolver templateResolver = null, ITemplateService templateService = null)
+        protected HBSMailerBase(
+            MailAttributes mailAttributes = null,
+            IMailSender mailSender = null,
+            ITemplateResolver templateResolver = null,
+            ITemplateService templateService = null)
         {
             MailAttributes = mailAttributes ?? new MailAttributes();
             MailSender = mailSender ?? new SmtpMailSender();
@@ -41,22 +39,22 @@ namespace ActionMailerNext.Standalone
         }
 
         /// <summary>
-        ///     The path to the folder containing your Razor views.
+        /// The path to the folder containing your Razor views.
         /// </summary>
         public abstract string GlobalViewPath { get; }
 
         /// <summary>
-        ///     The view settings needed to implement HTML/URL Helpers
+        /// The view settings needed to implement HTML/URL Helpers
         /// </summary>
         public abstract ViewSettings ViewSettings { get;}
 
         /// <summary>
-        ///     The underlying IMailSender to use for outgoing messages.
+        /// The underlying IMailSender to use for outgoing messages.
         /// </summary>
         public IMailSender MailSender { get; set; }
 
         /// <summary>
-        ///     A template resolver that is used to find the appropriate templates
+        /// A template resolver that is used to find the appropriate templates
         /// </summary>
         public ITemplateResolver TemplateResolver
         {
@@ -71,7 +69,7 @@ namespace ActionMailerNext.Standalone
         }
 
         /// <summary>
-        ///     Used to add needed variable
+        /// Used to add needed variable
         /// </summary>
         public dynamic ViewBag
         {
@@ -98,19 +96,18 @@ namespace ActionMailerNext.Standalone
         }
 
         /// <summary>
-        ///     This method is called before each mail is sent
+        /// This method is called before each mail is sent
         /// </summary>
         /// <param name="context">
-        ///     A simple context containing the mail
-        ///     and a boolean value that can be toggled to prevent this
-        ///     mail from being sent.
+        /// A simple context containing the mail and a boolean value
+        /// that can be toggled to prevent this mail from being sent.
         /// </param>
         void IMailInterceptor.OnMailSending(MailSendingContext context)
         {
         }
 
         /// <summary>
-        ///     This method is called after each mail is sent.
+        /// This method is called after each mail is sent.
         /// </summary>
         /// <param name="mail">The mail that was sent.</param>
         void IMailInterceptor.OnMailSent(MailAttributes mail)
@@ -119,15 +116,14 @@ namespace ActionMailerNext.Standalone
         }
 
         /// <summary>
-        ///     This method is called when onMailsent is fired.
+        /// This method is called when onMailsent is fired.
         /// </summary>
-        /// <param name="mail"></param>
         public void OnMailSent(MailAttributes mail)
         {
         }
 
         /// <summary>
-        ///     Constructs your mail message ready for delivery.
+        /// Constructs your mail message ready for delivery.
         /// </summary>
         /// <param name="viewName">The view to use when rendering the message body.</param>
         /// <param name="model">The model object used while rendering the message body.</param>

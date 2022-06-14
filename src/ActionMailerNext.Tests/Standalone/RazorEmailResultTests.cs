@@ -24,11 +24,9 @@
 #endregion
 
 using System;
-using ActionMailerNext.Implementations.SMTP;
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone;
-using ActionMailerNext.Standalone.Helpers;
-
+using ActionMailerNext.Standalone.Interfaces;
 using FakeItEasy;
 using NUnit.Framework;
 
@@ -59,11 +57,11 @@ namespace ActionMailerNext.Tests.Standalone
             var mockTemplateService = A.Fake<ITemplateService>();
 
             Assert.Throws<ArgumentNullException>(
-                (TestDelegate)(() =>
+                () =>
                 {
                     new HBSEmailResult(new MailAttributes(), null, null, "_Layout", "Path",
                         mockTemplateService, null);
-                }));
+                });
         }
 
         [Test]

@@ -14,11 +14,10 @@ using HandlebarsDotNet;
 using HandlebarsDotNet.Compiler;
 using HandlebarsDotNet.PathStructure;
 
+using ActionMailerNext.Standalone.Models;
+
 namespace ActionMailerNext.Standalone.Helpers
 {
-    /// <summary>
-    /// 
-    /// </summary>
     public class HandlebarsHelpers
     {
         private IHandlebars _hbsService;
@@ -27,11 +26,6 @@ namespace ActionMailerNext.Standalone.Helpers
 
         private Func<string, string, HandlebarsException> missingParameterException = (helperName, argumentName) => new HandlebarsException(string.Format("{{{{0}}}} helper is missing an argument", helperName), new ArgumentNullException(argumentName));
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hbsService"></param>
-        /// <param name="viewSettings"></param>
         public HandlebarsHelpers(IHandlebars hbsService, ViewSettings viewSettings, string resourcesDefaultNamespace)
         {
             _hbsService = hbsService;

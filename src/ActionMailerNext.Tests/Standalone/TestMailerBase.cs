@@ -27,7 +27,7 @@ using System.IO;
 
 using ActionMailerNext.Interfaces;
 using ActionMailerNext.Standalone;
-using ActionMailerNext.Standalone.Helpers;
+using ActionMailerNext.Standalone.Models;
 
 namespace ActionMailerNext.Tests.Standalone
 {
