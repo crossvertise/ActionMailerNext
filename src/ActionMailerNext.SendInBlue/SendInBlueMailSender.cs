@@ -120,6 +120,7 @@ namespace ActionMailerNext.MandrillMailSender
             message.Headers = emailHeaders.Count == 0 ? null : emailHeaders;
             message.Bcc = message.Bcc.Count == 0 ? null : message.Bcc;
             message.Cc = message.Cc.Count == 0 ? null : message.Cc;
+            message.Tags = message.Tags.Count == 0 ? null : message.Tags;
 
             return message;
         }
