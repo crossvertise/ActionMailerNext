@@ -31,9 +31,9 @@ namespace ActionMailerNext.MandrillMailSender
                     "The AppSetting 'SendInBlueApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
 
             _interceptor = interceptor;
-            if (!Configuration.Default.ApiKey.ContainsKey("api-key"))
+            if (!sib_api_v3_sdk.Client.Configuration.Default.ApiKey.ContainsKey("api-key"))
             {
-                Configuration.Default.ApiKey.Add("api-key", apiKey);
+                sib_api_v3_sdk.Client.Configuration.Default.ApiKey.Add("api-key", apiKey);
             }
             _client = new TransactionalEmailsApi();
         }
