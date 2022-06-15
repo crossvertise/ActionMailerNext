@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.Tests", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.SendInBlue", "ActionMailerNext.SendInBlue\ActionMailerNext.SendInBlue.csproj", "{4FE327C2-9B01-4A86-B537-649AED462E43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.SendInBlueMailSender.Tests", "ActionMailerNext.SendInBlueMailSender.Tests\ActionMailerNext.SendInBlueMailSender.Tests.csproj", "{79DFA887-92C8-493C-8D77-585A62FF6DE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActionMailerNext.SendInBlue.Tests", "ActionMailerNext.SendInBlueMailSender.Tests\ActionMailerNext.SendInBlue.Tests.csproj", "{79DFA887-92C8-493C-8D77-585A62FF6DE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

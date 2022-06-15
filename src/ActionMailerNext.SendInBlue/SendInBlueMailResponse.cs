@@ -1,6 +1,6 @@
 ﻿
 
-namespace ActionMailerNext.MandrillMailSender
+namespace ActionMailerNext.SendInBlue
 {
     using ActionMailerNext.Interfaces;
 

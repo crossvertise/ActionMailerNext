@@ -1,4 +1,4 @@
-﻿namespace ActionMailerNext.MandrillMailSender.Tests
+﻿namespace ActionMailerNext.SendInBlue.Tests
 {
     using NUnit.Framework;
     using System.Collections.Generic;
