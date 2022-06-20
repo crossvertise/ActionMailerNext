@@ -1,5 +1,7 @@
 ﻿namespace ActionMailerNext.SendInBlue.Tests
 {
+    using ActionMailerNext.Interfaces;
+    using Moq;
     using NUnit.Framework;
     using System.Collections.Generic;
     using System.Net.Mail;
@@ -49,6 +51,32 @@
             Assert.IsNull(result.Bcc);
             Assert.IsNull(result.Cc);
             Assert.IsNull(result.Headers);
+
+        }
+
+        [Test]
+        public void Deliver_GivenMailAttributesWithNullProps_ShouldThrowProperException()
+        {
+            //Arrange
+            var mailAttribute = new MailAttributes();
+            var mockEmailResult = new Mock<IEmailResult>();
+            mockEmailResult.SetupGet(a => a.MailAttributes).Returns(mailAttribute);
+
+            //Assert
+            Assert.Throws<SendInBlueException>(() => _sendInBlueMailSender.Deliver(mockEmailResult.Object));
+
+        }
+
+        [Test]
+        public void DeliverAsync_GivenMailAttributesWithNullProps_ShouldThrowProperException()
+        {
+            //Arrange
+            var mailAttribute = new MailAttributes();
+            var mockEmailResult = new Mock<IEmailResult>();
+            mockEmailResult.SetupGet(a => a.MailAttributes).Returns(mailAttribute);
+
+            //Assert
+            Assert.ThrowsAsync<SendInBlueException>(async () => await _sendInBlueMailSender.DeliverAsync(mockEmailResult.Object));
 
         }
     }
