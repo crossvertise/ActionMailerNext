@@ -126,10 +126,22 @@ namespace ActionMailerNext.SendInBlue
         }
 
         #region Send methods
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emailResult"></param>
+        /// <returns></returns>
+        /// <exception cref="SendInBlueException"></exception>
         public virtual List<IMailResponse> Deliver(IEmailResult emailResult)
         {
-            return this.Send(emailResult.MailAttributes);
+            try
+            {
+                return this.Send(emailResult.MailAttributes);
+            }
+            catch (Exception ex)
+            {
+                throw new SendInBlueException(ex.Message, ex.InnerException);
+            }
         }
 
         public virtual List<IMailResponse> Send(MailAttributes mailAttributes)
@@ -140,7 +152,7 @@ namespace ActionMailerNext.SendInBlue
             var completeEvent = new ManualResetEvent(false);
             ThreadPool.QueueUserWorkItem((obj) =>
             {
-                _client.SendTransacEmail(mail);
+                _client.SendTransacEmailAsync(mail);
                 completeEvent.Set();
             });
 
@@ -163,10 +175,17 @@ namespace ActionMailerNext.SendInBlue
         /// </summary>
         public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
         {
-            var deliverTask = this.SendAsync(emailResult.MailAttributes);
-            await deliverTask.ContinueWith(t => AsyncSendCompleted(emailResult.MailAttributes));
+            try
+            {
+                await SendAsync(emailResult.MailAttributes);
+                AsyncSendCompleted(emailResult.MailAttributes);
 
-            return emailResult.MailAttributes;
+                return emailResult.MailAttributes;
+            }
+            catch (Exception ex)
+            {
+                throw new SendInBlueException(ex.Message, ex.InnerException);
+            }
         }
 
         public virtual async Task<List<IMailResponse>> SendAsync(MailAttributes mailAttributes)
