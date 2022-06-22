@@ -4,7 +4,6 @@ namespace ActionMailerNext.SendInBlue
 {
     using System;
     using System.Text;
-    using System.Threading;
     using System.Collections.Generic;
     using System.Configuration;
     using System.Globalization;
@@ -149,14 +148,8 @@ namespace ActionMailerNext.SendInBlue
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var responses = new List<IMailResponse>();
 
-            var completeEvent = new ManualResetEvent(false);
-            ThreadPool.QueueUserWorkItem((obj) =>
-            {
-                _client.SendTransacEmailAsync(mail);
-                completeEvent.Set();
-            });
+            _client.SendTransacEmail(mail);
 
-            completeEvent.WaitOne();
             responses.Add(new SendInBlueMailResponse
             {
                 Email = mailAttributes.From.Address,
