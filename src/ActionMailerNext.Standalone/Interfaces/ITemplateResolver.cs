@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using ActionMailerNext.Standalone.Models;
-
-namespace ActionMailerNext.Standalone.Interfaces
+﻿namespace ActionMailerNext.Standalone.Interfaces
 {
+    using System.Collections.Generic;
+
+    using ActionMailerNext.Standalone.Models;
+
     public interface ITemplateResolver
     {
         string Resolve(string name, string externalViewPath = null);

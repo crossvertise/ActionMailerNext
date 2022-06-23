@@ -22,15 +22,14 @@
  */
 
 #endregion
-
-using System.IO;
-
-using ActionMailerNext.Interfaces;
-using ActionMailerNext.Standalone;
-using ActionMailerNext.Standalone.Models;
-
 namespace ActionMailerNext.Tests.Standalone
 {
+    using System.IO;
+
+    using ActionMailerNext.Interfaces;
+    using ActionMailerNext.Standalone;
+    using ActionMailerNext.Standalone.Models;
+
     public class TestMailerBase : HBSMailerBase
     {
         public TestMailerBase(MailAttributes attributes = null, IMailSender sender = null)
@@ -38,25 +37,13 @@ namespace ActionMailerNext.Tests.Standalone
         {
         }
 
-        public override string GlobalViewPath
-        {
-            get
-            {
-                return Path.Combine(Directory.GetCurrentDirectory(),"Standalone", "TestViews");
-            }
-        }
+        public override string GlobalViewPath => Path.Combine(Directory.GetCurrentDirectory(), "Standalone", "TestViews");
 
-        public override ViewSettings ViewSettings
+        public override ViewSettings ViewSettings => new ViewSettings
         {
-            get
-            {
-                return new ViewSettings
-                {
-                    Hostname = "test.com",
-                    Protocol = "http",
-                    UrlPattern = "{controller}/{action}/{id}"
-                };
-            }
-        }
+            Hostname = "test.com",
+            Protocol = "http",
+            UrlPattern = "{controller}/{action}/{id}"
+        };
     }
 }

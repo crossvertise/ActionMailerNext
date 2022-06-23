@@ -1,6 +1,4 @@
-﻿
-
-namespace ActionMailerNext.SendInBlue
+﻿namespace ActionMailerNext.SendInBlue
 {
     using System;
     using System.Text;
@@ -14,6 +12,7 @@ namespace ActionMailerNext.SendInBlue
 
     using sib_api_v3_sdk.Api;
     using sib_api_v3_sdk.Model;
+    using SibClient = sib_api_v3_sdk.Client;
     using ActionMailerNext.Interfaces;
 
     public class SendInBlueMailSender : IMailSender
@@ -26,57 +25,45 @@ namespace ActionMailerNext.SendInBlue
         public SendInBlueMailSender(string apiKey, IMailInterceptor interceptor)
         {
             if (string.IsNullOrWhiteSpace(apiKey))
-                throw new ArgumentNullException("apiKey",
+            {
+                throw new ArgumentNullException(nameof(apiKey),
                     "The AppSetting 'SendInBlueApiKey' is not defined. Either define this configuration section or use the constructor with apiKey parameter.");
+            }
 
             _interceptor = interceptor;
-            if (!sib_api_v3_sdk.Client.Configuration.Default.ApiKey.ContainsKey("api-key"))
+            if (!SibClient.Configuration.Default.ApiKey.ContainsKey("api-key"))
             {
-                sib_api_v3_sdk.Client.Configuration.Default.ApiKey.Add("api-key", apiKey);
+                SibClient.Configuration.Default.ApiKey.Add("api-key", apiKey);
             }
+
             _client = new TransactionalEmailsApi();
         }
 
-        /// <summary>
-        ///     Creates a MailMessage for the current MailAttribute instance.
-        /// </summary>
         public SendSmtpEmail GenerateProspectiveMailMessage(MailAttributes mail)
         {
             var idnmapping = new IdnMapping();
 
-            // Create base message
+            string parseEmail(string address)
+            {
+                var parts = address.Split('@');
+                return $"{parts[0]}@{idnmapping.GetAscii(parts[1])}";
+            }
+
             var message = new SendSmtpEmail
             {
                 Sender = new SendSmtpEmailSender(mail.From.DisplayName, mail.From.Address),
-                To = mail.To.Select(
-                    t =>
-                    {
-                        var domainSplit = t.Address.Split('@');
-                        return new SendSmtpEmailTo(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                    }).ToList(),
-                Bcc = mail.Bcc.Select(
-                        t =>
-                        {
-                            var domainSplit = t.Address.Split('@');
-                            return new SendSmtpEmailBcc(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                        }).ToList(),
-                Cc = mail.Cc.Select(
-                        t =>
-                        {
-                            var domainSplit = t.Address.Split('@');
-                            return new SendSmtpEmailCc(domainSplit[0] + "@" + idnmapping.GetAscii(domainSplit[1]));
-                        }).ToList(),
+                To = mail.To.Select(t => new SendSmtpEmailTo(parseEmail(t.Address))).ToList(),
+                Bcc = mail.Bcc.Select(t => new SendSmtpEmailBcc(parseEmail(t.Address))).ToList(),
+                Cc = mail.Cc.Select(t => new SendSmtpEmailCc(parseEmail(t.Address))).ToList(),
                 Subject = mail.Subject
             };
 
             var emailHeaders = new Dictionary<string, string>();
-            // We need to set Reply-To as a custom header
             if (mail.ReplyTo.Any())
             {
                 emailHeaders.Add("Reply-To", string.Join(" , ", mail.ReplyTo));
             }
 
-            // Adding content to the message
             foreach (var view in mail.AlternateViews)
             {
                 var reader = new StreamReader(view.ContentStream, Encoding.UTF8, true, 1024, true);
@@ -93,17 +80,18 @@ namespace ActionMailerNext.SendInBlue
                 }
             }
 
-            // Going through headers and adding them to the message
             mail.Headers.ToList().ForEach(h => emailHeaders.Add(h.Key, h.Value));
 
             var attachments = new List<SendSmtpEmailAttachment>();
-            // Adding the attachments
-            foreach (var mailAttachment in mail.Attachments.Select(attachment => Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
+
+            foreach (var mailAttachment in mail.Attachments.Select(attachment =>
+                Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
             {
                 using (var stream = new MemoryStream())
                 {
                     mailAttachment.ContentStream.CopyTo(stream);
                     var byteData = stream.ToArray();
+
                     attachments.Add(new SendSmtpEmailAttachment()
                     {
                         Content = byteData,
@@ -112,9 +100,7 @@ namespace ActionMailerNext.SendInBlue
                 }
             }
 
-            //Adding Tags
             message.Tags = mail.Tags;
-
             message.Attachment = attachments.Count == 0 ? null : attachments;
             message.Headers = emailHeaders.Count == 0 ? null : emailHeaders;
             message.Bcc = message.Bcc.Count == 0 ? null : message.Bcc;
@@ -124,18 +110,11 @@ namespace ActionMailerNext.SendInBlue
             return message;
         }
 
-        #region Send methods
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="emailResult"></param>
-        /// <returns></returns>
-        /// <exception cref="SendInBlueException"></exception>
         public virtual List<IMailResponse> Deliver(IEmailResult emailResult)
         {
             try
             {
-                return this.Send(emailResult.MailAttributes);
+                return Send(emailResult.MailAttributes);
             }
             catch (Exception ex)
             {
@@ -159,12 +138,10 @@ namespace ActionMailerNext.SendInBlue
             return responses;
         }
 
-
-
         /// <summary>
-        ///     Sends your message asynchronously.  This method does not block.  If you need to know
-        ///     when the message has been sent, then override the OnMailSent method in MailerBase which
-        ///     will not fire until the asyonchronous send operation is complete.
+        /// Sends your message asynchronously.  This method does not block.  If you need to know
+        /// when the message has been sent, then override the OnMailSent method in MailerBase which
+        /// will not fire until the asyonchronous send operation is complete.
         /// </summary>
         public async Task<MailAttributes> DeliverAsync(IEmailResult emailResult)
         {
@@ -186,7 +163,7 @@ namespace ActionMailerNext.SendInBlue
             var mail = GenerateProspectiveMailMessage(mailAttributes);
             var responses = new List<IMailResponse>();
 
-            await this._client.SendTransacEmailAsync(mail);
+            await _client.SendTransacEmailAsync(mail);
 
             responses.Add(new SendInBlueMailResponse
             {
@@ -197,13 +174,9 @@ namespace ActionMailerNext.SendInBlue
             return responses;
         }
 
-        #endregion
-
-        #region Private methods
-
         private void AsyncSendCompleted(MailAttributes mail)
         {
-            this._interceptor.OnMailSent(mail);
+            _interceptor.OnMailSent(mail);
         }
 
         private string ReplaceGermanCharacters(string s)
@@ -217,20 +190,14 @@ namespace ActionMailerNext.SendInBlue
                     .Replace("ß", "ss");
         }
 
-        #endregion
-
-        #region Dispose
-
         public void Dispose()
         {
-            this.Dispose(false);
+            Dispose(false);
             GC.SuppressFinalize(true);
         }
 
         protected virtual void Dispose(bool disposing)
         {
         }
-
-        #endregion
     }
 }

@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Text;
-
-using ActionMailerNext.Interfaces;
-
-using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
-
-namespace ActionMailerNext
+﻿namespace ActionMailerNext
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Net.Mail;
+    using System.Text;
+
+    using ActionMailerNext.Interfaces;
+
+    using AttachmentCollection = ActionMailerNext.Utils.AttachmentCollection;
+
     /// <summary>
-    ///     All mailers should implement this interface.
+    /// All mailers should implement this interface.
     /// </summary>
     public class MailAttributes
     {
-
         public MailAttributes()
         {
             To = new List<MailAddress>();
@@ -36,7 +34,6 @@ namespace ActionMailerNext
             bool copyHeaders = true, bool copyExtraProperties = true,
             bool copyPostProcessors = true, bool copyTags = true)
         {
-
             From = mailAttributes.From;
             Subject = mailAttributes.Subject;
             Priority = mailAttributes.Priority;
@@ -50,14 +47,10 @@ namespace ActionMailerNext
             TextBody = mailAttributes.TextBody;
             HtmlBody = mailAttributes.HtmlBody;
 
-            To = copyTo ? mailAttributes.To.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
-                .ToList() : new List<MailAddress>();
-            Cc = copyCc ? mailAttributes.Cc.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
-                    .ToList() : new List<MailAddress>();
-            Bcc = copyBcc ? mailAttributes.Bcc.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
-                    .ToList() : new List<MailAddress>();
-            ReplyTo = copyReplyTo ? mailAttributes.ReplyTo.Select(mailAddress => new MailAddress(mailAddress.Address, mailAddress.DisplayName))
-                    .ToList() : new List<MailAddress>();
+            To = copyTo ? mailAttributes.To.Select(address => new MailAddress(address.Address, address.DisplayName)).ToList() : new List<MailAddress>();
+            Cc = copyCc ? mailAttributes.Cc.Select(address => new MailAddress(address.Address, address.DisplayName)).ToList() : new List<MailAddress>();
+            Bcc = copyBcc ? mailAttributes.Bcc.Select(address => new MailAddress(address.Address, address.DisplayName)).ToList() : new List<MailAddress>();
+            ReplyTo = copyReplyTo ? mailAttributes.ReplyTo.Select(address => new MailAddress(address.Address, address.DisplayName)).ToList() : new List<MailAddress>();
             Attachments = referenceAttachments ? mailAttributes.Attachments : new AttachmentCollection();
             Headers = copyHeaders ? mailAttributes.Headers.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
             ExtraProperties = copyExtraProperties ? mailAttributes.ExtraProperties.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) : new Dictionary<string, string>();
@@ -65,28 +58,26 @@ namespace ActionMailerNext
             Tags = copyTags ? mailAttributes.Tags : null;
 
             AlternateViews = new List<AlternateView>();
-
         }
 
-
         /// <summary>
-        ///     A string representation of who this mail should be from.  Could be
-        ///     your name and email address or just an email address by itself.
+        /// A string representation of who this mail should be from.  Could be
+        /// your name and email address or just an email address by itself.
         /// </summary>
         public MailAddress From { get; set; }
 
         /// <summary>
-        ///     The subject line of the email.
+        /// The subject line of the email.
         /// </summary>
         public string Subject { get; set; }
 
         /// <summary>
-        ///     The Priority of the email.
+        /// The Priority of the email.
         /// </summary>
         public MailPriority Priority { get; set; }
 
         /// <summary>
-        ///     A collection of addresses this email should be sent to.
+        /// A collection of addresses this email should be sent to.
         /// </summary>
         public List<MailAddress> To { get; set; }
 
@@ -96,7 +87,7 @@ namespace ActionMailerNext
         public bool IsCcToSupported { get; set; }
 
         /// <summary>
-        ///     A collection of addresses that should be CC'ed.
+        /// A collection of addresses that should be CC'ed.
         /// </summary>
         public IList<MailAddress> Cc { get; set; }
 
@@ -106,7 +97,7 @@ namespace ActionMailerNext
         public bool IsBccSupported { get; set; }
 
         /// <summary>
-        ///     A collection of addresses that should be BCC'ed.
+        /// A collection of addresses that should be BCC'ed.
         /// </summary>
         public IList<MailAddress> Bcc { get; set; }
 
@@ -116,61 +107,61 @@ namespace ActionMailerNext
         public bool IsReplyToSupported { get; set; }
 
         /// <summary>
-        ///     A collection of addresses that should be listed in Reply-To header.
+        /// A collection of addresses that should be listed in Reply-To header.
         /// </summary>
         public List<MailAddress> ReplyTo { get; set; }
 
         /// <summary>
-        ///     Any custom headers (name and value) that should be placed on the message.
+        /// Any custom headers (name and value) that should be placed on the message.
         /// </summary>
         public IDictionary<string, string> Headers { get; set; }
 
         /// <summary>
-        ///     The generated text body of the message
+        /// The generated text body of the message
         /// </summary>
         public string TextBody { get; set; }
 
         /// <summary>
-        ///     The generated html body of the message
+        /// The generated html body of the message
         /// </summary>
         public string HtmlBody { get; set; }
 
         /// <summary>
-        ///     The generated body of the message
+        /// The generated body of the message
         /// </summary>
         public string Body { get; set; }
 
         /// <summary>
-        ///     Gets or sets the default message encoding when delivering mail.
+        /// Gets or sets the default message encoding when delivering mail.
         /// </summary>
         public Encoding MessageEncoding { get; set; }
 
         /// <summary>
-        ///     Any attachments you wish to add.  The key of this collection is what
-        ///     the file should be named.  The value is should represent the actual content
-        ///     of the file.
+        /// Any attachments you wish to add.  The key of this collection is what
+        /// the file should be named.  The value is should represent the actual content
+        /// of the file.
         /// </summary>
         /// <example>
-        ///     Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
+        /// Attachments["picture.jpg"] = File.ReadAllBytes(@"C:\picture.jpg");
         /// </example>
         public AttachmentCollection Attachments { get; set; }
 
         /// <summary>
-        ///     Any view you wish to add.  The key of this collection is what
-        ///     the view should be named.
+        /// Any view you wish to add.  The key of this collection is what
+        /// the view should be named.
         /// </summary>
         public IList<AlternateView> AlternateViews { get; set; }
 
         /// <summary>
-        ///     Apply PreMailer.Net to convert all styles to inline styles to 
-        ///     avoid problems with different Email Clients
+        /// Apply PreMailer.Net to convert all styles to inline styles to 
+        /// avoid problems with different Email Clients
         /// </summary>
         public IList<IPostProcessor> PostProcessors { get; set; }
 
         /// <summary>
-        ///     Any extra properties that needs to be added in case of custom mail sender
+        /// Any extra properties that needs to be added in case of custom mail sender
         /// </summary>
-        public IDictionary<String, String> ExtraProperties { get; set; }
+        public IDictionary<string, string> ExtraProperties { get; set; }
 
         /// <summary>
         /// Tag your emails to find them more easily

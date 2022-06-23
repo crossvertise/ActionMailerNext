@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-
-using HandlebarsDotNet;
-
-using ActionMailerNext.Standalone.Interfaces;
-using ActionMailerNext.Standalone.Helpers;
-using ActionMailerNext.Standalone.Models;
-
-namespace ActionMailerNext.Standalone.Implementations
+﻿namespace ActionMailerNext.Standalone.Implementations
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
+    using HandlebarsDotNet;
+
+    using ActionMailerNext.Standalone.Interfaces;
+    using ActionMailerNext.Standalone.Helpers;
+    using ActionMailerNext.Standalone.Models;
+
     public class TemplateService : ITemplateService
     {
         protected readonly IHandlebars _hbsService;
@@ -28,9 +28,9 @@ namespace ActionMailerNext.Standalone.Implementations
                 {
                     _hbsService.RegisterTemplate(template.Key, template.Value);
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
-                    throw new System.Exception($"Error at template key = {template.Key}", ex);
+                    throw new Exception($"Error at template key = {template.Key}", ex);
                 }
             });
         }

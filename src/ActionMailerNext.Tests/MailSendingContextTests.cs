@@ -35,7 +35,7 @@ namespace ActionMailerNext.Tests
         [Test]
         public void MailContextConstructorSetsUpObjectProperly()
         {
-            var mail = new MailAttributes {From = new MailAddress("no-reply@test.com")};
+            var mail = new MailAttributes { From = new MailAddress("no-reply@test.com") };
             mail.To.Add(new MailAddress("test@test.com"));
 
             var context = new MailSendingContext(mail);

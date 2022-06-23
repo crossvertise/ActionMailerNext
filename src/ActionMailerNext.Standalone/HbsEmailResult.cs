@@ -1,21 +1,20 @@
-﻿using System;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Text;
-
-using ActionMailerNext.Interfaces;
-using ActionMailerNext.Standalone.Helpers;
-using ActionMailerNext.Standalone.Interfaces;
-using ActionMailerNext.Utils;
-
-namespace ActionMailerNext.Standalone
+﻿namespace ActionMailerNext.Standalone
 {
+    using System;
+    using System.Net.Mail;
+    using System.Net.Mime;
+    using System.Text;
+
+    using ActionMailerNext.Interfaces;
+    using ActionMailerNext.Standalone.Helpers;
+    using ActionMailerNext.Standalone.Interfaces;
+    using ActionMailerNext.Utils;
+
     /// <summary>
     /// An container for MailMessage with the appropriate body rendered by Razor.
     /// </summary>
     public class HBSEmailResult : IEmailResult
     {
-        private MailAttributes _mailAttributes;
         private readonly Encoding _messageEncoding;
         private readonly ITemplateService _templateService;
         private readonly object _viewBag;
@@ -38,7 +37,7 @@ namespace ActionMailerNext.Standalone
             Encoding messageEncoding, string masterName,
             string viewPath, ITemplateService templateService, dynamic viewBag)
         {
-            _mailAttributes = mailAttributes ?? throw new ArgumentNullException("mailAttributes");
+            MailAttributes = mailAttributes ?? throw new ArgumentNullException("mailAttributes");
             _viewName = !string.IsNullOrWhiteSpace(viewName) ? viewName : throw new ArgumentNullException("viewName");
             _masterName = masterName;
             _viewPath = viewPath;
@@ -52,11 +51,7 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         /// The underlying MailMessage object that was passed to this object's constructor.
         /// </summary>
-        public MailAttributes MailAttributes
-        {
-            get { return _mailAttributes; }
-            set { _mailAttributes = value; }
-        }
+        public MailAttributes MailAttributes { get; set; }
 
         /// <summary>
         /// The default encoding used to send a messageBase.
@@ -68,7 +63,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public void Compile<T>(T model, bool trimBody, string externalViewPath = null)
         {
-            string body = string.Empty;
+            var body = string.Empty;
             AlternateView altView;
 
             var hasTxtView = false;
@@ -81,10 +76,12 @@ namespace ActionMailerNext.Standalone
             catch (TemplateResolvingException)
             {
                 if (!hasTxtView)
+                {
                     throw new NoViewsFoundException(
                         string.Format(
                             "Could not find any HBS views named [{0}] in the path [{1}].  Ensure that you specify the format in the file name (ie: {0}.hbs)",
                             _viewName, _viewPath));
+                }
             }
             catch (NullReferenceException ex)
             {
@@ -92,9 +89,10 @@ namespace ActionMailerNext.Standalone
                 throw new NullReferenceException(error);
             }
 
-
             if (trimBody)
+            {
                 body = body.Trim();
+            }
 
             altView = AlternateView.CreateAlternateViewFromString(body, MessageEncoding ?? Encoding.Default, MediaTypeNames.Text.Html);
             MailAttributes.AlternateViews.Add(altView);

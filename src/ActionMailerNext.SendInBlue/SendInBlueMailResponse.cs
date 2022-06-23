@@ -1,6 +1,4 @@
-﻿
-
-namespace ActionMailerNext.SendInBlue
+﻿namespace ActionMailerNext.SendInBlue
 {
     using ActionMailerNext.Interfaces;
 
@@ -10,5 +8,4 @@ namespace ActionMailerNext.SendInBlue
 
         public DeliveryStatus DeliveryStatus { get; set; }
     }
-
 }

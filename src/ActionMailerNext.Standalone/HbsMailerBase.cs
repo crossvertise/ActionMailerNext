@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
-
-using ActionMailerNext.Implementations.SMTP;
-using ActionMailerNext.Interfaces;
-using ActionMailerNext.Standalone.Helpers;
-using ActionMailerNext.Standalone.Implementations;
-using ActionMailerNext.Standalone.Interfaces;
-using ActionMailerNext.Standalone.Models;
-
-namespace ActionMailerNext.Standalone
+﻿namespace ActionMailerNext.Standalone
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Dynamic;
+
+    using ActionMailerNext.Implementations.SMTP;
+    using ActionMailerNext.Interfaces;
+    using ActionMailerNext.Standalone.Helpers;
+    using ActionMailerNext.Standalone.Implementations;
+    using ActionMailerNext.Standalone.Interfaces;
+    using ActionMailerNext.Standalone.Models;
 
     /// <summary>
     /// This is a standalone MailerBase that relies on Handlebars to generate emails.
@@ -18,12 +17,9 @@ namespace ActionMailerNext.Standalone
     public abstract class HBSMailerBase : IMailInterceptor
     {
         private ITemplateService _templateService;
-
         private ITemplateResolver _templateResolver;
 
-        private dynamic _viewbag; 
-
-        public MailAttributes MailAttributes { get;  set; }
+        public MailAttributes MailAttributes { get; set; }
 
         protected HBSMailerBase(
             MailAttributes mailAttributes = null,
@@ -46,7 +42,7 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         /// The view settings needed to implement HTML/URL Helpers
         /// </summary>
-        public abstract ViewSettings ViewSettings { get;}
+        public abstract ViewSettings ViewSettings { get; }
 
         /// <summary>
         /// The underlying IMailSender to use for outgoing messages.
@@ -60,7 +56,7 @@ namespace ActionMailerNext.Standalone
         {
             get
             {
-                return this._templateResolver ?? (_templateResolver = new HandlebarsFilesTemplateResolver(GlobalViewPath));
+                return _templateResolver ?? (_templateResolver = new HandlebarsFilesTemplateResolver(GlobalViewPath));
             }
             set
             {
@@ -71,17 +67,7 @@ namespace ActionMailerNext.Standalone
         /// <summary>
         /// Used to add needed variable
         /// </summary>
-        public dynamic ViewBag
-        {
-            get
-            {
-                return _viewbag;
-            }
-            set
-            {
-                _viewbag = value;
-            }
-        }
+        public dynamic ViewBag { get; set; }
 
         protected ITemplateService TemplateService
         {
@@ -104,6 +90,7 @@ namespace ActionMailerNext.Standalone
         /// </param>
         void IMailInterceptor.OnMailSending(MailSendingContext context)
         {
+            // No initial handling
         }
 
         /// <summary>
@@ -120,6 +107,7 @@ namespace ActionMailerNext.Standalone
         /// </summary>
         public void OnMailSent(MailAttributes mail)
         {
+            // No initial handling
         }
 
         /// <summary>
@@ -142,7 +130,7 @@ namespace ActionMailerNext.Standalone
             {
                 ViewBag.ViewSettings = ViewSettings;
             }
-                
+
             var result = new HBSEmailResult(MailAttributes, viewName, MailAttributes.MessageEncoding, masterName,
                 externalViewPath ?? GlobalViewPath, TemplateService, ViewBag);
 
@@ -164,7 +152,7 @@ namespace ActionMailerNext.Standalone
         {
             foreach (var view in views)
             {
-                this.TemplateService.AddTemplate(view);
+                TemplateService.AddTemplate(view);
             }
         }
     }

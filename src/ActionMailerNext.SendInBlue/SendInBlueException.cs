@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace ActionMailerNext.SendInBlue
+﻿namespace ActionMailerNext.SendInBlue
 {
+    using System;
+
     [Serializable]
     public class SendInBlueException : Exception
     {

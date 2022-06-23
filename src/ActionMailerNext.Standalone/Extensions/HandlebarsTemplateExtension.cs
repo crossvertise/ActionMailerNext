@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-
-using HandlebarsDotNet;
-
-namespace ActionMailerNext.Standalone.Helpers
+﻿namespace ActionMailerNext.Standalone.Helpers
 {
+    using System.Collections.Generic;
+
+    using HandlebarsDotNet;
+
     public static class HandlebarsTemplateExtension
     {
         public static string Run(this HandlebarsTemplate<object, object> self, object model, object viewbag)

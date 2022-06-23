@@ -1,15 +1,12 @@
-﻿using System;
-
-namespace ActionMailerNext.Utils
+﻿namespace ActionMailerNext.Utils
 {
-    /// <summary>
-    ///     Just a handy class for finding mime types.
-    /// </summary>
+    using System;
+
     public static class MimeTypes
     {
         /// <summary>
-        ///     Resolves a mime type based on the given file extension.  The extension is case-insensitive.
-        ///     Shamelessly stolen from: http://stackoverflow.com/questions/1029740/get-a-mime-from-an-extention/3393525#3393525
+        /// Resolves a mime type based on the given file extension.  The extension is case-insensitive.
+        /// Shamelessly stolen from: http://stackoverflow.com/questions/1029740/get-a-mime-from-an-extention/3393525#3393525
         /// </summary>
         /// <param name="extension">The file extension to search for.</param>
         /// <returns>The proper mime type for the supplied extension.</returns>
@@ -29,11 +26,9 @@ namespace ActionMailerNext.Utils
 
             switch (extension)
             {
-                    #region Big freaking list of mime types
-
-                    // combination of values from Windows 7 Registry and 
-                    // from C:\Windows\System32\inetsrv\config\applicationHost.config
-                    // some added, including .7z and .dat
+                // combination of values from Windows 7 Registry and 
+                // from C:\Windows\System32\inetsrv\config\applicationHost.config
+                // some added, including .7z and .dat
 
                 case ".323":
                     return "text/h323";
@@ -1155,8 +1150,6 @@ namespace ActionMailerNext.Utils
                     return "application/x-compress";
                 case ".zip":
                     return "application/x-zip-compressed";
-
-                    #endregion
 
                 default:
                     return "application/octet-stream";

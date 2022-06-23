@@ -22,16 +22,17 @@
  */
 
 #endregion
-
-using System;
-using System.IO;
-using ActionMailerNext.Implementations.SMTP;
-using ActionMailerNext.Interfaces;
-using FakeItEasy;
-using NUnit.Framework;
-
 namespace ActionMailerNext.Tests.Standalone
 {
+    using System;
+    using System.IO;
+
+    using ActionMailerNext.Interfaces;
+
+    using FakeItEasy;
+
+    using NUnit.Framework;
+
     [TestFixture]
     public class RazorMailerBaseTests
     {
@@ -85,8 +86,8 @@ namespace ActionMailerNext.Tests.Standalone
             var email = mailer.Email("WhitespaceTrimTest", trimBody: false);
             var body = new StreamReader(email.MailAttributes.AlternateViews[0].ContentStream).ReadToEnd();
 
-            Assert.True(char.IsWhiteSpace(body,0));
-            Assert.True(char.IsWhiteSpace(body, body.Length-1));
+            Assert.True(char.IsWhiteSpace(body, 0));
+            Assert.True(char.IsWhiteSpace(body, body.Length - 1));
         }
 
         [Test]

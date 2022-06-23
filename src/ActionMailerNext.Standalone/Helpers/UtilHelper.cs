@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Resources;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-
-namespace ActionMailerNext.Standalone.Helpers
+﻿namespace ActionMailerNext.Standalone.Helpers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Resources;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
+
     public static class UtilHelper
     {
         public static Uri BuildURI(string protocol, string host, string formatString, IDictionary<string, string> routeDictionary)
@@ -22,6 +22,7 @@ namespace ActionMailerNext.Standalone.Helpers
             var newFormatStringBuilder = new StringBuilder(formatString.ToLower());
             var queryDictionary = new Dictionary<string, string>();
             var keyToInt = new Dictionary<string, int>();
+
             foreach (var kvp in routeDictionary)
             {
                 var key = kvp.Key.ToLower();
@@ -39,12 +40,15 @@ namespace ActionMailerNext.Standalone.Helpers
             }
             uriBuilder.Query = FormatQuery(queryDictionary, false);
 
-            
+
             var routeString = Regex.Replace(newFormatStringBuilder.ToString(), "{([A-Z])+}", "", RegexOptions.IgnoreCase);
             if (routeString.EndsWith("/"))
+            {
                 routeString = routeString.Substring(0, routeString.Length - 1);
-            uriBuilder.Path = String.Format(routeString, routeDictionary.OrderBy(x => keyToInt[x.Key]).Select(x => x.Value).ToArray()).Replace("//", "/");
-           
+            }
+
+            uriBuilder.Path = string.Format(routeString, routeDictionary.OrderBy(x => keyToInt[x.Key]).Select(x => x.Value).ToArray()).Replace("//", "/");
+
             return uriBuilder.Uri;
         }
 
@@ -74,16 +78,17 @@ namespace ActionMailerNext.Standalone.Helpers
             return (htmlAttributes == null) ? string.Empty : htmlAttributes.Aggregate(string.Empty, (current, kvp) => current + (kvp.Key + "=\"" + kvp.Value + "\" "));
         }
 
-        public static IDictionary<string,string> ObjectToDictionary(object value)
+        public static IDictionary<string, string> ObjectToDictionary(object value)
         {
-            var dictionary = new Dictionary<string,string>();
+            var dictionary = new Dictionary<string, string>();
             const BindingFlags bindingAttrs = BindingFlags.Public | BindingFlags.Instance;
 
             if (value != null)
             {
-                foreach (
-                    var property in
-                        value.GetType().GetProperties(bindingAttrs).Where(property => property.CanRead))
+                foreach (var property in value
+                    .GetType()
+                    .GetProperties(bindingAttrs)
+                    .Where(property => property.CanRead))
                 {
                     try
                     {
@@ -94,8 +99,10 @@ namespace ActionMailerNext.Standalone.Helpers
                     {
                     }
                 }
+
                 return dictionary;
             }
+
             return new Dictionary<string, string>();
         }
 
@@ -132,6 +139,7 @@ namespace ActionMailerNext.Standalone.Helpers
             {
                 return memberInfo.Name;
             }
+
             if (attr.ResourceType == null)
             {
                 return attr.Name;
@@ -165,18 +173,17 @@ namespace ActionMailerNext.Standalone.Helpers
 
             return memberInfo.Name;
         }
-        
+
         public static MemberInfo GetPropertyInformation(Expression propertyExpression)
         {
             Debug.Assert(propertyExpression != null, "propertyExpression != null");
             var memberExpr = propertyExpression as MemberExpression;
-            if (memberExpr == null)
+
+            if (memberExpr == null &&
+                propertyExpression is UnaryExpression unaryExpr &&
+                unaryExpr.NodeType == ExpressionType.Convert)
             {
-                var unaryExpr = propertyExpression as UnaryExpression;
-                if (unaryExpr != null && unaryExpr.NodeType == ExpressionType.Convert)
-                {
-                    memberExpr = unaryExpr.Operand as MemberExpression;
-                }
+                memberExpr = unaryExpr.Operand as MemberExpression;
             }
 
             return memberExpr != null && memberExpr.Member.MemberType == MemberTypes.Property ? memberExpr.Member : null;

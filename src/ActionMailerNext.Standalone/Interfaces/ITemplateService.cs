@@ -1,7 +1,7 @@
-﻿using HandlebarsDotNet;
-
-namespace ActionMailerNext.Standalone.Interfaces
+﻿namespace ActionMailerNext.Standalone.Interfaces
 {
+    using HandlebarsDotNet;
+
     public interface ITemplateService
     {
         HandlebarsTemplate<object, object> Compile(string viewName, string layout = null, string externalViewPath = null);
