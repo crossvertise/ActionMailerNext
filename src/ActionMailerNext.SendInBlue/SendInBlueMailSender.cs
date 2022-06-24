@@ -82,7 +82,7 @@
 
             mail.Headers.ToList().ForEach(h => emailHeaders.Add(h.Key, h.Value));
 
-            var attachments = new List<SendSmtpEmailAttachment>();
+            var attachments = new List<SendSmtpEmailAttachment>(mail.Attachments.Count);
 
             foreach (var mailAttachment in mail.Attachments.Select(attachment =>
                 Utils.AttachmentCollection.ModifyAttachmentProperties(attachment.Key, attachment.Value, false)))
