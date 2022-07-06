@@ -1,37 +1,31 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Resources;
-using System.Text;
-using System.Web;
-
-using HandlebarsDotNet;
-using HandlebarsDotNet.Compiler;
-using HandlebarsDotNet.PathStructure;
-
-namespace ActionMailerNext.Standalone.Helpers
+﻿namespace ActionMailerNext.Standalone.Helpers
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.IO;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Resources;
+    using System.Text;
+    using System.Web;
+
+    using HandlebarsDotNet;
+    using HandlebarsDotNet.Compiler;
+    using HandlebarsDotNet.PathStructure;
+
+    using ActionMailerNext.Standalone.Models;
+
     public class HandlebarsHelpers
     {
-        private IHandlebars _hbsService;
-        private ViewSettings _viewSettings;
-        private string _resourcesDefaultNamespace;
+        private readonly IHandlebars _hbsService;
+        private readonly ViewSettings _viewSettings;
+        private readonly string _resourcesDefaultNamespace;
+        private readonly Func<string, string, HandlebarsException> missingParameterException =
+            (helperName, argumentName) => new HandlebarsException(string.Format("{{{{0}}}} helper is missing an argument", helperName), new ArgumentNullException(argumentName));
 
-        private Func<string, string, HandlebarsException> missingParameterException = (helperName, argumentName) => new HandlebarsException(string.Format("{{{{0}}}} helper is missing an argument", helperName), new ArgumentNullException(argumentName));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hbsService"></param>
-        /// <param name="viewSettings"></param>
         public HandlebarsHelpers(IHandlebars hbsService, ViewSettings viewSettings, string resourcesDefaultNamespace)
         {
             _hbsService = hbsService;
@@ -343,7 +337,7 @@ namespace ActionMailerNext.Standalone.Helpers
                 }
 
                 var resource = arguments[0].ToString().Split('.');
-                var resourceFile = String.Join(".", resource.Take(resource.Length - 1));
+                var resourceFile = string.Join(".", resource.Take(resource.Length - 1));
                 var resourceKey = resource.Last();
 
                 if (resource.Length == 2)
@@ -442,26 +436,22 @@ namespace ActionMailerNext.Standalone.Helpers
                 switch (arguments.Length)
                 {
                     case 2:
-                        {
-                            output.WriteSafeString(date.ToString(format));
-                        }
+                        output.WriteSafeString(date.ToString(format));
                         break;
+
                     case 3:
+                        var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Unspecified);
+                        try
                         {
-                            var utcDate = DateTime.SpecifyKind(date, DateTimeKind.Unspecified);
-                            try
-                            {
-                                var timeZone = arguments[2] is TimeZoneInfo info ? info : TimeZoneInfo.FindSystemTimeZoneById(arguments.At<string>(2));
-                                output.WriteSafeString(TimeZoneInfo.ConvertTimeFromUtc(utcDate, timeZone).ToString(format));
-                            }
-                            catch (Exception ex)
-                            {
-                                throw new HandlebarsException("{{date}} couldn't get time zone id", ex);
-                            }
+                            var timeZone = arguments[2] is TimeZoneInfo info ? info : TimeZoneInfo.FindSystemTimeZoneById(arguments.At<string>(2));
+                            output.WriteSafeString(TimeZoneInfo.ConvertTimeFromUtc(utcDate, timeZone).ToString(format));
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new HandlebarsException("{{date}} couldn't get time zone id", ex);
                         }
                         break;
                 }
-
             }));
         }
 
@@ -732,27 +722,17 @@ namespace ActionMailerNext.Standalone.Helpers
                 var enumType = GetEnumType(enumTypeName);
                 string enumMemberName = arguments[1].ToString();
 
-                if(int.TryParse(arguments[1].ToString(), out var enumValue))
+                if (int.TryParse(arguments[1].ToString(), out var enumValue))
                 {
                     enumMemberName = Enum.GetName(enumType, enumValue);
                 }
 
                 var enumMember = enumType.GetField(enumMemberName);
 
-                if (enumMember != null)
+                if (enumMember != null &&
+                    enumMember.GetCustomAttribute(typeof(DisplayAttribute)) is DisplayAttribute attr)
                 {
-                    var attr = enumMember.GetCustomAttribute(typeof(DisplayAttribute)) as DisplayAttribute;
-                    if (attr != null)
-                    {
-                        if (attr.ResourceType != null)
-                        {
-                            return attr.GetName();
-                        }
-                        else
-                        {
-                            return attr.Name;
-                        }
-                    }
+                    return attr.ResourceType != null ? attr.GetName() : attr.Name;
                 }
 
                 return enumMemberName;
@@ -1267,7 +1247,7 @@ namespace ActionMailerNext.Standalone.Helpers
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 var type = assembly.GetType(name);
-                if (type?.IsEnum ?? false == true)
+                if (type?.IsEnum ?? false)
                 {
                     return type;
                 }
@@ -1276,7 +1256,7 @@ namespace ActionMailerNext.Standalone.Helpers
             foreach (var assembly in Directory.EnumerateFiles(Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).FullName, "*.dll", SearchOption.AllDirectories).Select(file => Assembly.LoadFile(file)))
             {
                 var type = assembly.GetType(name);
-                if (type?.IsEnum ?? false == true)
+                if (type?.IsEnum ?? false)
                 {
                     return type;
                 }

@@ -1,7 +1,9 @@
 ﻿namespace ActionMailerNext.PostProccesors
 {
     using Interfaces;
+
     using PreMailer.Net;
+
     using System.IO;
     using System.Net.Mail;
     using System.Net.Mime;
@@ -19,6 +21,7 @@
                 {
                     continue;
                 }
+
                 using (var reader = new StreamReader(view.ContentStream))
                 {
                     var body = reader.ReadToEnd();
@@ -26,10 +29,9 @@
                     if (view.ContentType.MediaType == MediaTypeNames.Text.Html)
                     {
                         var inlinedCssString = PreMailer.MoveCssInline(body);
+                        var bytes = Encoding.UTF8.GetBytes(inlinedCssString.Html);
+                        var stream = new MemoryStream(bytes);
 
-                        byte[] byteArray = Encoding.UTF8.GetBytes(inlinedCssString.Html);
-                        var stream = new MemoryStream(byteArray);
-                        
                         var newAlternateView = new AlternateView(stream, MediaTypeNames.Text.Html);
                         newMailAttributes.AlternateViews.Add(newAlternateView);
                     }

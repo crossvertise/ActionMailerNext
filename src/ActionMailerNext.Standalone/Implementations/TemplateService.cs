@@ -1,15 +1,15 @@
-﻿using HandlebarsDotNet;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace ActionMailerNext.Standalone.Helpers
+﻿namespace ActionMailerNext.Standalone.Implementations
 {
-    /// <summary>
-    /// 
-    /// </summary>
+    using System;
+    using System.Linq;
+    using System.Reflection;
+
+    using HandlebarsDotNet;
+
+    using ActionMailerNext.Standalone.Interfaces;
+    using ActionMailerNext.Standalone.Helpers;
+    using ActionMailerNext.Standalone.Models;
+
     public class TemplateService : ITemplateService
     {
         protected readonly IHandlebars _hbsService;
@@ -17,11 +17,6 @@ namespace ActionMailerNext.Standalone.Helpers
         private readonly string _resourcesDefaultNamespace = "Xv.Infrastructure.Standard.Resources";
         private string _resourcesNamespace;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="templateResolver"></param>
-        /// <param name="viewSettings"></param>
         public TemplateService(ITemplateResolver templateResolver, ViewSettings viewSettings)
         {
             _templateResolver = templateResolver;
@@ -33,9 +28,9 @@ namespace ActionMailerNext.Standalone.Helpers
                 {
                     _hbsService.RegisterTemplate(template.Key, template.Value);
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
-                    throw new System.Exception($"Error at template key = {template.Key}", ex);
+                    throw new Exception($"Error at template key = {template.Key}", ex);
                 }
             });
         }
@@ -64,12 +59,6 @@ namespace ActionMailerNext.Standalone.Helpers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="viewName"></param>
-        /// <param name="layout"></param>
-        /// <returns></returns>
         public HandlebarsTemplate<object, object> Compile(string viewName, string layout = null, string externalViewPath = null)
         {
             if (!string.IsNullOrEmpty(layout))
@@ -87,10 +76,6 @@ namespace ActionMailerNext.Standalone.Helpers
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="viewName"></param>
         public void AddTemplate(string viewName, string key = null, string externalViewPath = null)
         {
             if (string.IsNullOrEmpty(viewName))
