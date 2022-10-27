@@ -826,7 +826,7 @@
         }
 
         /// <summary>
-        /// {{#if.or bool1 bool2 bool3}}{{else}}{{/if.and}}
+        /// {{#if.or bool1 bool2 bool3}}{{else}}{{/if.or}}
         /// Same like the standard if helper but it takes an infinite number of arguments and it will evaluate them with an 'Or' between each of them
         /// It also evaluates null objects, empty lists or strings as false
         /// It doesn't alter the scope.
@@ -1150,7 +1150,7 @@
 
         private bool IsTrue(object obj)
         {
-            if (obj == null)
+            if (obj == null || obj is UndefinedBindingResult)
             {
                 return false;
             }
