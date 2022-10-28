@@ -118,7 +118,7 @@
             }
             catch (Exception ex)
             {
-                throw new SendInBlueException(ex.Message, ex.InnerException);
+                throw new SendInBlueException(ex.Message, ex);
             }
         }
 
@@ -154,7 +154,7 @@
             }
             catch (Exception ex)
             {
-                throw new SendInBlueException(ex.Message, ex.InnerException);
+                throw new SendInBlueException(ex.Message, ex);
             }
         }
 
