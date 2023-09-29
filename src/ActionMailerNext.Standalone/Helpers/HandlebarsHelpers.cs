@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Linq.Expressions;
@@ -612,7 +613,7 @@
                 var arg1 = arguments[0].ToString();
                 var arg2 = arguments[1].ToString();
 
-                if (double.TryParse(arg1, out var dbl1) && double.TryParse(arg2, out var dbl2))
+                if (double.TryParse(arg1, NumberStyles.Float, CultureInfo.InvariantCulture, out var dbl1) && double.TryParse(arg2, NumberStyles.Float, CultureInfo.InvariantCulture, out var dbl2))
                 {
                     return dbl1 > dbl2;
                 }
